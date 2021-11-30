@@ -1,13 +1,13 @@
 // basic color theme
 :root {
+  --main-color: #ff6600;
   --basic-color: #fff;
   --font-color: #1c1c1c;
   --link-color: #0099ff;
   --fill-color: #f5f8fa;
-  --disable-color: #e5e5e5;
   --label-color: #657786;
   --border-color: #e6ecf0;
-  --icon-color: #c4c4c4;
+  --card-bg-color: #F6F7F8;
   --sub-color: #9197a3;
   --line-color: #ccd6dd;
   --error-color: #fc5a5a;
@@ -16,9 +16,9 @@
 }
 
 //font size
-$font-xs: 2.3rem;
-$font-sm: 1.9rem;
-$font-md: 1.8rem;
-$font-lg: 1.5rem;
-$font-xl: 1.4rem;
-$font-xxl: 1.3rem;
+$font-xs: 1.3rem;
+$font-sm: 1.4rem;
+$font-md: 1.5rem;
+$font-lg: 1.8rem;
+$font-xl: 1.9rem;
+$font-xxl: 2.3rem;
