@@ -19,6 +19,6 @@ export default {
 <style lang="scss">
 .container {
   display: grid;
-  grid-template-columns: 60% 40%;
+  grid-template-columns: 1fr calc( 462 / 1062 * 100% );
 }
 </style>

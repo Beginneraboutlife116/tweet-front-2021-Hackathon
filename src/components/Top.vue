@@ -148,7 +148,7 @@ export default {
 }
 
 .top {
-  width: 75%;
+  width: calc( 350 / 462 * 100% );
   border-radius: 1.4rem;
   background-color: var(--fill-color);
   box-shadow: 0 4px 4px 0 hsla(0, 0, 0, 25%);
