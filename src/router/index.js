@@ -5,12 +5,16 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/tweets',
-    name: 'tweets',
+    path: '/home',
+    name: 'home',
     component: () => import('./../views/Main'),
     children: [
       {
         path: '',
+        component: () => import('./../views/Tweets')
+      },
+      {
+        path: '/home',
         component: () => import('./../views/Tweets')
       }
     ]
