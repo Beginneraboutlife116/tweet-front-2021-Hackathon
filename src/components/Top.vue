@@ -144,7 +144,6 @@ export default {
 .top-container {
   grid-column: 2;
   padding: 1.5rem 0 0 3rem;
-  border-left: 1px solid var(--border-color);
 }
 
 .top {
@@ -199,6 +198,9 @@ export default {
       }
       &--follow {
         @extend %buttonStyle;
+        padding: 1rem 1.5rem;
+        font-size: $font-md;
+        line-height: $font-md;
       }
     }
   }

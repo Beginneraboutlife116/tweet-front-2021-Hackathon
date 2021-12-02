@@ -1,11 +1,7 @@
 %buttonStyle {
-  height: 3.5rem;
-  padding: 1rem 1.5rem;
   border: 1px solid var(--main-color);
   border-radius: 99em;
   color: var(--main-color);
-  font-size: $font-md;
-  line-height: 100%;
   &:hover,
   &.active {
     background-color: var(--main-color);
