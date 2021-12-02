@@ -1,0 +1,10 @@
+%buttonStyle {
+  border: 1px solid var(--main-color);
+  border-radius: 99em;
+  color: var(--main-color);
+  &:hover,
+  &.active {
+    background-color: var(--main-color);
+    color: white;
+  }
+}
