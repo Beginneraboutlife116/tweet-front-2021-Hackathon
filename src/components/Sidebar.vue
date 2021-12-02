@@ -55,7 +55,7 @@
           </router-link>
         </li>
         <li class="sidebar__link">
-          <router-link :to="{ name: 'user-profile' }">
+          <router-link :to="{ name: 'profile' }">
             <svg
               width="24"
               height="24"
