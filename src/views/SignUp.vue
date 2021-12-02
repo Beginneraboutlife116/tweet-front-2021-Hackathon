@@ -12,10 +12,10 @@
         </div>
         <p class="sign__header-title">建立你的帳號</p>
       </header>
-      <form class="sign__form" @submit.prevent  ="handleSubmit">
+      <form class="sign__form" @submit.prevent="handleSubmit">
         <label class="sign__form-row">
           <p class="sign__form-title">帳號</p>
-          <input type="text" class="sign__form-input" v-model.trim="account" :style="{borderColor: accountErrorHandler}" required>
+          <input type="text" class="sign__form-input" v-model.trim="account" ref="account" required>
           <p class="sign__form-error">
             <span class="error" v-if="accountRepeat">帳號 已重複註冊！</span>
           </p>
@@ -30,18 +30,18 @@
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">Email</p>
-          <input type="email" class="sign__form-input" v-model.trim="email" :style="{borderColor: emailErrorHandler}" required>
+          <input type="email" class="sign__form-input" v-model.trim="email" ref="email" required>
           <p class="sign__form-error">
             <span class="error" v-if="emailRepeat">Email 已重複註冊！</span>
           </p>
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">密碼</p>
-          <input type="password" class="sign__form-input" v-model.trim="password" required>
+          <input type="password" class="sign__form-input" v-model.trim="password" ref="password" required>
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">密碼確認</p>
-          <input type="password" class="sign__form-input" v-model.trim="passwordConfirm" :style="{borderColor: passwordError ? '#fc5a5a' : ''}" required>
+          <input type="password" class="sign__form-input" v-model.trim="passwordConfirm" ref="passwordConfirm" required>
           <p class="sign__form-error">
             <span class="error" v-if="passwordError">確認密碼與密碼不符，請再試一次</span>
           </p>
@@ -56,7 +56,18 @@
 </template>
 
 <script>
-// import { Toast } from './../mixins/helpers'
+import { Toast } from './../mixins/helpers'
+
+const dummyUser = {
+  id: 3,
+  account: 'user3',
+  email: 'user3@example.com',
+  password: '3',
+  name: 'user3',
+  role: 'user',
+  createdAt: '2021-12-01T07:59:14.418Z',
+  updatedAt: '2021-12-01T07:59:14.418Z'
+}
 
 export default {
   name: 'SignUp',
@@ -73,12 +84,6 @@ export default {
     }
   },
   computed: {
-    accountErrorHandler () {
-      return this.accountRepeat ? '#fc5a5a' : ''
-    },
-    emailErrorHandler () {
-      return this.emailRepeat ? '#fc5a5a' : ''
-    },
     nameErrorHandler () {
       const nameError = {}
       nameError.borderColor = this.name.length > 50 ? '#fc5a5a' : ''
@@ -89,8 +94,107 @@ export default {
   },
   methods: {
     // TODO: 等API串接，再做相對應的流程設計
-    handleSubmit (e) {
-      console.log(e)
+    handleSubmit () {
+      if (!this.account) {
+        Toast.fire({
+          icon: 'warning',
+          title: '帳號必填'
+        })
+        this.$refs.account.focus()
+        this.$refs.account.style.borderColor = '#fc5a5a'
+        return
+      } else {
+        this.$refs.account.style.borderColor = ''
+      }
+
+      if (this.name.length > 50) {
+        this.name = this.name.slice(0, 50)
+      }
+
+      if (!this.email) {
+        Toast.fire({
+          icon: 'warning',
+          title: 'Email必填'
+        })
+        this.$refs.email.focus()
+        this.$refs.email.style.borderColor = '#fc5a5a'
+        return
+      } else {
+        this.$refs.email.style.borderColor = ''
+      }
+      // TODO: 是否需要驗證email格式？
+      if (!this.password) {
+        Toast.fire({
+          icon: 'warning',
+          title: '請輸入密碼'
+        })
+        this.$refs.password.focus()
+        this.$refs.password.style.borderColor = '#fc5a5a'
+        return
+      } else {
+        this.$refs.password.style.borderColor = ''
+      }
+
+      if (!this.passwordConfirm) {
+        Toast.fire({
+          icon: 'warning',
+          title: '請再輸入一次密碼做確認'
+        })
+        this.$refs.passwordConfirm.focus()
+        this.$refs.passwordConfirm.style.borderColor = '#fc5a5a'
+        return
+      } else {
+        this.$refs.passwordConfirm.style.borderColor = ''
+      }
+
+      if (this.account === dummyUser.account) {
+        Toast.fire({
+          icon: 'error',
+          title: '帳號已重複註冊！'
+        })
+        this.accountRepeat = true
+        this.$refs.account.focus()
+        this.$refs.account.style.borderColor = '#fc5a5a'
+        return
+      } else {
+        this.accountRepeat = false
+        this.$refs.account.style.borderColor = ''
+      }
+
+      if (this.email === dummyUser.email) {
+        Toast.fire({
+          icon: 'error',
+          title: 'Email已重複註冊！'
+        })
+        this.emailRepeat = true
+        this.$refs.email.focus()
+        this.$refs.email.style.borderColor = '#fc5a5a'
+        return
+      } else {
+        this.emailRepeat = false
+        this.$refs.email.style.borderColor = ''
+      }
+
+      if (this.password !== this.passwordConfirm) {
+        Toast.fire({
+          icon: 'error',
+          title: '密碼不相符，請再試一次'
+        })
+        this.passwordError = true
+        this.$refs.passwordConfirm.focus()
+        this.$refs.passwordConfirm.style.borderColor = '#fc5a5a'
+        return
+      }
+
+      // TODO: 要傳送出去的
+      console.log(`{
+        account: ${this.account},
+        name: ${this.name},
+        email: ${this.email},
+        password: ${this.password},
+        passwordConfirm: ${this.passwordConfirm}
+      }`)
+      this.$router.push('/home')
     }
   }
 }
