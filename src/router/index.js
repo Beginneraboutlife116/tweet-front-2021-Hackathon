@@ -7,12 +7,16 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    redirect: '/signin'
+  },
+  {
+    path: '/signin',
     name: 'sign-in',
     component: SignIn
   },
   {
-    path: '/tweets',
-    name: 'tweets',
+    path: '/home',
+    name: 'home',
     component: () => import('./../views/Main'),
     children: [
       {
