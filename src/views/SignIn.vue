@@ -116,6 +116,10 @@ export default {
 
       this.$store.commit('setCurrentUser', dummyUser)
       console.log(`email: ${this.email}, password: ${this.password}`)
+      Toast.fire({
+        icon: 'success',
+        title: '成功登入！'
+      })
       this.$router.push('/home')
     }
   }
