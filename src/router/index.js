@@ -11,7 +11,7 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import('./../views/Tweets')
+        component: () => import('./../views/Twitter')
       }
     ]
   }
