@@ -177,7 +177,6 @@ export default {
   padding: 0 3rem 0 0 ;
 }
 .sidebar {
-  flex: calc(235 / 378 * 100%);
   .sidebar__logo {
     margin: 1rem 0 2rem 1rem;
   }
@@ -210,7 +209,7 @@ export default {
   .sidebar__button {
     @extend %buttonStyle;
     height: 3.8rem;
-    width: 100%;
+    width: 23.5rem;
     max-width: 21rem;
     margin: 1.5rem 0;
     font-size: $font-lg;
