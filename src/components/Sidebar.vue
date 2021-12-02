@@ -2,7 +2,7 @@
   <nav class="sidebar">
     <router-link :to="{ name: 'home' }">
       <svg
-      class="sidebar__logo"
+        class="sidebar__logo"
         width="30"
         height="30"
         viewBox="0 0 30 30"
@@ -159,11 +159,12 @@ export default {
 </script>
 <style lang="scss">
 .router-link-exact-active {
-  ul {
-    li {
-      span {
-        color: var(--main-color);
-      }
+  span {
+    color: var(--main-color);
+  }
+  svg {
+    path {
+      fill: var(--main-color);
     }
   }
 }
@@ -178,13 +179,13 @@ export default {
       height: 5.6rem;
       padding: 1.5rem 0 1.5rem 1rem;
       a {
+        color: var(--font-color);
         line-height: 2.4rem;
         text-decoration: none;
         span {
           margin-left: 1rem;
           font-size: $font-lg;
           font-weight: bold;
-          color: var(--font-color);
         }
       }
       a:hover {
