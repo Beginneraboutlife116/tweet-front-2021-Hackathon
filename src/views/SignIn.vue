@@ -12,7 +12,7 @@
         </div>
         <p class="sign__header-title"><span>登入</span><span>Alphitter</span></p>
       </header>
-      <form class="sign__form" @submit.prevent  ="handleSubmit">
+      <form class="sign__form" @submit.prevent="handleSubmit">
         <label class="sign__form-row">
           <p class="sign__form-title">Email</p>
           <input type="email" class="sign__form-input" v-model.trim="email" :style="{borderColor: emailErrorHandler}" required>
