@@ -171,12 +171,13 @@ export default {
   }
 }
 .sidebar-container {
-  width: 26.25%;
+  flex: 26.25%;
   display: flex;
   justify-content: flex-end;
   padding: 0 3rem 0 0 ;
 }
 .sidebar {
+  flex: calc(235 / 378 * 100%);
   .sidebar__logo {
     margin: 1rem 0 2rem 1rem;
   }

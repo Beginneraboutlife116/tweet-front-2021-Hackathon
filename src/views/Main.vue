@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-container">
     <!-- sidebar -->
     <Sidebar/>
     <router-view />
@@ -15,3 +15,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.main-container {
+  display: flex;
+}
+</style>
