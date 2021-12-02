@@ -1,4 +1,5 @@
 <template>
+<div class="sidebar-container">
   <nav class="sidebar">
     <router-link :to="{ name: 'home' }">
       <svg
@@ -132,10 +133,11 @@
         </li>
       </ul>
     </template>
-    <button class="sidebar__button" @click.stop.prevent="createTweet">
+    <button class="active sidebar__button" @click.stop.prevent="createTweet">
       推文
     </button>
   </nav>
+</div>
 </template>
 
 <script>
@@ -168,7 +170,12 @@ export default {
     }
   }
 }
+.sidebar-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 3rem 0 0 ;
 
+}
 .sidebar {
   width: 26.25%;
   .sidebar__logo {
@@ -180,12 +187,14 @@ export default {
       padding: 1.5rem 0 1.5rem 1rem;
       a {
         color: var(--font-color);
-        line-height: 2.4rem;
         text-decoration: none;
+        display:flex;
         span {
           margin-left: 1rem;
           font-size: $font-lg;
           font-weight: bold;
+        }
+        svg{
         }
       }
       a:hover {
@@ -201,9 +210,11 @@ export default {
     }
   }
   .sidebar__button {
+    @extend %buttonStyle;
     height: 3.8rem;
     width: 100%;
-    padding: 1rem 0;
+    max-width: 21rem;
+    margin: 1.5rem 0;
     font-size: $font-lg;
   }
 }
