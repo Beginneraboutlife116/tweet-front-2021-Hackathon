@@ -15,14 +15,14 @@
       <form class="sign__form" @submit.prevent  ="handleSubmit">
         <label class="sign__form-row">
           <p class="sign__form-title">Email</p>
-          <input type="email" class="sign__form-input" v-model.trim="email" :style="errorColor.email" required>
+          <input type="email" class="sign__form-input" v-model.trim="email" :style="{borderColor: emailErrorHandler}" required>
           <p class="sign__form-error">
             <span class="error" v-if="emailError">Email不存在</span>
           </p>
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">密碼</p>
-          <input type="password" class="sign__form-input" v-model.trim="password" :style="errorColor.password" required>
+          <input type="password" class="sign__form-input" v-model.trim="password" :style="{borderColor: passwordErrorHandler}" required>
           <p class="sign__form-error">
             <span class="error" v-if="passwordError">密碼錯誤</span>
           </p>
@@ -63,19 +63,11 @@ export default {
     }
   },
   computed: {
-    errorColor () {
-      const errorColor = {}
-      if (this.emailError) {
-        errorColor.email = 'borderColor: #fc5a5a'
-      } else {
-        errorColor.email = this.emailError
-      }
-      if (this.passwordError) {
-        errorColor.password = 'borderColor: #fc5a5a'
-      } else {
-        errorColor.password = this.password
-      }
-      return errorColor
+    emailErrorHandler () {
+      return this.emailError ? '#fc5a5a' : ''
+    },
+    passwordErrorHandler () {
+      return this.passwordError ? '#fc5a5a' : ''
     }
   },
   methods: {
