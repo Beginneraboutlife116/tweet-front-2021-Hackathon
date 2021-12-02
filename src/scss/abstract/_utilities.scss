@@ -18,7 +18,8 @@
     cursor: text;
     padding-left: 1rem;
     border-radius: 0 0 4px 4px;
-    border-bottom: 2px solid var(--label-color);
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
     &:hover,
     &:focus {
       border-color: var(--link-color);
@@ -27,8 +28,6 @@
   &-submit {
     @extend %buttonStyle;
     padding: 1rem 0;
-    font-size: $font-md;
-    line-height: $font-md;
     margin-top: 0.8rem;
   }
   &-error {

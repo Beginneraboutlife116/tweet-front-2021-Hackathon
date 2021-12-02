@@ -12,20 +12,19 @@
         </div>
         <p class="sign__header-title"><span>登入</span><span>Alphitter</span></p>
       </header>
-      <form class="sign__form" @submit="handleSubmit">
+      <form class="sign__form" @submit.prevent  ="handleSubmit">
         <label class="sign__form-row">
           <p class="sign__form-title">Email</p>
-          <input type="email" class="sign__form-input" v-model.trim="email" required maxlength="50">
+          <input type="email" class="sign__form-input" v-model.trim="email" :style="{borderColor: errorColor.email}" required>
           <p class="sign__form-error">
-            <span class="error">Email不存在</span>
-            <span class="limit" v-show="email.length"> {{ email.length }}/50</span>
+            <span class="error" v-if="emailError">Email不存在</span>
           </p>
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">密碼</p>
-          <input type="password" class="sign__form-input" v-model.trim="password" required>
+          <input type="password" class="sign__form-input" v-model.trim="password" :style="{borderColor: errorColor.password}" required>
           <p class="sign__form-error">
-            <span class="error">請勿留白</span>
+            <span class="error" v-if="passwordError">密碼錯誤</span>
           </p>
         </label>
         <button class="sign__form-submit active" type="submit">登入</button>
@@ -40,17 +39,78 @@
 </template>
 
 <script>
+import { Toast } from './../mixins/helpers'
+
+const dummyUser = {
+  id: 3,
+  account: 'user3',
+  email: 'user3@example.com',
+  password: '3',
+  name: 'user3',
+  role: 'user',
+  createdAt: '2021-12-01T07:59:14.418Z',
+  updatedAt: '2021-12-01T07:59:14.418Z'
+}
+
 export default {
   name: 'SignIn',
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      emailError: false,
+      passwordError: false
+    }
+  },
+  computed: {
+    errorColor () {
+      const errorColor = {}
+      errorColor.email = this.emailError ? '#fc5a5a' : '#657786'
+      errorColor.password = this.passwordError ? '#fc5a5a' : '#657786'
+      return errorColor
     }
   },
   methods: {
-    handleSubmit (e) {
-      console.log(e)
+    // TODO: 等API串接，再做相對應的流程設計
+    handleSubmit () {
+      console.log(`email: ${this.email}, password: ${this.password}`)
+      if (!this.email) {
+        Toast.fire({
+          icon: 'warning',
+          title: '請輸入Email'
+        })
+        this.emailError = true
+        return
+      }
+      if (!this.password) {
+        Toast.fire({
+          icon: 'warning',
+          title: '請輸入密碼'
+        })
+        this.passwordError = true
+        return
+      }
+      // TODO: 這邊由串接後得到結果，做出相對應動作
+      if (this.email !== dummyUser.email) {
+        Toast.fire({
+          icon: 'error',
+          title: '可能Email有誤，或此Email未註冊'
+        })
+        this.emailError = true
+        return
+      } else {
+        this.emailError = false
+      }
+      if (this.password !== dummyUser.password) {
+        this.passwordError = true
+        Toast.fire({
+          icon: 'error',
+          title: '密碼有誤'
+        })
+        return
+      }
+      this.$store.commit('setCurrentUser', dummyUser)
+      this.$router.push('/home')
     }
   }
 }
@@ -75,6 +135,10 @@ export default {
         margin-right: 5px;
       }
     }
+  }
+  &__form-submit {
+    font-size: $font-lg;
+    line-height: $font-lg;
   }
   &__btns {
     margin-top: 2rem;
