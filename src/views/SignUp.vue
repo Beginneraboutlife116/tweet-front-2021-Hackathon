@@ -194,6 +194,10 @@ export default {
         password: ${this.password},
         passwordConfirm: ${this.passwordConfirm}
       }`)
+      Toast.fire({
+        icon: 'success',
+        title: '成功註冊！'
+      })
       this.$router.push('/home')
     }
   }
