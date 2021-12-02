@@ -60,52 +60,13 @@
       }
     }
   }
-  &__form {
-    display: flex;
-    flex-direction: column;
-    gap: 3.2rem;
-    &-row {
-      background-color: var(--fill-color);
-    }
-    &-title {
-      padding: 0.5rem 0 0.6rem 1rem;
-      font-size: $font-md;
-      line-height: $font-md;
-      color: var(--label-color);
-    }
-    &-input {
-      all: unset;
-      width: calc(100% - 1rem);
-      cursor: text;
-      padding-left: 1rem;
-      border-radius: 0 0 4px 4px;
-      border-bottom: 2px solid var(--label-color);
-      &:hover,
-      &:focus {
-        border-color: var(--link-color);
-      }
-    }
-    &-submit {
-      padding: 1rem 0;
-      border: 1px solid var(--main-color);
-      border-radius: 99em;
-      color: var(--main-color);
-      font-size: $font-md;
-      line-height: $font-md;
-      &:hover,
-      &.active {
-        background-color: var(--main-color);
-        color: white;
-      }
-      margin-top: 0.8rem;
-    }
-  }
   &__btns {
     margin-top: 2rem;
     text-align: right;
     color: var(--link-color);
     &-link {
       color: var(--link-color);
+      text-decoration: underline;
       &:hover {
         color: var(--main-color);
       }
