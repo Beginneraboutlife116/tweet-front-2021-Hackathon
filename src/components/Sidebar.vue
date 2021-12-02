@@ -175,7 +175,6 @@ export default {
   display: flex;
   justify-content: flex-end;
   padding: 0 3rem 0 0 ;
-
 }
 .sidebar {
   .sidebar__logo {
@@ -193,8 +192,6 @@ export default {
           margin-left: 1rem;
           font-size: $font-lg;
           font-weight: bold;
-        }
-        svg{
         }
       }
       a:hover {
