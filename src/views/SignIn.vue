@@ -15,14 +15,14 @@
       <form class="sign__form" @submit.prevent="handleSubmit">
         <label class="sign__form-row">
           <p class="sign__form-title">Email</p>
-          <input type="email" class="sign__form-input" v-model.trim="email" :style="{borderColor: emailErrorHandler}" required>
+          <input type="email" class="sign__form-input" v-model.trim="email" ref="email" required>
           <p class="sign__form-error">
             <span class="error" v-if="emailError">Email不存在</span>
           </p>
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">密碼</p>
-          <input type="password" class="sign__form-input" v-model.trim="password" :style="{borderColor: passwordErrorHandler}" required>
+          <input type="password" class="sign__form-input" v-model.trim="password" ref="password" required>
           <p class="sign__form-error">
             <span class="error" v-if="passwordError">密碼錯誤</span>
           </p>
@@ -62,34 +62,33 @@ export default {
       passwordError: false
     }
   },
-  computed: {
-    emailErrorHandler () {
-      return this.emailError ? '#fc5a5a' : ''
-    },
-    passwordErrorHandler () {
-      return this.passwordError ? '#fc5a5a' : ''
-    }
-  },
   methods: {
     // TODO: 等API串接，再做相對應的流程設計
     handleSubmit () {
-      console.log(`email: ${this.email}, password: ${this.password}`)
       if (!this.email) {
         Toast.fire({
           icon: 'warning',
           title: '請輸入Email'
         })
-        this.emailError = true
+        this.$refs.email.focus()
+        this.$refs.email.style.borderColor = '#fc5a5a'
         return
+      } else {
+        this.$refs.email.style.borderColor = ''
       }
+
       if (!this.password) {
         Toast.fire({
           icon: 'warning',
           title: '請輸入密碼'
         })
-        this.passwordError = true
+        this.$refs.password.focus()
+        this.$refs.password.style.borderColor = '#fc5a5a'
         return
+      } else {
+        this.$refs.password.style.borderColor = ''
       }
+
       // TODO: 這邊由串接後得到結果，做出相對應動作
       if (this.email !== dummyUser.email) {
         Toast.fire({
@@ -97,19 +96,26 @@ export default {
           title: '可能Email有誤，或此Email未註冊'
         })
         this.emailError = true
+        this.$refs.email.style.borderColor = '#fc5a5a'
         return
       } else {
         this.emailError = false
+        this.$refs.email.style.borderColor = ''
       }
+
       if (this.password !== dummyUser.password) {
-        this.passwordError = true
         Toast.fire({
           icon: 'error',
           title: '密碼有誤'
         })
+        this.passwordError = true
+        this.$refs.password.focus()
+        this.$refs.password.style.borderColor = '#fc5a5a'
         return
       }
+
       this.$store.commit('setCurrentUser', dummyUser)
+      console.log(`email: ${this.email}, password: ${this.password}`)
       this.$router.push('/home')
     }
   }
