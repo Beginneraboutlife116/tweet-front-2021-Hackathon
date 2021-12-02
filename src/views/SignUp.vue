@@ -15,37 +15,35 @@
       <form class="sign__form" @submit.prevent  ="handleSubmit">
         <label class="sign__form-row">
           <p class="sign__form-title">帳號</p>
-          <input type="text" class="sign__form-input" v-model.trim="name" :style="{borderColor: errorColor.email}" required>
+          <input type="text" class="sign__form-input" v-model.trim="account" :style="{borderColor: accountErrorHandler}" required>
           <p class="sign__form-error">
-            <span class="error" v-if="emailError">Email不存在</span>
+            <span class="error" v-if="accountRepeat">帳號 已重複註冊！</span>
           </p>
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">名稱</p>
-          <input type="text" class="sign__form-input" v-model.trim="account" :style="{borderColor: errorColor.email}" required>
+          <input type="text" class="sign__form-input" v-model.trim="name" :style="{borderColor: nameErrorHandler.borderColor}">
           <p class="sign__form-error">
-            <span class="error" v-if="emailError">Email不存在</span>
+            <span class="error" v-show="name.length" :style="{color: nameErrorHandler.color}"> {{ nameErrorHandler.text }} </span>
+            <span class="limit" v-show="name.length"> {{name.length}} /50</span>
           </p>
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">Email</p>
-          <input type="email" class="sign__form-input" v-model.trim="email" :style="{borderColor: errorColor.email}" required>
+          <input type="email" class="sign__form-input" v-model.trim="email" :style="{borderColor: emailErrorHandler}" required>
           <p class="sign__form-error">
-            <span class="error" v-if="emailError">Email不存在</span>
+            <span class="error" v-if="emailRepeat">Email 已重複註冊！</span>
           </p>
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">密碼</p>
-          <input type="password" class="sign__form-input" v-model.trim="password" :style="{borderColor: errorColor.password}" required>
-          <p class="sign__form-error">
-            <span class="error" v-if="passwordError">密碼錯誤</span>
-          </p>
+          <input type="password" class="sign__form-input" v-model.trim="password" required>
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">密碼確認</p>
-          <input type="password" class="sign__form-input" v-model.trim="passwordConfirm" :style="{borderColor: errorColor.password}" required>
+          <input type="password" class="sign__form-input" v-model.trim="passwordConfirm" :style="{borderColor: passwordError ? '#fc5a5a' : ''}" required>
           <p class="sign__form-error">
-            <span class="error" v-if="passwordError">密碼錯誤</span>
+            <span class="error" v-if="passwordError">確認密碼與密碼不符，請再試一次</span>
           </p>
         </label>
         <button class="sign__form-submit active" type="submit">註冊</button>
@@ -69,18 +67,24 @@ export default {
       email: '',
       password: '',
       passwordConfirm: '',
-      nameError: false,
-      accountError: false,
-      emailError: false,
+      accountRepeat: false,
+      emailRepeat: false,
       passwordError: false
     }
   },
   computed: {
-    errorColor () {
-      const errorColor = {}
-      errorColor.email = this.emailError ? '#fc5a5a' : '#657786'
-      errorColor.password = this.passwordError ? '#fc5a5a' : '#657786'
-      return errorColor
+    accountErrorHandler () {
+      return this.accountRepeat ? '#fc5a5a' : ''
+    },
+    emailErrorHandler () {
+      return this.emailRepeat ? '#fc5a5a' : ''
+    },
+    nameErrorHandler () {
+      const nameError = {}
+      nameError.borderColor = this.name.length > 50 ? '#fc5a5a' : ''
+      nameError.color = this.name.length > 50 ? '#fc5a5a' : '#0099ff'
+      nameError.text = this.name.length > 50 ? '字數超出上限！' : '字數正確'
+      return nameError
     }
   },
   methods: {
@@ -107,18 +111,16 @@ export default {
       font-size: $font-xxl;
       font-weight: bold;
       line-height: 3.3rem;
-      & span:first-child {
-        margin-right: 5px;
-      }
     }
   }
-  &__form-submit {
+  &__form-submit,
+  &__btns {
     font-size: $font-lg;
     line-height: $font-lg;
   }
   &__btns {
     margin-top: 2rem;
-    text-align: right;
+    text-align: center;
     color: var(--link-color);
     &-link {
       color: var(--link-color);
@@ -129,6 +131,7 @@ export default {
     }
   }
 }
+
 // TODO: 等SignIn的merge通過，就拿掉
 .sign__form {
   display: flex;
@@ -150,8 +153,7 @@ export default {
     cursor: text;
     padding-left: 1rem;
     border-radius: 0 0 4px 4px;
-    border-bottom-width: 2px;
-    border-bottom-style: solid;
+    border-bottom: 2px solid var(--label-color);
     &:hover,
     &:focus {
       border-color: var(--link-color);
@@ -175,5 +177,4 @@ export default {
     }
   }
 }
-
 </style>
