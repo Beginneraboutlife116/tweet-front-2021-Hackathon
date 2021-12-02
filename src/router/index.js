@@ -21,7 +21,20 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import('./../views/Tweets')
+        component: () => import('./../views/Twitter'),
+        children: [
+          {
+            path: '',
+            name: 'tweets',
+            component: () => import('./../views/Tweets')
+          },
+          {
+            path: 'tweets/:tweetId' // component用Replies.vue
+          },
+          {
+            path: ':userId/followers' // component用Followers.vue
+          }
+        ]
       }
     ]
   }
