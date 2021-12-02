@@ -13,7 +13,7 @@
         <div class="top__user-info">
           <div>
             <!-- route還沒設定，所以會失敗 -->
-            <router-link :to="{path: '/:userId/profile', params: {userId: top.id}}">
+            <router-link :to="`/home/${top.id}`">
               <p class="top__user-info--name"> {{top.name}} </p>
             </router-link>
             <router-link :to="{path: '/:userId/profile', params: {userId: top.id}}">
