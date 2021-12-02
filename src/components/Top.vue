@@ -5,7 +5,7 @@
         <p class="top__header-title">Popular</p>
       </header>
       <div class="top__user" v-for="top in tops" :key="top.id">
-        <router-link :to="{path: '/:userId/profile', params: {userId: top.id}}">
+        <router-link :to="`/home/${top.id}`">
           <div class="top__user-avatar">
             <img :src="top.image" class="top__user-avatar--img">
           </div>
@@ -16,7 +16,7 @@
             <router-link :to="`/home/${top.id}`">
               <p class="top__user-info--name"> {{top.name}} </p>
             </router-link>
-            <router-link :to="{path: '/:userId/profile', params: {userId: top.id}}">
+            <router-link :to="`/home/${top.id}`">
               <p class="top__user-info--account"> @{{top.account}} </p>
             </router-link>
           </div>
