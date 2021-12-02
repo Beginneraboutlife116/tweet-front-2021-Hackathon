@@ -12,21 +12,20 @@
         </div>
         <p class="sign__header-title"><span>登入</span><span>Alphitter</span></p>
       </header>
-      <form class="sign__form">
+      <form class="sign__form" @submit="handleSubmit">
         <label class="sign__form-row">
           <p class="sign__form-title">Email</p>
-          <input type="email" class="sign__form-input" required>
+          <input type="email" class="sign__form-input" v-model.trim="email" required maxlength="50">
           <p class="sign__form-error">
-            <span class="error"></span>
-            <span class="limit"></span>
+            <span class="error">Email不存在</span>
+            <span class="limit" v-show="email.length"> {{ email.length }}/50</span>
           </p>
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">密碼</p>
-          <input type="password" class="sign__form-input" required>
+          <input type="password" class="sign__form-input" v-model.trim="password" required>
           <p class="sign__form-error">
-            <span class="error"></span>
-            <span class="limit"></span>
+            <span class="error">請勿留白</span>
           </p>
         </label>
         <button class="sign__form-submit active" type="submit">登入</button>
@@ -39,6 +38,23 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'SignIn',
+  data () {
+    return {
+      email: '',
+      password: ''
+    }
+  },
+  methods: {
+    handleSubmit (e) {
+      console.log(e)
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 .sign {
