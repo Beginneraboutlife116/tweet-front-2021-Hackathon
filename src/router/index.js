@@ -5,6 +5,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/admin/signin',
+    name: 'admin-sign-in',
+    component: () => import('./../views/AdminSignIn')
+  },
+  {
     path: '/home',
     name: 'home',
     component: () => import('./../views/Main'),
