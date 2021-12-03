@@ -17,7 +17,7 @@
           <p class="sign__form-title">Email</p>
           <input type="email" class="sign__form-input" v-model.trim="email" ref="email" required>
           <p class="sign__form-error">
-            <span class="error" v-if="emailError">Email不存在</span>
+            <span class="error" v-if="emailError">帳號不存在</span>
           </p>
         </label>
         <label class="sign__form-row">
