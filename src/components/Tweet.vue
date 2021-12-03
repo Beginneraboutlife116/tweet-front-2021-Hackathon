@@ -15,8 +15,8 @@
           <div class="tweet__info-postBy">
             <!-- 點擊貼文中使用者頭像/name/account時，能到profile頁 -->
             <router-link :to="`/home/${tweet.user.id}`">
-              <span class="name">{{ tweet.user.name }}</span>
-              <span class="account">@{{ tweet.user.account }}・</span>
+              <span class="name">{{ tweet.user.name || 'NoName'}} </span>
+              <span class="account">@{{ tweet.user.account || 'NoAccount' }}・</span>
             </router-link>
             <!-- 點擊時間連到當則推文 -->
             <router-link :to="`/home/${tweet.id}`">
@@ -29,7 +29,7 @@
           </router-link>
           <div class="tweet__info-count">
             <!-- 點擊回覆打開回覆modal -->
-            <span @click.prevent.stop="toggleReplyModal">
+            <span @click.prevent.stop="toggleReplyModal" class="tweet__info-count--reply">
               <svg
                 width="15"
                 height="15"
@@ -42,12 +42,12 @@
                   fill="#657786"
                 />
               </svg>
-              <span class="tweet__info-count--reply">{{
+              <span>{{
                 tweet.replyCounts
               }}</span>
             </span>
             <!-- 點擊喜歡愛心亮起 -->
-            <span @click.prevent.stop="toggleLikeModal(tweet.id)">
+            <span @click.prevent.stop="toggleLikeModal(tweet.id)" class="tweet__info-count--like">
               <svg
                 v-show="!tweet.isLike"
                 width="15"
@@ -74,7 +74,7 @@
                   fill="#E0245E"
                 />
               </svg>
-              <span class="tweet__info-count--like">{{
+              <span>{{
                 tweet.likeCounts
               }}</span>
             </span>
@@ -104,8 +104,8 @@ export default {
         created_at: '2001-12-02T16:44:25.000Z',
         user: {
           id: -1,
-          account: 'NoAccount',
-          name: 'NoName',
+          account: '',
+          name: '',
           avatar: ''
         },
         isLike: true,
@@ -187,6 +187,7 @@ export default {
       color: var(--font-color);
     }
     &-count {
+      position: relative;
       display: flex;
       width: 13rem;
       span {
@@ -199,8 +200,11 @@ export default {
           height: 1.5rem;
         }
       }
-      .tweet__info-count--reply {
-        margin-right: 5rem;
+      &--like {
+        position: absolute;
+        left: 70%;
+        display: flex;
+        align-items: center;
       }
     }
   }
