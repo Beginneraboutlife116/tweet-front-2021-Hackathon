@@ -3,15 +3,17 @@
     <router-view />
     <Top />
     <!-- 預設跟使用者有關的頁面轉換 -->
+    <Tweets/>
   </div>
 </template>
 
 <script>
 import Top from '../components/Top.vue'
-
+import Tweets from './Tweets.vue'
 export default {
   components: {
-    Top
+    Top,
+    Tweets
   }
 }
 </script>
