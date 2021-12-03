@@ -122,7 +122,19 @@ export default {
       } else {
         this.$refs.email.style.borderColor = ''
       }
-      // TODO: 是否需要驗證email格式？
+
+      if (!this.verifyEmail(this.email)) {
+        Toast.fire({
+          icon: 'warning',
+          title: '無效的Email，請再次確認'
+        })
+        this.$refs.email.focus()
+        this.$refs.email.style.borderColor = '#fc5a5a'
+        return
+      } else {
+        this.$refs.email.style.borderColor = ''
+      }
+
       if (!this.password) {
         Toast.fire({
           icon: 'warning',
@@ -199,6 +211,10 @@ export default {
         title: '成功註冊！'
       })
       this.$router.push('/home')
+    },
+    verifyEmail (email) {
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      return re.test(String(email).toLowerCase())
     }
   }
 }
