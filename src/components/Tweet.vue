@@ -185,6 +185,7 @@ export default {
     &-description {
       padding: 0.6rem 0 1rem 0;
       color: var(--font-color);
+      font-size: $font-md;
     }
     &-count {
       position: relative;
