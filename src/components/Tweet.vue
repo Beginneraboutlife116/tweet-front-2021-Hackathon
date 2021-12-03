@@ -20,7 +20,7 @@
             </router-link>
             <!-- 點擊時間連到當則推文 -->
             <router-link :to="`/home/${tweet.id}`">
-              <span class="timeStamp">{{ tweet.created_at | fromNow }}</span>
+              <span class="timeStamp">{{ tweet.createdAt | fromNow }}</span>
             </router-link>
           </div>
           <!-- 點擊推文內容到當則推文 -->
@@ -29,7 +29,7 @@
           </router-link>
           <div class="tweet__info-count">
             <!-- 點擊回覆打開回覆modal -->
-            <span @click.prevent.stop="toggleReplyModal" class="tweet__info-count--reply">
+            <span @click.prevent.stop="toggleReplyModal(tweet.id)" class="tweet__info-count--reply">
               <svg
                 width="15"
                 height="15"
@@ -101,7 +101,7 @@ export default {
       tweet: {
         id: -1,
         description: '',
-        created_at: '2001-12-02T16:44:25.000Z',
+        createdAt: '2001-12-02T16:44:25.000Z',
         user: {
           id: -1,
           account: '',
@@ -118,8 +118,9 @@ export default {
     this.fetchTweet()
   },
   methods: {
-    toggleReplyModal () {
+    toggleReplyModal (tweetId) {
       // 開啟modal
+      console.log('open reply modal', tweetId)
     },
     toggleLikeModal (tweetId) {
       this.tweet = {
@@ -199,6 +200,7 @@ export default {
         svg {
           margin: 0 1rem 0 0;
           height: 1.5rem;
+          cursor: pointer;
         }
       }
       &--like {

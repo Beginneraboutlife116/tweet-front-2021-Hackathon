@@ -16,7 +16,7 @@ const dummyData = {
       id: 1,
       description:
         'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      created_at: '2021-12-02T16:44:25.000Z',
+      createdAt: '2021-12-02T16:44:25.000Z',
       user: {
         id: 2,
         account: 'account',
@@ -31,7 +31,7 @@ const dummyData = {
       id: 2,
       description:
         'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      created_at: '2021-12-02T16:44:25.000Z',
+      createdAt: '2021-12-02T16:44:25.000Z',
       user: {
         id: 2,
         account: 'account2',
@@ -46,7 +46,7 @@ const dummyData = {
       id: 3,
       description:
         'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      created_at: '2021-12-02T16:44:25.000Z',
+      createdAt: '2021-12-02T16:44:25.000Z',
       user: {
         id: 3,
         account: 'account3',
@@ -61,7 +61,7 @@ const dummyData = {
       id: 4,
       description:
         'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      created_at: '2021-12-02T16:44:25.000Z',
+      createdAt: '2021-12-02T16:44:25.000Z',
       user: {
         id: 4,
         account: '',
