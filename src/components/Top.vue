@@ -114,8 +114,8 @@ export default {
       this.tops = dummyData.map(data => {
         return {
           ...data,
-          account: data.account || '---',
-          image: data.image || 'https://via.placeholder.com/350x220/DFDFDF?text=No+Image'
+          name: data.name || 'NoName',
+          image: data.image || 'https://fakeimg.pl/300/'
         }
       })
     },
@@ -164,8 +164,7 @@ export default {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--border-color);
     &-avatar {
-      width: 5rem;
-      height: 5rem;
+      max-width: 5rem;
       border-radius: 50%;
       margin-right: 1rem;
       &--img {
