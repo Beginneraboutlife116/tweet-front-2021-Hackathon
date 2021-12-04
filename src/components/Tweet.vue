@@ -16,7 +16,7 @@
             <!-- 點擊貼文中使用者頭像/name/account時，能到profile頁 -->
             <router-link :to="`/home/${tweet.user.id}`">
               <span class="name">{{ tweet.user.name || 'NoName'}} </span>
-              <span class="account">@{{ tweet.user.account || 'NoAccount' }}・</span>
+              <span class="account">@{{ tweet.user.account }}・</span>
             </router-link>
             <!-- 點擊時間連到當則推文 -->
             <router-link :to="`/home/${tweet.id}`">
@@ -151,12 +151,14 @@ export default {
 </script>
 
 <style lang="scss">
+.tweet-container {
+  width: 100%;
+}
+
 .tweet {
   display: flex;
   padding: 1rem 1.5rem;
-  border: 1px solid;
-  border-color: transparent var(--border-color) var(--border-color)
-    var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   &__avatar {
     margin-right: 1rem;
     img {
