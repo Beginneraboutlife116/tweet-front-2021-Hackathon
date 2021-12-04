@@ -93,9 +93,7 @@ export default {
 .reply {
   display: flex;
   padding: 1rem 1.5rem;
-  border: 1px solid;
-  border-color: transparent var(--border-color) var(--border-color)
-    var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   &__avatar {
     margin-right: 1rem;
     img {
