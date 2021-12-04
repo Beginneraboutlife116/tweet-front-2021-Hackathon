@@ -16,7 +16,6 @@ const routes = [
   },
   {
     path: '/home',
-    name: 'home',
     component: () => import('./../views/Main'),
     children: [
       {
@@ -25,7 +24,7 @@ const routes = [
         children: [
           {
             path: '',
-            name: 'tweets',
+            name: 'home',
             component: () => import('./../views/Tweets')
           },
           {
