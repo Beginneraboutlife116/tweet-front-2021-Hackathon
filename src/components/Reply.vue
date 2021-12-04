@@ -41,7 +41,7 @@
 import { fromNowFilter } from './../mixins/helpers'
 export default {
   mixins: [fromNowFilter],
-  name: 'Tweet',
+  name: 'Reply',
   props: {
     initialReply: {
       type: Object,
