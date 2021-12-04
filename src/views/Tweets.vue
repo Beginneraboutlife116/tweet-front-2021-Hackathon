@@ -13,7 +13,7 @@
         </router-link>
         <div class="tweets__header__post__wrapper">
           <textarea
-            v-model.trim="postText"
+            v-model.trim="text"
             name="new-post"
             id="new-post"
             rows="3"
@@ -99,13 +99,14 @@ const dummyData = {
   ]
 }
 export default {
+  name: 'tweets',
   components: {
     Tweet
   },
   data () {
     return {
       tweets: [],
-      postText: ''
+      text: ''
     }
   },
   created () {
@@ -123,23 +124,42 @@ export default {
       })
     },
     sendTweet () {
-      if (!this.postText === 0) {
+      if (!this.text) {
         Toast.fire({
           icon: 'warning',
-          title: '超過推文字數限制'
+          title: '內容為空白'
         })
         return
       }
 
-      if (this.postText.length > 141) {
+      if (this.text.length > 141) {
         Toast.fire({
           icon: 'warning',
           title: '超過推文字數限制'
         })
         return
       }
-      console.log(`{description:${this.postText}`)
-      // 將v-model設置true 顯示新推文modal
+      console.log(`{description:${this.text}`)
+      this.updateTweets()
+    },
+    updateTweets () {
+      const { id, name, avatar, account } = this.currentUser
+      const description = this.text
+      const createdAt = Date.now()
+      this.tweets.unshift({
+        description,
+        createdAt,
+        user: {
+          id,
+          account,
+          name,
+          avatar
+        },
+        isLike: false,
+        likeCounts: 0,
+        replyCounts: 0
+      })
+      this.text = ''
     }
   }
 }
