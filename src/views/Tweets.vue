@@ -127,7 +127,7 @@ export default {
       if (!this.text) {
         Toast.fire({
           icon: 'warning',
-          title: '內容為空白'
+          title: '內容不可空白'
         })
         return
       }
@@ -139,7 +139,7 @@ export default {
         })
         return
       }
-      console.log(`{description:${this.text}`)
+      console.log(`${this.text}`)
       this.updateTweets()
     },
     updateTweets () {
