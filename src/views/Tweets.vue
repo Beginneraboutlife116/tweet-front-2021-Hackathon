@@ -1,15 +1,39 @@
 <template>
   <div class="tweets-container">
-    <header class="user-header">
-      <img src="" alt="" />
+    <header class="tweets__header">
+      <div class="tweets__header__title">
+        <h1>首頁</h1>
+      </div>
+      <div class="tweets__header__post">
+        <router-link
+          :to="`/home/${currentUser.id}`"
+          class="tweets__header__post--avatar"
+        >
+          <img src="https://fakeimg.pl/300/" alt="" />
+        </router-link>
+        <div class="tweets__header__post__wrapper">
+          <textarea
+            v-model.trim="postText"
+            name="new-post"
+            id="new-post"
+            rows="3"
+            placeholder="有什麼新鮮事？"
+            autofocus
+          >
+          </textarea>
+          <button class="active" @click.stop.prevent="sendTweet">推文</button>
+        </div>
+      </div>
     </header>
+    <hr class="tweets-line" />
     <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Tweet from './../components/Tweet'
-
+import { Toast } from './../mixins/helpers'
 const dummyData = {
   tweets: [
     {
@@ -80,11 +104,15 @@ export default {
   },
   data () {
     return {
-      tweets: []
+      tweets: [],
+      postText: ''
     }
   },
   created () {
     this.fetchTweets()
+  },
+  computed: {
+    ...mapState(['currentUser'])
   },
   methods: {
     fetchTweets () {
@@ -93,6 +121,25 @@ export default {
           ...data
         }
       })
+    },
+    sendTweet () {
+      if (!this.postText === 0) {
+        Toast.fire({
+          icon: 'warning',
+          title: '超過推文字數限制'
+        })
+        return
+      }
+
+      if (this.postText.length > 141) {
+        Toast.fire({
+          icon: 'warning',
+          title: '超過推文字數限制'
+        })
+        return
+      }
+      console.log(`{description:${this.postText}`)
+      // 將v-model設置true 顯示新推文modal
     }
   }
 }
@@ -104,5 +151,49 @@ export default {
   height: 100vh;
   border-inline: 1px solid var(--border-color);
   overflow: scroll;
+}
+
+.tweets__header {
+  &__title {
+    padding: 1.5rem 0 1.4rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    h1 {
+      font-size: $font-md;
+      font-weight: bold;
+    }
+  }
+  &__post {
+    display: flex;
+    &--avatar {
+      padding: 1rem 1.5rem;
+      img {
+        max-width: 5rem;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+    &__wrapper {
+      display: flex;
+      flex-direction: column;
+      flex: calc(100% - 6.5rem);
+      margin: 2.1rem 1.5rem 1rem 0;
+      textarea {
+        border: none;
+        resize: none;
+      }
+      button {
+        @extend %buttonStyle;
+        width: 6.6rem;
+        height: 3.8rem;
+        align-self: flex-end;
+        font-size: $font-lg;
+      }
+    }
+  }
+}
+.tweets-line {
+  margin: 0;
+  border: 0.5rem solid;
+  color: var(--border-color);
 }
 </style>
