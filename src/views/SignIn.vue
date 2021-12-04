@@ -62,7 +62,7 @@ const dummyAdmin = {
   email: 'root@example.com',
   password: '12345678',
   name: 'root',
-  role: 'role',
+  role: 'admin',
   createdAt: '2021-12-01T07:59:14.418Z',
   updatedAt: '2021-12-01T07:59:14.418Z'
 }
@@ -150,6 +150,9 @@ export default {
   },
   created () {
     this.checkLoginRoute(this.$route.path)
+  },
+  mounted () {
+    this.$refs.email.focus()
   }
 }
 </script>
