@@ -174,7 +174,7 @@ export default {
   flex: 0 26.25%;
   display: flex;
   justify-content: flex-end;
-  padding: 0 3rem 0 0 ;
+  padding: 0 5.6rem 0 0 ;
 }
 .sidebar {
   flex: 0 21rem;
