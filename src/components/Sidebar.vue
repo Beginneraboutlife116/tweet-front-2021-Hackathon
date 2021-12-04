@@ -151,8 +151,10 @@ export default {
       // adminLinks: []
     }
   },
-  createTweet () {
-    // 將v-model設置true 顯示新推文modal
+  methods: {
+    createTweet () {
+      // 將v-model設置true 顯示新推文modal
+    }
   },
   computed: {
     ...mapState(['currentUser'])
