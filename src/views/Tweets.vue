@@ -178,14 +178,14 @@ export default {
     padding: 1.5rem 0 1.4rem 1.5rem;
     border-bottom: 1px solid var(--border-color);
     h1 {
-      font-size: $font-md;
+      font-size: $font-lg;
       font-weight: bold;
     }
   }
   &__post {
     display: flex;
     &--avatar {
-      padding: 1rem 1.5rem;
+      padding: 1rem 1rem 1rem 1.5rem;
       img {
         max-width: 5rem;
         border-radius: 50%;
