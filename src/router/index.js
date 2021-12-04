@@ -39,6 +39,11 @@ const routes = [
             path: ':userId/followers' // component用Followers.vue
           }
         ]
+      },
+      {
+        path: ':userId/setting',
+        name: 'user-setting',
+        component: () => import('./../views/Setting')
       }
     ]
   }

@@ -171,7 +171,7 @@ export default {
   }
 }
 .sidebar-container {
-  flex: 26.25%;
+  flex: 0 26.25%;
   display: flex;
   justify-content: flex-end;
   padding: 0 3rem 0 0 ;
