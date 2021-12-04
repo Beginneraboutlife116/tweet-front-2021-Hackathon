@@ -189,7 +189,7 @@ export default {
         text-decoration: none;
         display:flex;
         span {
-          margin-left: 1rem;
+          margin-left: 2rem;
           font-size: $font-lg;
           font-weight: bold;
         }
