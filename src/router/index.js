@@ -41,6 +41,11 @@ const routes = [
         ]
       }
     ]
+  },
+  {
+    path: '/admin/signin',
+    name: 'admin-sign-in',
+    component: () => import('./../views/SignIn')
   }
 ]
 

@@ -1,8 +1,8 @@
 <template>
-  <div class="sign-container">
-    <div class="sign">
-      <header class="sign__header">
-        <div class="sign__header-logo">
+  <div class="signin-container">
+    <div class="signin">
+      <header class="signin__header">
+        <div class="signin__header-logo">
           <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M30.6996 23.4709C30.6996 23.4709 23.2328 35.5781 17.1109 35.5781C6.40314 35.5781 16.3821 12.5132 24.1916 12.5132C29.641 12.5132 30.6996 23.4709 30.6996 23.4709Z" fill="#FF6600"/>
             <path fill-rule="evenodd" clip-rule="evenodd" d="M39.5723 38.6972C37.4451 40.9607 34.8198 42.6976 31.9044 43.7701C28.989 44.8426 25.8639 45.2213 22.7767 44.8761C19.6895 44.5309 16.7252 43.4713 14.1188 41.7813C11.5125 40.0914 9.33573 37.8175 7.76123 35.1401C9.5314 37.5477 12.5338 39.1527 16.803 39.1527C27.3199 39.1527 33.2899 30.98 33.2899 30.98C33.2899 30.98 33.8062 37.4392 39.5593 38.6972H39.5723Z" fill="#FF6600"/>
@@ -10,7 +10,8 @@
             <path fill-rule="evenodd" clip-rule="evenodd" d="M25.0031 5.01737C30.0185 5.01403 34.8513 6.89881 38.5398 10.2967L34.7521 16.4088C33.3811 12.843 30.5957 9.2729 25.1767 9.2729C14.0784 9.2729 5.85231 21.3888 5.85231 28.9846C5.84986 29.9669 5.97528 30.9454 6.22543 31.8953C5.11558 28.8725 4.75205 25.6265 5.16572 22.4331C5.57938 19.2398 6.75802 16.1934 8.60147 13.5531C10.4449 10.9127 12.8987 8.75634 15.7542 7.26726C18.6097 5.77818 21.7826 5.00039 25.0031 5V5.01737Z" fill="#FF6600"/>
           </svg>
         </div>
-        <p class="sign__header-title"><span>登入</span><span>Alphitter</span></p>
+        <p class="signin__header-title" v-if="!isBackLogin"><span>登入</span><span>Alphitter</span></p>
+        <p class="signin__header-title" v-else>後台登入</p>
       </header>
       <form class="sign__form" @submit.prevent="handleSubmit">
         <label class="sign__form-row">
@@ -29,10 +30,13 @@
         </label>
         <button class="sign__form-submit active" type="submit">登入</button>
       </form>
-      <div class="sign__btns">
-        <router-link to="/signup" class="sign__btns-link">註冊Alphitter</router-link>
+      <div class="signin__btns" v-if="!isBackLogin">
+        <router-link to="/signup" class="signin__btns-link">註冊Alphitter</router-link>
         <span>・</span>
-        <router-link to="/admin/signin" class="sign__btns-link">後台登入</router-link>
+        <router-link to="/admin/signin" class="signin__btns-link">後台登入</router-link>
+      </div>
+      <div class="signin__btns" v-else>
+        <router-link to="/signin" class="signin__btns-link">前台登入</router-link>
       </div>
     </div>
   </div>
@@ -52,6 +56,17 @@ const dummyUser = {
   updatedAt: '2021-12-01T07:59:14.418Z'
 }
 
+const dummyAdmin = {
+  id: 1,
+  account: 'root',
+  email: 'root@example.com',
+  password: '12345678',
+  name: 'root',
+  role: 'role',
+  createdAt: '2021-12-01T07:59:14.418Z',
+  updatedAt: '2021-12-01T07:59:14.418Z'
+}
+
 export default {
   name: 'SignIn',
   data () {
@@ -59,11 +74,11 @@ export default {
       email: '',
       password: '',
       emailError: false,
-      passwordError: false
+      passwordError: false,
+      isBackLogin: false
     }
   },
   methods: {
-    // TODO: 等API串接，再做相對應的流程設計
     handleSubmit () {
       if (!this.email) {
         Toast.fire({
@@ -89,11 +104,17 @@ export default {
         this.$refs.password.style.borderColor = ''
       }
 
+      this.login()
+    },
+    login () {
+      // TODO: 等API串接，再做相對應的流程設計
       // TODO: 這邊由串接後得到結果，做出相對應動作
-      if (this.email !== dummyUser.email) {
+      const data = this.isBackLogin ? dummyAdmin : dummyUser
+      if (this.email !== data.email) {
+        const title = this.isBackLogin ? 'Email有誤，請洽開發者' : '可能Email有誤，或此Email未註冊'
         Toast.fire({
           icon: 'error',
-          title: '可能Email有誤，或此Email未註冊'
+          title
         })
         this.emailError = true
         this.$refs.email.style.borderColor = '#fc5a5a'
@@ -103,7 +124,7 @@ export default {
         this.$refs.email.style.borderColor = ''
       }
 
-      if (this.password !== dummyUser.password) {
+      if (this.password !== data.password) {
         Toast.fire({
           icon: 'error',
           title: '密碼有誤'
@@ -114,20 +135,27 @@ export default {
         return
       }
 
-      this.$store.commit('setCurrentUser', dummyUser)
+      this.$store.commit('setCurrentUser', data)
       console.log(`email: ${this.email}, password: ${this.password}`)
       Toast.fire({
         icon: 'success',
         title: '成功登入！'
       })
-      this.$router.push('/home')
+      const path = this.isBackLogin ? '/admin/tweets' : '/home'
+      this.$router.push(path)
+    },
+    checkLoginRoute (path) {
+      this.isBackLogin = path.includes('admin')
     }
+  },
+  created () {
+    this.checkLoginRoute(this.$route.path)
   }
 }
 </script>
 
 <style lang="scss">
-.sign {
+.signin {
   width: calc( 540 / 1440 * 100%);
   margin: 6rem auto 0;
   &__header {
@@ -146,7 +174,8 @@ export default {
       }
     }
   }
-  &__form-submit {
+  &__form-submit,
+  &__btns {
     font-size: $font-lg;
     line-height: $font-lg;
   }
