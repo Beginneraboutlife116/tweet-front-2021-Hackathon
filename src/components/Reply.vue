@@ -3,10 +3,10 @@
     <div class="reply-container">
       <div class="reply">
         <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-        <router-link :to="`/home/${reply.tweet.user.id}`" class="reply__avatar">
+        <router-link :to="`/home/${reply.user.id}`" class="reply__avatar">
           <img
             class="reply__avatar--img"
-            :src="reply.tweet.user.avatar || 'https://fakeimg.pl/300/'"
+            :src="reply.user.avatar || 'https://fakeimg.pl/300/'"
             alt="avatar"
             aria-label="avatar"
           />
@@ -14,10 +14,10 @@
         <div class="reply__info">
           <div class="reply__info-replyBy">
             <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-            <router-link :to="`/home/${reply.tweet.user.id}`">
-              <span class="name">{{ reply.tweet.user.name || "NoName" }} </span>
+            <router-link :to="`/home/${reply.user.id}`">
+              <span class="name">{{ reply.user.name || "NoName" }} </span>
               <span class="account"
-                >@{{ reply.tweet.user.account || "NoAccount" }}・</span
+                >@{{ reply.user.account }}・</span
               >
             </router-link>
             <!-- 點擊時間連到當則推文 -->
@@ -88,7 +88,7 @@ export default {
 
 <style lang="scss">
 .reply-container {
-  width: 60rem;
+  width: 100%;
 }
 .reply {
   display: flex;

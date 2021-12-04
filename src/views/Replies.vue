@@ -1,10 +1,10 @@
 <template>
-  <div class="reply-container">
+  <div class="replies-container">
     <header class="user-header">
       <img src="" alt="" />
       <img src="" alt="" />
     </header>
-    <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply"/>
+    <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" />
   </div>
 </template>
 
@@ -17,42 +17,36 @@ const dummyData = {
       id: 1,
       comment:
         'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2001-12-02T16:44:25.000Z',
-      tweet: {
+      createdAt: '2011-12-02T16:44:25.000Z',
+      user: {
         id: 11,
-        user: {
-          id: 11,
-          account: 'account11',
-          avatar: null
-        }
+        name: 'name11',
+        account: 'account11',
+        avatar: null
       }
     },
     {
       id: 2,
       comment:
         'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      tweet: {
+      createdAt: '2011-12-02T16:44:25.000Z',
+      user: {
         id: 22,
-        user: {
-          id: 22,
-          account: 'account22',
-          avatar: null
-        }
+        name: 'name22',
+        account: 'account22',
+        avatar: null
       }
     },
     {
       id: 3,
       comment:
         'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      tweet: {
+      createdAt: '2011-12-02T16:44:25.000Z',
+      user: {
         id: 33,
-        user: {
-          id: 33,
-          account: 'account33',
-          avatar: null
-        }
+        name: 'name33',
+        account: 'account33',
+        avatar: null
       }
     }
   ]
@@ -81,3 +75,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.replies-container {
+  grid-column: 1;
+  height: 100vh;
+  border-inline: 1px solid var(--border-color);
+  overflow: scroll;
+}
+</style>

@@ -16,8 +16,7 @@ export const fromNowFilter = {
       }
       var relativeTime = require('dayjs/plugin/relativeTime')
       dayjs.extend(relativeTime)
-      const formatDate = dayjs(datetime).format('YYYY-MM-DD')
-      return dayjs().to(dayjs(formatDate))
+      return dayjs(datetime).fromNow()
     }
   }
 }
