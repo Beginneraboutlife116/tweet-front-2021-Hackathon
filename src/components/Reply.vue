@@ -20,7 +20,7 @@
                 >@{{ reply.user.account }}・</span
               >
             </router-link>
-            <!-- 點擊時間連到當則推文 -->
+            <!-- 點擊時間連到當則推文/home/${top.id} -->
             <router-link :to="`/home/tweets/${reply.id}`">
               <span class="timeStamp">{{ reply.createdAt | fromNow }}</span>
             </router-link>
@@ -28,7 +28,9 @@
           <div class="reply__info-replyTo">
             <span class="reply__info-replyTo--text">回覆 </span>
             <!-- 發文者的資料需要從推文元件 回傳到這裡目前還無法獲取 先寫poster -->
+            <router-link to="/home/1">
             <span class="reply__info-replyTo--account">@{{ "poster" }}</span>
+            </router-link>
           </div>
           <p class="reply__info-description">{{ reply.comment }}</p>
         </div>
