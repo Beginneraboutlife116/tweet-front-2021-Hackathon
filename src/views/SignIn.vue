@@ -136,7 +136,7 @@ export default {
       }
 
       this.$store.commit('setCurrentUser', data)
-      console.log(`email: ${this.email}, password: ${this.password}`)
+      console.log(`email: ${this.email}, password: ${this.password}, isAdmin: ${data.role}`)
       Toast.fire({
         icon: 'success',
         title: '成功登入！'
