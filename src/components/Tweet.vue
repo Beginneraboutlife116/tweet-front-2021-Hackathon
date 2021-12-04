@@ -151,9 +151,6 @@ export default {
 </script>
 
 <style lang="scss">
-.tweet-container {
-  width: 60rem;
-}
 .tweet {
   display: flex;
   padding: 1rem 1.5rem;
