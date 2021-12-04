@@ -132,7 +132,7 @@ export default {
         return
       }
 
-      if (this.text.length > 141) {
+      if (this.text.length > 140) {
         Toast.fire({
           icon: 'warning',
           title: '超過推文字數限制'
