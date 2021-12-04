@@ -44,7 +44,7 @@ const routes = [
       },
       {
         path: ':userId/setting',
-        name: 'user-setting',
+        name: 'setting',
         component: () => import('./../views/Setting')
       }
     ]
