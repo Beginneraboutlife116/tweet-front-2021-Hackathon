@@ -56,7 +56,7 @@
             </router-link>
           </li>
           <li class="sidebar__link">
-            <router-link :to="{ name: 'profile' }">
+            <router-link :to="{ name: 'profile', params: { userId: currentUser.id } }">
               <svg
                 width="24"
                 height="24"
@@ -73,7 +73,7 @@
             </router-link>
           </li>
           <li class="sidebar__link">
-            <router-link :to="{ name: 'setting' }">
+            <router-link :to="{ name: 'setting', params: { userId: currentUser.id } }">
               <svg
                 width="24"
                 height="24"
