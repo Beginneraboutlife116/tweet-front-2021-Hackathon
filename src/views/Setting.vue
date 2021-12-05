@@ -245,6 +245,7 @@ export default {
     border-bottom: 1px solid var(--border-color);
     &-title {
       padding: 1.3rem 0 1.3rem 2rem;
+      font-weight: bold;
     }
   }
   &__form {
