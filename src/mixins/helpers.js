@@ -23,7 +23,6 @@ export const fromNowFilter = {
         return '-'
       }
       const hour = dayjs(datetime).hour()
-      console.log(hour)
       if (hour < 12) {
         return dayjs(datetime).format('上午 HH:mm・YYYY年MM月DD日')
       } else {
