@@ -271,7 +271,7 @@ export default {
     }
   }
   &__wrapper {
-    padding: 1.5rem 1.5rem 1.5rem 0;
+    padding: 1.5rem 6rem 1.5rem 0;
     p {
       line-height: 3.4rem;
       font-size: $font-xxl;
@@ -303,6 +303,7 @@ export default {
   &__action {
     display: flex;
     padding: 2rem 0 0 0;
+    cursor: pointer;
     &--reply {
       width: calc( 155 / 600 * 100%);
     }
