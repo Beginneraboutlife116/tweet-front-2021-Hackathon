@@ -165,6 +165,7 @@ export default {
     border-top: 1px solid var(--border-color);
     &-avatar {
       max-width: 5rem;
+      aspect-ratio: 1;
       border-radius: 50%;
       margin-right: 1rem;
       &--img {
@@ -179,6 +180,7 @@ export default {
       align-items: center;
       &--name {
         color: var(--font-color);
+        margin-bottom: 3px;
       }
       &--name:hover {
         color: var(--main-color);
