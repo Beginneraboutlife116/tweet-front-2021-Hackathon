@@ -46,8 +46,18 @@ const routes = [
         path: ':userId/setting',
         name: 'setting',
         component: () => import('./../views/Setting')
+      },
+      {
+        path: '/admin/tweets',
+        name: 'admin-tweets',
+        component: () => import('./../views/AdminTweets')
       }
     ]
+  },
+  {
+    path: '/admin/signin',
+    name: 'admin-sign-in',
+    component: () => import('./../views/SignIn')
   }
 ]
 

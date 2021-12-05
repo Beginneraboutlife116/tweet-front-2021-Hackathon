@@ -99,7 +99,7 @@ export default {
   data () {
     return {
       tweet: {
-        id: -1,
+        id: 0,
         description: '',
         createdAt: '2001-12-02T16:44:25.000Z',
         user: {
