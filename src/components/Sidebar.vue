@@ -133,7 +133,7 @@
           </li>
         </ul>
       </template>
-      <button class="active sidebar__button" @click.stop.prevent="createTweet">
+      <button class="active sidebar__button" @click.stop.prevent="createTweet" v-if="currentUser.role === 'user'">
         推文
       </button>
       <span class="sidebar--logout" @click.stop.prevent="logout">
