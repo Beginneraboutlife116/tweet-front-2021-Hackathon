@@ -171,7 +171,7 @@ export default {
   },
   methods: {
     createTweet () {
-      // 將v-model設置true 顯示新推文modal
+      this.$emit('create-tweet', 'tweet')
     },
     logout () {
       this.$store.commit('revokeAuthentication')

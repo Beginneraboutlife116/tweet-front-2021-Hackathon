@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-container">
+  <div class="modal-container" v-if="modal">
     <div class="modal">
       <header class="modal__header">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="modal__header-delete" xmlns="http://www.w3.org/2000/svg">
@@ -7,7 +7,7 @@
         </svg>
       </header>
       <main class="modal__body">
-        <div class="modal__postBy">
+        <div class="modal__postBy" v-if="!(modal === 'tweet')">
           <div class="modal__postBy-avatar">
             <router-link to=""><img src="https://fakeimg.pl/300/" alt="" class="modal__postBy-avatar--img"></router-link>
           </div>
@@ -30,10 +30,10 @@
         </div>
         <div class="modal__user">
           <div class="modal__user-avatar">
-            <img src="https://fakeimg.pl/300/" alt="" class="modal__user-avatar--img">
+            <router-link to=""><img src="https://fakeimg.pl/300/" alt="" class="modal__user-avatar--img"></router-link>
           </div>
           <div class="modal__user-reply">
-            <textarea class="modal__user-reply--textarea" placeholder="推你的回覆" rows="5"/>
+            <textarea class="modal__user-reply--textarea" v-model.trim="text" :placeholder="true ? '有什麼新鮮事？' : '推你的回覆'" rows="5"/>
           </div>
         </div>
       </main>
@@ -45,6 +45,22 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'NewTweet',
+  props: {
+    modal: {
+      types: String
+    }
+  },
+  data () {
+    return {
+      text: ''
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 .modal-container {
@@ -75,6 +91,7 @@
   &__postBy {
     display: flex;
     gap: 1rem;
+    margin-bottom: 1rem;
     &-avatar {
       max-width: 5rem;
       aspect-ratio: 1;
@@ -127,7 +144,6 @@
     }
   }
   &__user {
-    margin-top: 1rem;
     display: flex;
     gap: 1rem;
     &-avatar {
