@@ -34,70 +34,8 @@
 import { mapState } from 'vuex'
 import Tweet from './../components/Tweet'
 import { Toast } from './../mixins/helpers'
-const dummyData = {
-  tweets: [
-    {
-      id: 1,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      user: {
-        id: 2,
-        account: 'account',
-        name: 'userName',
-        avatar: null
-      },
-      isLike: true,
-      likeCounts: 100,
-      replyCounts: 20
-    },
-    {
-      id: 2,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      user: {
-        id: 2,
-        account: 'account2',
-        name: 'userName2',
-        avatar: null
-      },
-      isLike: false,
-      likeCounts: 30,
-      replyCounts: 50
-    },
-    {
-      id: 3,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      user: {
-        id: 3,
-        account: 'account3',
-        name: 'userName3',
-        avatar: null
-      },
-      isLike: false,
-      likeCounts: 2,
-      replyCounts: 5
-    },
-    {
-      id: 4,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      user: {
-        id: 4,
-        account: '',
-        name: '',
-        avatar: null
-      },
-      isLike: false,
-      likeCounts: 4,
-      replyCounts: 5
-    }
-  ]
-}
+import tweetsAPI from './../apis/tweets'
+
 export default {
   name: 'tweets',
   components: {
@@ -116,12 +54,23 @@ export default {
     ...mapState(['currentUser'])
   },
   methods: {
-    fetchTweets () {
-      this.tweets = dummyData.tweets.map((data) => {
-        return {
-          ...data
+    async fetchTweets () {
+      try {
+        const { data } = await tweetsAPI.getTweets()
+        if (data.status === 'error') {
+          throw new Error(data.message)
         }
-      })
+        this.tweets = data.map((data) => {
+          return {
+            ...data
+          }
+        })
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法獲取推文，請稍後再嘗試'
+        })
+      }
     },
     sendTweet () {
       if (!this.text) {
@@ -149,7 +98,7 @@ export default {
       this.tweets.unshift({
         description,
         createdAt,
-        user: {
+        User: {
           id,
           account,
           name,
