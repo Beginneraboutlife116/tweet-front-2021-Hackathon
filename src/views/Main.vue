@@ -10,11 +10,10 @@
 
 <script>
 import Sidebar from './../components/Sidebar.vue'
-import NewTweet from '../components/NewTweet.vue'
+
 export default {
   components: {
-    Sidebar,
-    NewTweet
+    Sidebar
   }
 }
 </script>
