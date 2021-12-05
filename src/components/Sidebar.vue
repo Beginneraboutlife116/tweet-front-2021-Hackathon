@@ -198,7 +198,7 @@ export default {
   flex: 26.25%;
   display: flex;
   justify-content: flex-end;
-  padding: 0 3rem 0 0;
+  padding: 0 6.5rem 0 0;
 }
 .sidebar {
   position: relative;
