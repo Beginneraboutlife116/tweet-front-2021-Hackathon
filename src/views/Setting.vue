@@ -109,6 +109,15 @@ export default {
         this.$refs.account.style.borderColor = ''
       }
 
+      let editAccount = ''
+      const num = this.editUser.account.indexOf('@')
+      if (num < 0) {
+        editAccount = this.editUser.account
+      } else {
+        editAccount = this.editUser.account.slice(num + 1)
+      }
+      console.log(editAccount)
+
       if (this.editUser.name > 50) {
         this.editUser.name = this.editUser.name.slice(0, 50)
       }
@@ -250,7 +259,7 @@ export default {
       position: relative;
     }
     &-title {
-      padding: 0.5rem 0 0.6rem 1rem;
+      padding: 0.5rem 0 0 1rem;
       font-size: $font-md;
       line-height: $font-md;
       color: var(--label-color);

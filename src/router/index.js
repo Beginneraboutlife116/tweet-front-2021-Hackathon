@@ -41,10 +41,6 @@ const routes = [
             path: ':userId/followers' // component用Followers.vue
           },
           {
-            path: ':userId/setting', // component用Setting.vue
-            name: 'setting'
-          },
-          {
             path: ':userId', // component用Profile.vue
             name: 'profile'
 
