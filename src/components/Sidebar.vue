@@ -133,7 +133,7 @@
         </li>
       </ul>
     </template>
-    <button class="active sidebar__button" @click.stop.prevent="createTweet">
+    <button class="active sidebar__button" @click.stop.prevent="createTweet" v-if="currentUser.role === 'user'">
       推文
     </button>
   </nav>
@@ -173,12 +173,13 @@ export default {
   }
 }
 .sidebar-container {
-  flex: 26.25%;
+  flex: 0 26.25%;
   display: flex;
   justify-content: flex-end;
-  padding: 0 3rem 0 0 ;
+  padding: 0 5.6rem 0 0 ;
 }
 .sidebar {
+  flex: 0 21rem;
   .sidebar__logo {
     margin: 1rem 0 2rem 1rem;
   }
@@ -211,8 +212,7 @@ export default {
   .sidebar__button {
     @extend %buttonStyle;
     height: 3.8rem;
-    width: 23.5rem;
-    max-width: 21rem;
+    width: 100%;
     margin: 1.5rem 0;
     font-size: $font-lg;
   }

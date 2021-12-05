@@ -41,8 +41,18 @@ const routes = [
             path: ':userId/followers' // component用Followers.vue
           }
         ]
+      },
+      {
+        path: '/admin/tweets',
+        name: 'admin-tweets',
+        component: () => import('./../views/AdminTweets')
       }
     ]
+  },
+  {
+    path: '/admin/signin',
+    name: 'admin-sign-in',
+    component: () => import('./../views/SignIn')
   }
 ]
 
