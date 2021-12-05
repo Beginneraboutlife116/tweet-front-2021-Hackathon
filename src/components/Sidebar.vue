@@ -245,6 +245,7 @@ export default {
     bottom: 0%;
     padding: 2.2rem 0 2.2rem 1rem;
     display: flex;
+    cursor: pointer;
     span {
       font-size: $font-lg;
       font-weight: bold;
