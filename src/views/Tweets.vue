@@ -21,12 +21,14 @@
             autofocus
           >
           </textarea>
-          <button class="active" @click.stop.prevent="sendTweet(text)">推文</button>
+          <button class="active" @click.stop.prevent="sendTweet(text)" :disabled="isProcessing" :class="{disabled: isProcessing}">推文</button>
         </div>
       </div>
     </header>
     <hr class="tweets-line" />
-    <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
+    <template v-if="!isLoading">
+      <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
+    </template>
   </div>
 </template>
 
@@ -44,7 +46,9 @@ export default {
   data () {
     return {
       tweets: [],
-      text: ''
+      text: '',
+      isProcessing: false,
+      isLoading: true
     }
   },
   created () {
@@ -70,7 +74,9 @@ export default {
             ...data
           }
         })
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         Toast.fire({
           icon: 'error',
           title: '無法獲取推文，請稍後再嘗試'
@@ -98,6 +104,8 @@ export default {
     },
     async updateTweets (message) {
       try {
+        this.isProcessing = true
+        this.isLoading = true
         const { id, name, avatar, account } = this.currentUser
         const description = message
         const { data } = await tweetsAPI.postTweets({ description })
@@ -117,7 +125,11 @@ export default {
           likeCounts: 0,
           replyCounts: 0
         })
+        this.isProcessing = false
+        this.isLoading = false
       } catch (err) {
+        this.isProcessing = false
+        this.isLoading = false
         Toast.fire({
           icon: 'error',
           title: '推文失敗，請稍後再試'
