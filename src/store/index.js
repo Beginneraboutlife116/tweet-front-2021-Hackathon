@@ -16,7 +16,8 @@ export default new Vuex.Store({
     isAuthenticated: true,
     token: '',
     tweet: '',
-    reply: ''
+    reply: '',
+    modal: ''
   },
   mutations: {
     setCurrentUser (state, currentUser) {
@@ -33,6 +34,12 @@ export default new Vuex.Store({
     },
     recordText (state, payload) {
       state[payload.action] = payload.text
+    },
+    toggleModal (state, payload) {
+      state.modal = payload
+    },
+    clearModal (state) {
+      state.modal = ''
     }
   },
   actions: {

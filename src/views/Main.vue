@@ -1,10 +1,8 @@
 <template>
   <div class="main-container">
-    <!-- sidebar -->
-    <Sidebar @create-tweet="toggleModal" />
+    <Sidebar />
     <router-view />
-    <!-- 會是預設巢狀tweets，一開始會是這一頁，會轉換到admin的頁面 -->
-    <NewTweet :modal="modal" @cancel-modal="clearModel"/>
+    <NewTweet />
   </div>
 </template>
 
@@ -17,19 +15,6 @@ export default {
   components: {
     Sidebar,
     NewTweet
-  },
-  data () {
-    return {
-      modal: ''
-    }
-  },
-  methods: {
-    toggleModal (name) {
-      this.modal = name
-    },
-    clearModel () {
-      this.modal = ''
-    }
   }
 }
 </script>

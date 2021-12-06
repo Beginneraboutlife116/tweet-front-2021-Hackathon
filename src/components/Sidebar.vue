@@ -133,7 +133,7 @@
           </li>
         </ul>
       </template>
-      <button class="active sidebar__button" @click.stop.prevent="createTweet" v-if="currentUser.role === 'user'">
+      <button class="active sidebar__button" @click.stop.prevent="$store.commit('toggleModal', 'tweet')" v-if="currentUser.role === 'user'">
         推文
       </button>
       <span class="sidebar--logout" @click.stop.prevent="logout">
@@ -163,16 +163,7 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'Sidebar',
-  data () {
-    return {
-      // userLinks: [],
-      // adminLinks: []
-    }
-  },
   methods: {
-    createTweet () {
-      this.$emit('create-tweet', 'tweet')
-    },
     logout () {
       this.$store.commit('revokeAuthentication')
       this.$router.push('/signin')
