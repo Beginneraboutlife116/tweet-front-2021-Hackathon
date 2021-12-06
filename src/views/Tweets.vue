@@ -94,24 +94,35 @@ export default {
         return
       }
       this.updateTweets(message)
-    },
-    updateTweets (message) {
-      const { id, name, avatar, account } = this.currentUser
-      const createdAt = Date.now()
-      this.tweets.unshift({
-        description: message,
-        createdAt,
-        User: {
-          id,
-          account,
-          name,
-          avatar
-        },
-        isLike: false,
-        likeCounts: 0,
-        replyCounts: 0
-      })
       this.text = ''
+    },
+    async updateTweets (message) {
+      try {
+        const { id, name, avatar, account } = this.currentUser
+        const description = message
+        const { data } = await tweetsAPI.postTweets({ description })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.tweets.unshift({
+          description,
+          createdAt: new Date(),
+          User: {
+            id,
+            account,
+            name,
+            avatar
+          },
+          isLike: false,
+          likeCounts: 0,
+          replyCounts: 0
+        })
+      } catch (err) {
+        Toast.fire({
+          icon: 'error',
+          title: '推文失敗，請稍後再試'
+        })
+      }
     }
   }
 }

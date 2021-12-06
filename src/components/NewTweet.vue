@@ -41,7 +41,7 @@
         <span class="modal__footer-error" v-if="!text.length">內容不可留白</span>
         <span class="modal__footer-error" v-else-if="text.length > 140">字數不可超過140字</span>
         <span class="modal__footer-limit" v-else> {{text.length}}/140 </span>
-        <button class="modal__footer-submit active" @click.stop.prevent="sendText"> {{modal === 'tweet' ? '推文' : '回覆'}} </button>
+        <button class="modal__footer-submit active" @click.stop.prevent="sendText" > {{modal === 'tweet' ? '推文' : '回覆'}} </button>
       </footer>
     </div>
   </div>
@@ -49,6 +49,7 @@
 
 <script>
 import { Toast } from './../mixins/helpers'
+import tweetsAPI from './../apis/tweets'
 
 export default {
   name: 'NewTweet',
@@ -85,6 +86,10 @@ export default {
         return
       }
       // TODO: post這則貼文
+      if (this.$route.name !== 'home') {
+        this.updateTweets()
+        this.$router.push({ name: 'home' })
+      }
 
       this.$store.commit('recordText', {
         text: this.text,
@@ -92,8 +97,20 @@ export default {
       })
       this.text = ''
       this.$emit('cancel-modal')
-      if (this.$route.name !== 'home') {
-        this.$router.push({ name: 'home' })
+    },
+    async updateTweets () {
+      try {
+        const { data } = await tweetsAPI.postTweets({
+          description: this.text
+        })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+      } catch (err) {
+        Toast.fire({
+          icon: 'error',
+          title: '推文失敗，請稍後再試'
+        })
       }
     }
   }
