@@ -203,7 +203,7 @@ export default {
 .sidebar {
   position: relative;
   flex: 0 21rem;
-  height: 100%;
+  height: 100vh;
   .sidebar__logo {
     margin: 1rem 0 2rem 1rem;
   }
