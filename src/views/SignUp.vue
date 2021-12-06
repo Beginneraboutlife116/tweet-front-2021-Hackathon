@@ -25,7 +25,7 @@
           <input type="text" class="sign__form-input" v-model.trim="name" :style="{borderColor: nameErrorHandler.borderColor}">
           <p class="sign__form-error">
             <span class="error" v-show="name.length" :style="{color: nameErrorHandler.color}"> {{ nameErrorHandler.text }} </span>
-            <span class="limit" v-show="name.length"> {{name.length}} /50</span>
+            <span class="limit" v-show="name.length"> {{name.length}}/50</span>
           </p>
         </label>
         <label class="sign__form-row">
@@ -210,12 +210,15 @@ export default {
         icon: 'success',
         title: '成功註冊！'
       })
-      this.$router.push('/home')
+      this.$router.push('/signin')
     },
     verifyEmail (email) {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return re.test(String(email).toLowerCase())
     }
+  },
+  mounted () {
+    this.$refs.account.focus()
   }
 }
 </script>
