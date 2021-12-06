@@ -4,7 +4,7 @@
     <Sidebar @create-tweet="toggleModal" />
     <router-view />
     <!-- 會是預設巢狀tweets，一開始會是這一頁，會轉換到admin的頁面 -->
-    <NewTweet :modal="modal"/>
+    <NewTweet :modal="modal" @cancel-modal="clearModel"/>
   </div>
 </template>
 
@@ -26,6 +26,9 @@ export default {
   methods: {
     toggleModal (name) {
       this.modal = name
+    },
+    clearModel () {
+      this.modal = ''
     }
   }
 }

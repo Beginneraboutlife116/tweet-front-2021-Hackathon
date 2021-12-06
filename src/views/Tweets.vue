@@ -21,7 +21,7 @@
             autofocus
           >
           </textarea>
-          <button class="active" @click.stop.prevent="sendTweet">推文</button>
+          <button class="active" @click.stop.prevent="sendTweet(text)">推文</button>
         </div>
       </div>
     </header>
@@ -51,7 +51,12 @@ export default {
     this.fetchTweets()
   },
   computed: {
-    ...mapState(['currentUser'])
+    ...mapState(['currentUser', 'tweet'])
+  },
+  watch: {
+    tweet () {
+      this.sendTweet(this.tweet)
+    }
   },
   methods: {
     async fetchTweets () {
@@ -72,8 +77,8 @@ export default {
         })
       }
     },
-    sendTweet () {
-      if (!this.text) {
+    sendTweet (message) {
+      if (!message) {
         Toast.fire({
           icon: 'warning',
           title: '內容不可空白'
@@ -81,22 +86,20 @@ export default {
         return
       }
 
-      if (this.text.length > 140) {
+      if (message.length > 140) {
         Toast.fire({
           icon: 'warning',
           title: '超過推文字數限制'
         })
         return
       }
-      console.log(`${this.text}`)
-      this.updateTweets()
+      this.updateTweets(message)
     },
-    updateTweets () {
+    updateTweets (message) {
       const { id, name, avatar, account } = this.currentUser
-      const description = this.text
       const createdAt = Date.now()
       this.tweets.unshift({
-        description,
+        description: message,
         createdAt,
         User: {
           id,
