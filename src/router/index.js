@@ -39,6 +39,29 @@ const routes = [
           },
           {
             path: ':userId/followers' // component用Followers.vue
+          },
+          {
+            path: ':userId/', // component用userProfile.vue
+            name: 'profile',
+            redirect: ':userId/tweets',
+            component: () => import('./../views/UserProfile'),
+            children: [
+              {
+                path: 'tweets',
+                name: 'profile-tweets',
+                component: () => import('./../components/ProfileTweets')
+              },
+              {
+                path: 'replies',
+                name: 'profile-replies',
+                component: () => import('./../components/ProfileReplies')
+              },
+              {
+                path: 'likes',
+                name: 'profile-likes',
+                component: () => import('./../components/ProfileLikes')
+              }
+            ]
           }
         ]
       }
