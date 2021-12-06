@@ -60,6 +60,11 @@ export default {
   },
   methods: {
     handleSubmit () {
+      this.accountError = false
+      this.passwordError = false
+      this.$refs.account.style.borderColor = ''
+      this.$refs.password.style.borderColor = ''
+
       if (!this.account) {
         Toast.fire({
           icon: 'warning',
@@ -68,8 +73,6 @@ export default {
         this.$refs.account.focus()
         this.$refs.account.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.account.style.borderColor = ''
       }
 
       if (!this.password) {
@@ -80,19 +83,30 @@ export default {
         this.$refs.password.focus()
         this.$refs.password.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.password.style.borderColor = ''
       }
 
-      if (this.account === 'root' && this.isBackLogin !== true) {
-        Toast.fire({
-          icon: 'error',
-          title: '密碼錯誤，請再試一次'
-        })
-        this.passwordError = true
-        this.$refs.password.focus()
-        this.$refs.password.style.borderColor = '#fc5a5a'
-        return
+      if (this.isBackLogin) {
+        if (this.account !== 'root') {
+          Toast.fire({
+            icon: 'error',
+            title: '帳號不存在，請洽開發者'
+          })
+          this.accountError = true
+          this.$refs.account.focus()
+          this.$refs.account.style.borderColor = '#fc5a5a'
+          return
+        }
+      } else {
+        if (this.account === 'root') {
+          Toast.fire({
+            icon: 'error',
+            title: '密碼錯誤，請再試一次'
+          })
+          this.passwordError = true
+          this.$refs.password.focus()
+          this.$refs.password.style.borderColor = '#fc5a5a'
+          return
+        }
       }
 
       this.login()
@@ -104,28 +118,30 @@ export default {
           account: this.account,
           password: this.password
         })
-        console.log(data)
+
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
+
         localStorage.setItem('token', data.token)
         this.$store.commit('setCurrentUser', data.user)
+
         Toast.fire({
           icon: 'success',
           title: '成功登入！'
         })
+
         const path = this.isBackLogin ? '/admin/tweets' : '/home'
         this.$router.push(path)
       } catch (err) {
         this.isProcessing = false
         let message = ''
+
         if (err.message === 'no such user found') {
           message = this.isBackLogin ? '帳號錯誤，請洽開發者' : '帳號不存在'
           this.accountError = true
+          this.$refs.account.focus()
           this.$refs.account.style.borderColor = '#fc5a5a'
-        } else {
-          this.accountError = false
-          this.$refs.account.style.borderColor = ''
         }
 
         if (err.message === 'passwords did not match') {
@@ -134,6 +150,7 @@ export default {
           this.$refs.password.focus()
           this.$refs.password.style.borderColor = '#fc5a5a'
         }
+
         Toast.fire({
           icon: 'error',
           title: `${message}`
