@@ -175,8 +175,8 @@ export default {
     this.fetchProfile(userId)
   },
   beforeRouteUpdate (to, from, next) {
-    const { id } = to.params
-    this.fetchRestaurant(id)
+    const { userId } = to.params
+    this.fetchRestaurant(userId)
     next()
   },
   computed: {
