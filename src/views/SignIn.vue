@@ -28,7 +28,7 @@
             <span class="error" v-if="passwordError">密碼錯誤</span>
           </p>
         </label>
-        <button class="sign__form-submit active" type="submit">登入</button>
+        <button class="sign__form-submit active" type="submit" :class="{disabled: isProcessing}"> {{isProcessing ? '登入中...' : '登入'}} </button>
       </form>
       <div class="signin__btns" v-if="!isBackLogin">
         <router-link to="/signup" class="signin__btns-link">註冊Alphitter</router-link>
@@ -46,28 +46,6 @@
 import { Toast } from './../mixins/helpers'
 import authorizationAPI from './../apis/authorization'
 
-// const dummyUser = {
-//   id: 3,
-//   account: 'user3',
-//   email: 'user3@example.com',
-//   password: '3',
-//   name: 'user3',
-//   role: 'user',
-//   createdAt: '2021-12-01T07:59:14.418Z',
-//   updatedAt: '2021-12-01T07:59:14.418Z'
-// }
-
-// const dummyAdmin = {
-//   id: 1,
-//   account: 'root',
-//   email: 'root@example.com',
-//   password: '12345678',
-//   name: 'root',
-//   role: 'admin',
-//   createdAt: '2021-12-01T07:59:14.418Z',
-//   updatedAt: '2021-12-01T07:59:14.418Z'
-// }
-
 export default {
   name: 'SignIn',
   data () {
@@ -76,7 +54,8 @@ export default {
       password: '',
       accountError: false,
       passwordError: false,
-      isBackLogin: false
+      isBackLogin: false,
+      isProcessing: false
     }
   },
   methods: {
@@ -105,66 +84,61 @@ export default {
         this.$refs.password.style.borderColor = ''
       }
 
+      if (this.account === 'root' && this.isBackLogin !== true) {
+        Toast.fire({
+          icon: 'error',
+          title: '密碼錯誤，請再試一次'
+        })
+        this.passwordError = true
+        this.$refs.password.focus()
+        this.$refs.password.style.borderColor = '#fc5a5a'
+        return
+      }
+
       this.login()
     },
     async login () {
-      // TODO: 等API串接，再做相對應的流程設計
-      // TODO: 這邊由串接後得到結果，做出相對應動作
       try {
-        // const data = this.isBackLogin ? dummyAdmin : dummyUser
-        const response = await authorizationAPI.signIn({
+        this.isProcessing = true
+        const { data } = await authorizationAPI.signIn({
           account: this.account,
           password: this.password
         })
-        console.log(response)
-        if (response.status !== 200) {
-          throw new Error(response.statusText)
-        }
-        const { data } = response
+        console.log(data)
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
         localStorage.setItem('token', data.token)
+        this.$store.commit('setCurrentUser', data.user)
+        Toast.fire({
+          icon: 'success',
+          title: '成功登入！'
+        })
+        const path = this.isBackLogin ? '/admin/tweets' : '/home'
+        this.$router.push(path)
       } catch (err) {
+        this.isProcessing = false
+        let message = ''
+        if (err.message === 'no such user found') {
+          message = this.isBackLogin ? '帳號錯誤，請洽開發者' : '帳號不存在'
+          this.accountError = true
+          this.$refs.account.style.borderColor = '#fc5a5a'
+        } else {
+          this.accountError = false
+          this.$refs.account.style.borderColor = ''
+        }
+
+        if (err.message === 'passwords did not match') {
+          message = '密碼錯誤，請再試一次'
+          this.passwordError = true
+          this.$refs.password.focus()
+          this.$refs.password.style.borderColor = '#fc5a5a'
+        }
         Toast.fire({
           icon: 'error',
-          title: `${err.message}`
+          title: `${message}`
         })
-        console.log(err)
       }
-      // if (this.email !== data.email) {
-      //   const title = this.isBackLogin ? 'Email有誤，請洽開發者' : '可能Email有誤，或此Email未註冊'
-      //   Toast.fire({
-      //     icon: 'error',
-      //     title
-      //   })
-      //   this.emailError = true
-      //   this.$refs.email.style.borderColor = '#fc5a5a'
-      //   return
-      // } else {
-      //   this.emailError = false
-      //   this.$refs.email.style.borderColor = ''
-      // }
-
-      // if (this.password !== data.password) {
-      //   Toast.fire({
-      //     icon: 'error',
-      //     title: '密碼有誤'
-      //   })
-      //   this.passwordError = true
-      //   this.$refs.password.focus()
-      //   this.$refs.password.style.borderColor = '#fc5a5a'
-      //   return
-      // }
-
-      // this.$store.commit('setCurrentUser', data)
-      // console.log(`email: ${this.email}, password: ${this.password}, isAdmin: ${data.role}`)
-      // Toast.fire({
-      //   icon: 'success',
-      //   title: '成功登入！'
-      // })
-      // const path = this.isBackLogin ? '/admin/tweets' : '/home'
-      // this.$router.push(path)
     },
     checkLoginRoute (path) {
       this.isBackLogin = path.includes('admin')
