@@ -47,7 +47,7 @@
         <div class="main__post__action">
           <!-- 點擊回覆打開回覆modal -->
           <span
-            @click.prevent.stop="toggleReplyModal(tweet.id)"
+            @click.prevent.stop="$store.commit('toggleModal', 'reply')"
             class="main__post__action--reply"
           >
             <svg
@@ -204,10 +204,6 @@ export default {
         ...postData
       }
     },
-    toggleReplyModal (tweetId) {
-      // 開啟modal
-      console.log('open reply modal', tweetId)
-    },
     toggleLikeModal (tweetId) {
       this.tweet = {
         ...this.tweet,
@@ -240,7 +236,7 @@ export default {
       font-weight: bold;
     }
     svg {
-      margin: 1.5rem 4.1rem 1.6rem 0;
+      margin: 1.5rem 4.1rem 1.5rem 1.5rem;
     }
   }
 }
