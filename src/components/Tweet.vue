@@ -3,10 +3,10 @@
     <div class="tweet-container">
       <div class="tweet">
         <!-- 點擊貼文中使用者頭像/name/account時，能到profile頁 -->
-        <router-link :to="`/home/${tweet.user.id}`" class="tweet__avatar">
+        <router-link :to="`/home/${tweet.User.id}`" class="tweet__avatar">
           <img
             class="tweet__avatar--img"
-            :src="tweet.user.avatar || 'https://fakeimg.pl/300/'"
+            :src="tweet.User.avatar || 'https://fakeimg.pl/300/'"
             alt="avatar"
             aria-label="avatar"
           />
@@ -14,9 +14,9 @@
         <div class="tweet__info">
           <div class="tweet__info-postBy">
             <!-- 點擊貼文中使用者頭像/name/account時，能到profile頁 -->
-            <router-link :to="`/home/${tweet.user.id}`">
-              <span class="name">{{ tweet.user.name || 'NoName'}} </span>
-              <span class="account">@{{ tweet.user.account }}・</span>
+            <router-link :to="`/home/${tweet.User.id}`">
+              <span class="name">{{ tweet.User.name || 'NoName'}} </span>
+              <span class="account">@{{ tweet.User.account }}・</span>
             </router-link>
             <!-- 點擊時間連到當則推文 -->
             <router-link :to="`/home/${tweet.id}`">
@@ -102,7 +102,7 @@ export default {
         id: 0,
         description: '',
         createdAt: '2001-12-02T16:44:25.000Z',
-        user: {
+        User: {
           id: -1,
           account: '',
           name: '',
