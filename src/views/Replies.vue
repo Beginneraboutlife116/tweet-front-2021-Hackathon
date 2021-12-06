@@ -104,7 +104,9 @@
 
 <script>
 import Reply from './../components/Reply'
-import { fromNowFilter } from './../mixins/helpers'
+import { fromNowFilter, Toast } from './../mixins/helpers'
+import tweetsAPI from './../apis/tweets'
+
 const dummyData = {
   replies: [
     {
@@ -146,22 +148,6 @@ const dummyData = {
   ]
 }
 
-const postData = {
-  id: 0,
-  description:
-    'Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ',
-  createdAt: '2011-12-02T04:24:25.000Z',
-  User: {
-    id: 1,
-    account: 'account1',
-    name: 'name1',
-    avatar: null
-  },
-  likeCounts: 10,
-  replyCounts: 5,
-  isLike: true
-}
-
 export default {
   mixins: [fromNowFilter],
   components: {
@@ -170,26 +156,13 @@ export default {
   data () {
     return {
       replies: [],
-      tweet: {
-        id: 0,
-        description:
-          'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit Lorem ipsum dolor sit amet Lorem ipsum',
-        createdAt: '2011-12-02T16:44:25.000Z',
-        User: {
-          id: 1,
-          account: 'account1',
-          name: 'name1',
-          avatar: null
-        },
-        likeCounts: 10,
-        replyCounts: 5,
-        isLike: true
-      }
+      tweet: {}
     }
   },
   created () {
+    const { tweetId } = this.$route.params
+    this.fetchPost(tweetId)
     this.fetchReplies()
-    this.fetchPost()
   },
   methods: {
     fetchReplies () {
@@ -199,9 +172,27 @@ export default {
         }
       })
     },
-    fetchPost () {
-      this.tweet = {
-        ...postData
+    async fetchPost (tweetId) {
+      try {
+        const { data } = await tweetsAPI.getSingleTweet({ tweetId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        const { id, description, createdAt, User, likeCounts, replyCounts, isLike } = data
+        this.tweet = {
+          id,
+          description,
+          createdAt,
+          User,
+          likeCounts,
+          replyCounts,
+          isLike
+        }
+      } catch (err) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得該篇推文，請稍後再試'
+        })
       }
     },
     toggleLikeModal (tweetId) {
