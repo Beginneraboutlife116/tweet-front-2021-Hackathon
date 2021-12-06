@@ -114,6 +114,9 @@ export default {
           title: '推文失敗，請稍後再試'
         })
       }
+    },
+    updateTweetReplies () {
+      // TODO: 將資料上傳
     }
   }
 }
