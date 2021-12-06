@@ -171,8 +171,8 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.params)
-    this.fetchProfile(this.$route.params)
+    const { userId } = this.$route.params
+    this.fetchProfile(userId)
   },
   beforeRouteUpdate (to, from, next) {
     const { id } = to.params

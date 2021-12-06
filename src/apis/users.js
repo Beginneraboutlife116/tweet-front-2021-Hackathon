@@ -1,7 +1,7 @@
 import { apiHelper } from './../mixins/helpers'
 
 export default {
-  getUserProfile () {
-    return apiHelper.get('/users/10')
+  getUserProfile (userId) {
+    return apiHelper.get(`/users/${userId}`)
   }
 }
