@@ -25,6 +25,8 @@ export default new Vuex.Store({
         ...state.currentUser,
         ...currentUser
       }
+      state.isAuthenticated = true
+      state.token = localStorage.getItem('token')
     },
     revokeAuthentication (state) {
       state.currentUser = {}
