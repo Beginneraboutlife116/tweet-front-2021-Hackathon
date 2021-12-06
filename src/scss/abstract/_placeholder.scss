@@ -7,4 +7,8 @@
     background-color: var(--main-color);
     color: white;
   }
+  &.disabled {
+    opacity: 0.8;
+    cursor: progress;
+  }
 }
