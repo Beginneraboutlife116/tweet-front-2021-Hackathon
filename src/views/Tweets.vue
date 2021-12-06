@@ -21,12 +21,14 @@
             autofocus
           >
           </textarea>
-          <button class="active" @click.stop.prevent="sendTweet">推文</button>
+          <button class="active" @click.stop.prevent="sendTweet(text)" :disabled="isProcessing" :class="{disabled: isProcessing}">推文</button>
         </div>
       </div>
     </header>
     <hr class="tweets-line" />
-    <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
+    <template v-if="!isLoading">
+      <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
+    </template>
   </div>
 </template>
 
@@ -44,14 +46,21 @@ export default {
   data () {
     return {
       tweets: [],
-      text: ''
+      text: '',
+      isProcessing: false,
+      isLoading: true
     }
   },
   created () {
     this.fetchTweets()
   },
   computed: {
-    ...mapState(['currentUser'])
+    ...mapState(['currentUser', 'tweet'])
+  },
+  watch: {
+    tweet () {
+      this.sendTweet(this.tweet)
+    }
   },
   methods: {
     async fetchTweets () {
@@ -65,15 +74,17 @@ export default {
             ...data
           }
         })
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         Toast.fire({
           icon: 'error',
           title: '無法獲取推文，請稍後再嘗試'
         })
       }
     },
-    sendTweet () {
-      if (!this.text) {
+    sendTweet (message) {
+      if (!message) {
         Toast.fire({
           icon: 'warning',
           title: '內容不可空白'
@@ -81,34 +92,49 @@ export default {
         return
       }
 
-      if (this.text.length > 140) {
+      if (message.length > 140) {
         Toast.fire({
           icon: 'warning',
           title: '超過推文字數限制'
         })
         return
       }
-      console.log(`${this.text}`)
-      this.updateTweets()
-    },
-    updateTweets () {
-      const { id, name, avatar, account } = this.currentUser
-      const description = this.text
-      const createdAt = Date.now()
-      this.tweets.unshift({
-        description,
-        createdAt,
-        User: {
-          id,
-          account,
-          name,
-          avatar
-        },
-        isLike: false,
-        likeCounts: 0,
-        replyCounts: 0
-      })
+      this.updateTweets(message)
       this.text = ''
+    },
+    async updateTweets (message) {
+      try {
+        this.isProcessing = true
+        this.isLoading = true
+        const { id, name, avatar, account } = this.currentUser
+        const description = message
+        const { data } = await tweetsAPI.postTweets({ description })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.tweets.unshift({
+          description,
+          createdAt: new Date(),
+          User: {
+            id,
+            account,
+            name,
+            avatar
+          },
+          isLike: false,
+          likeCounts: 0,
+          replyCounts: 0
+        })
+        this.isProcessing = false
+        this.isLoading = false
+      } catch (err) {
+        this.isProcessing = false
+        this.isLoading = false
+        Toast.fire({
+          icon: 'error',
+          title: '推文失敗，請稍後再試'
+        })
+      }
     }
   }
 }
