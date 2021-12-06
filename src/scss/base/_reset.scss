@@ -4,6 +4,12 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
 }
 
 body,

@@ -14,7 +14,10 @@ export default new Vuex.Store({
       avatar: null
     },
     isAuthenticated: true,
-    token: ''
+    token: '',
+    tweet: '',
+    reply: '',
+    modal: ''
   },
   mutations: {
     setCurrentUser (state, currentUser) {
@@ -22,12 +25,23 @@ export default new Vuex.Store({
         ...state.currentUser,
         ...currentUser
       }
+      state.isAuthenticated = true
+      state.token = localStorage.getItem('token')
     },
     revokeAuthentication (state) {
       state.currentUser = {}
       state.isAuthenticated = false
       localStorage.removeItem('token')
       state.token = ''
+    },
+    recordText (state, payload) {
+      state[payload.action] = payload.text
+    },
+    toggleModal (state, payload) {
+      state.modal = payload
+    },
+    clearModal (state) {
+      state.modal = ''
     }
   },
   actions: {
