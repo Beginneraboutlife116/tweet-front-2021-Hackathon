@@ -112,7 +112,7 @@ const dummyData = {
       comment:
         'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
       createdAt: '2011-12-02T18:42:25.000Z',
-      user: {
+      User: {
         id: 11,
         name: 'name11',
         account: 'account11',
@@ -124,7 +124,7 @@ const dummyData = {
       comment:
         'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
       createdAt: '2011-12-02T16:44:25.000Z',
-      user: {
+      User: {
         id: 22,
         name: 'name22',
         account: 'account22',
@@ -136,7 +136,7 @@ const dummyData = {
       comment:
         'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
       createdAt: '2011-12-02T16:44:25.000Z',
-      user: {
+      User: {
         id: 33,
         name: 'name33',
         account: 'account33',

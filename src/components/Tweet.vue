@@ -23,8 +23,8 @@
               <span class="timeStamp">{{ tweet.createdAt | fromNow }}</span>
             </router-link>
           </div>
-          <!-- 點擊推文內容t到當則推文 -->
-          <router-link :to="`/home/${tweet.id}`">
+          <!-- 點擊推文內容到當則推文 -->
+          <router-link :to="`/home/tweets/${tweet.id}`">
             <p class="tweet__info-description">{{ tweet.description }}</p>
           </router-link>
           <div class="tweet__info-count">

@@ -12,11 +12,28 @@ const dummyData = {
     {
       id: 1,
       comment: 'amet Lorem ipsum dolor ',
-      created_at: '2021-12-02T16:44:25.000Z',
+      createdAt: '2021-12-02T16:44:25.000Z',
       tweet: {
-        id: 1
+        id: 1,
+        User: {
+          id: 11,
+          account: 'account'
+        }
+      }
+    },
+    {
+      id: 2,
+      comment: 'amet Lorem ipsum dolor ',
+      createdAt: '2021-12-02T16:44:25.000Z',
+      tweet: {
+        id: 2,
+        User: {
+          id: 2,
+          account: 'account2'
+        }
       }
     }
+
   ]
 }
 export default {
@@ -38,8 +55,23 @@ export default {
   methods: {
     fetchReplies () {
       this.replies = dummyData.replies.map((data) => {
+        const { id, comment, createdAt, tweet } = data
+        const tweetId = tweet.id
+        const UserId = tweet.User.id
+        const account = tweet.User.account
+        const avatar = this.currentUser.avatar
         return {
-          ...data
+          id,
+          comment,
+          createdAt,
+          tweet: {
+            id: tweetId,
+            User: {
+              id: UserId,
+              account,
+              avatar
+            }
+          }
 
         }
       })

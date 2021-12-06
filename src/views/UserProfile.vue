@@ -16,7 +16,7 @@
         </svg>
         <div class="profile__header__title__wrapper">
           <p class="name">{{ profile.name }}</p>
-          <p class="tweetCounts">{{ tweets.length }} 推文</p>
+          <p class="tweetCounts">{{ profile.tweetCounts }} 推文</p>
         </div>
       </div>
     </header>
@@ -36,8 +36,8 @@
         />
       </div>
       <div class="main__profile__info">
-        <button v-if="this.$route.params === profile.id" class="main__profile__info__btn--edit">編輯個人資料</button>
-        <button v-if="this.$route.params !== profile.id" class="main__profile__info__btn--follow" :class="{active: true}" @click.stop.prevent="toggleFollow(this.$route.params)"> {{true ? '正在跟隨' : '跟隨'}}</button>
+        <button v-if="currentUser.id === profile.id" class="main__profile__info__btn--edit">編輯個人資料</button>
+        <button v-if="currentUser.id !== profile.id" class="main__profile__info__btn--follow" :class="{active: profile.isFollowing }" @click.stop.prevent="toggleFollow(profile.id)"> {{profile.isFollowing ? '正在跟隨' : '跟隨'}}</button>
         <p class="name">{{ profile.name }}</p>
         <p class="account">@{{ profile.account }}</p>
         <p class="introduction">{{ profile.introduction }}</p>
@@ -65,64 +65,6 @@
 <script>
 import { mapState } from 'vuex'
 const dummyData = {
-  tweets: [
-    {
-      tweet_id: 1,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      user: {
-        account: 'account',
-        name: 'userName'
-      },
-      isLike: true,
-      likeCounts: 100,
-      replyCounts: 20
-    },
-    {
-      tweet_id: 2,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      user: {
-        account: 'account2',
-        name: 'userName2'
-      },
-      isLike: false,
-      likeCounts: 30,
-      replyCounts: 50
-    },
-    {
-      id: 3,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      user: {
-        id: 3,
-        account: 'account3',
-        name: 'userName3',
-        avatar: null
-      },
-      isLike: false,
-      likeCounts: 2,
-      replyCounts: 5
-    },
-    {
-      id: 4,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      user: {
-        id: 4,
-        account: '',
-        name: '',
-        avatar: null
-      },
-      isLike: false,
-      likeCounts: 4,
-      replyCounts: 5
-    }
-  ],
   profile: {
     id: 1,
     account: 'account1',
@@ -133,69 +75,23 @@ const dummyData = {
     avatar: null,
     cover: null,
     role: 'user',
+    tweetCounts: 10,
+    isFollowing: true,
     followship: {
       followerCounts: 1,
       followingCounts: 2
     }
-  },
-  replies: [
-    {
-      id: 1,
-      comment: 'amet Lorem ipsum dolor ',
-      created_at: '2021-12-02T16:44:25.000Z',
-      tweet: {
-        id: 1,
-        user: {
-          id: 11,
-          account: 'account',
-          avatar: 'null'
-        }
-      }
-    },
-    {
-      id: 2,
-      comment: 'amet Lorem ipsum dolor ',
-      created_at: '2021-12-02T16:44:25.000Z',
-      tweet: {
-        id: 2,
-        user: {
-          id: 2,
-          account: 'account2',
-          avatar: 'null'
-        }
-      }
-    }
-  ],
-  tweetLikes: [
-    {
-      tweet: {
-        id: 1,
-        description: '123123123',
-        createdAt: '2021-12-02T16:44:25.000Z',
-        user: {
-          id: 1,
-          account: 'account',
-          name: 'name',
-          avatar: null
-        },
-        likeCounts: 2,
-        replyCounts: 3
-      }
-    }
-  ]
+  }
 }
 
 export default {
-  name: 'userProfile',
+  name: 'UserProfile',
   data () {
     return {
-      profile: {},
-      tweets: [],
-      replies: []
+      profile: {}
     }
   },
   created () {
-    this.fetchTweets()
     this.fetchProfile()
   },
   computed: {
@@ -207,22 +103,10 @@ export default {
         ...dummyData.profile
       }
     },
-    fetchTweets () {
-      this.tweets = dummyData.tweets.map((data) => {
-        return {
-          ...data
-        }
-      })
-    },
-    fetchReplies () {
-      this.replies = dummyData.replies.map((data) => {
-        return {
-          ...data
-        }
-      })
-    },
-    toggleFollow (userId) {
+    toggleFollow (UserId) {
       // TODO: 將資料傳給後端
+      this.profile.isFollowing = !this.profile.isFollowing
+      console.log(UserId)
     }
   }
 }
@@ -231,9 +115,9 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@900&display=swap');
 
-.router-link-exact-active {
-  color: var(--main-color);
-  border-bottom: 2px solid var(--main-color);
+.router-link-exact-active.main__profile__tabs--link {
+    color: var(--main-color);
+    border-bottom: 2px solid var(--main-color);
 }
 
 .profile-container {
