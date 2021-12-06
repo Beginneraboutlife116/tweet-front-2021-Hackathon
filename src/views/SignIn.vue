@@ -15,10 +15,10 @@
       </header>
       <form class="sign__form" @submit.prevent="handleSubmit">
         <label class="sign__form-row">
-          <p class="sign__form-title">Email</p>
-          <input type="email" class="sign__form-input" v-model.trim="email" ref="email" required>
+          <p class="sign__form-title">帳號</p>
+          <input type="text" class="sign__form-input" v-model.trim="account" ref="account" required>
           <p class="sign__form-error">
-            <span class="error" v-if="emailError">帳號不存在</span>
+            <span class="error" v-if="accountError">帳號不存在</span>
           </p>
         </label>
         <label class="sign__form-row">
@@ -44,52 +44,53 @@
 
 <script>
 import { Toast } from './../mixins/helpers'
+import authorizationAPI from './../apis/authorization'
 
-const dummyUser = {
-  id: 3,
-  account: 'user3',
-  email: 'user3@example.com',
-  password: '3',
-  name: 'user3',
-  role: 'user',
-  createdAt: '2021-12-01T07:59:14.418Z',
-  updatedAt: '2021-12-01T07:59:14.418Z'
-}
+// const dummyUser = {
+//   id: 3,
+//   account: 'user3',
+//   email: 'user3@example.com',
+//   password: '3',
+//   name: 'user3',
+//   role: 'user',
+//   createdAt: '2021-12-01T07:59:14.418Z',
+//   updatedAt: '2021-12-01T07:59:14.418Z'
+// }
 
-const dummyAdmin = {
-  id: 1,
-  account: 'root',
-  email: 'root@example.com',
-  password: '12345678',
-  name: 'root',
-  role: 'admin',
-  createdAt: '2021-12-01T07:59:14.418Z',
-  updatedAt: '2021-12-01T07:59:14.418Z'
-}
+// const dummyAdmin = {
+//   id: 1,
+//   account: 'root',
+//   email: 'root@example.com',
+//   password: '12345678',
+//   name: 'root',
+//   role: 'admin',
+//   createdAt: '2021-12-01T07:59:14.418Z',
+//   updatedAt: '2021-12-01T07:59:14.418Z'
+// }
 
 export default {
   name: 'SignIn',
   data () {
     return {
-      email: '',
+      account: '',
       password: '',
-      emailError: false,
+      accountError: false,
       passwordError: false,
       isBackLogin: false
     }
   },
   methods: {
     handleSubmit () {
-      if (!this.email) {
+      if (!this.account) {
         Toast.fire({
           icon: 'warning',
-          title: '請輸入Email'
+          title: '請輸入帳號'
         })
-        this.$refs.email.focus()
-        this.$refs.email.style.borderColor = '#fc5a5a'
+        this.$refs.account.focus()
+        this.$refs.account.style.borderColor = '#fc5a5a'
         return
       } else {
-        this.$refs.email.style.borderColor = ''
+        this.$refs.account.style.borderColor = ''
       }
 
       if (!this.password) {
@@ -106,43 +107,64 @@ export default {
 
       this.login()
     },
-    login () {
+    async login () {
       // TODO: 等API串接，再做相對應的流程設計
       // TODO: 這邊由串接後得到結果，做出相對應動作
-      const data = this.isBackLogin ? dummyAdmin : dummyUser
-      if (this.email !== data.email) {
-        const title = this.isBackLogin ? 'Email有誤，請洽開發者' : '可能Email有誤，或此Email未註冊'
+      try {
+        // const data = this.isBackLogin ? dummyAdmin : dummyUser
+        const response = await authorizationAPI.signIn({
+          account: this.account,
+          password: this.password
+        })
+        console.log(response)
+        if (response.status !== 200) {
+          throw new Error(response.statusText)
+        }
+        const { data } = response
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        localStorage.setItem('token', data.token)
+      } catch (err) {
         Toast.fire({
           icon: 'error',
-          title
+          title: `${err.message}`
         })
-        this.emailError = true
-        this.$refs.email.style.borderColor = '#fc5a5a'
-        return
-      } else {
-        this.emailError = false
-        this.$refs.email.style.borderColor = ''
+        console.log(err)
       }
+      // if (this.email !== data.email) {
+      //   const title = this.isBackLogin ? 'Email有誤，請洽開發者' : '可能Email有誤，或此Email未註冊'
+      //   Toast.fire({
+      //     icon: 'error',
+      //     title
+      //   })
+      //   this.emailError = true
+      //   this.$refs.email.style.borderColor = '#fc5a5a'
+      //   return
+      // } else {
+      //   this.emailError = false
+      //   this.$refs.email.style.borderColor = ''
+      // }
 
-      if (this.password !== data.password) {
-        Toast.fire({
-          icon: 'error',
-          title: '密碼有誤'
-        })
-        this.passwordError = true
-        this.$refs.password.focus()
-        this.$refs.password.style.borderColor = '#fc5a5a'
-        return
-      }
+      // if (this.password !== data.password) {
+      //   Toast.fire({
+      //     icon: 'error',
+      //     title: '密碼有誤'
+      //   })
+      //   this.passwordError = true
+      //   this.$refs.password.focus()
+      //   this.$refs.password.style.borderColor = '#fc5a5a'
+      //   return
+      // }
 
-      this.$store.commit('setCurrentUser', data)
-      console.log(`email: ${this.email}, password: ${this.password}, isAdmin: ${data.role}`)
-      Toast.fire({
-        icon: 'success',
-        title: '成功登入！'
-      })
-      const path = this.isBackLogin ? '/admin/tweets' : '/home'
-      this.$router.push(path)
+      // this.$store.commit('setCurrentUser', data)
+      // console.log(`email: ${this.email}, password: ${this.password}, isAdmin: ${data.role}`)
+      // Toast.fire({
+      //   icon: 'success',
+      //   title: '成功登入！'
+      // })
+      // const path = this.isBackLogin ? '/admin/tweets' : '/home'
+      // this.$router.push(path)
     },
     checkLoginRoute (path) {
       this.isBackLogin = path.includes('admin')
@@ -152,7 +174,7 @@ export default {
     this.checkLoginRoute(this.$route.path)
   },
   mounted () {
-    this.$refs.email.focus()
+    this.$refs.account.focus()
   }
 }
 </script>
