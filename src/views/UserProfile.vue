@@ -102,6 +102,7 @@
             {{ profile.isFollowing ? "正在跟隨" : "跟隨" }}
           </button>
         </div>
+        <Spinner v-if="isLoading" />
         <p class="name">{{ profile.name }}</p>
         <p class="account">@{{ profile.account }}</p>
         <p class="introduction">{{ profile.introduction }}</p>
@@ -140,53 +141,76 @@
 
 <script>
 import { mapState } from 'vuex'
-const dummyData = {
-  profile: {
-    id: 1,
-    account: 'account1',
-    name: 'John Doe',
-    email: 'email@email.com',
-    introduction: 'Amet Lorem ipsum dolor sit amet Lorem ipsum dolor',
-    avatar: null,
-    cover: null,
-    role: 'user',
-    tweetCounts: 10,
-    isFollowing: true,
-    followship: {
-      followerCounts: 1,
-      followingCounts: 2
-    }
-  }
-}
-
+import { Toast } from './../mixins/helpers'
+import usersAPI from './../apis/users'
+import Spinner from './../components/Spinner'
 export default {
   name: 'UserProfile',
+  components: {
+    Spinner
+  },
   data () {
     return {
-      profile: {}
+      profile: {
+        account: 'null',
+        avatar: null,
+        cover: null,
+        email: 'user1@example.com',
+        followship: {
+          followingCounts: 0,
+          followerCounts: 0
+        },
+        id: 0,
+        introduction: null,
+        isFollowing: false,
+        name: 'user1',
+        tweetCounts: 0
+      },
+      isProcessing: false,
+      isLoading: true
     }
   },
   created () {
-    this.fetchProfile()
+    console.log(this.$route.params)
+    this.fetchProfile(this.$route.params)
+  },
+  beforeRouteUpdate (to, from, next) {
+    const { id } = to.params
+    this.fetchRestaurant(id)
+    next()
   },
   computed: {
     ...mapState(['currentUser'])
   },
   methods: {
-    fetchProfile () {
-      this.profile = {
-        ...dummyData.profile
+    async fetchProfile (userId) {
+      try {
+        this.isProcessing = true
+        this.isLoading = true
+        const { data } = await usersAPI.getUserProfile(userId)
+        if (data.status === 'error') {
+          throw new Error(data.message)
+        }
+
+        this.profile = {
+          ...data
+        }
+        this.isLoading = false
+      } catch (error) {
+        this.isLoading = false
+        Toast.fire({
+          icon: 'error',
+          title: '無法獲取個人資料，請稍後再嘗試'
+        })
       }
     },
-    toggleFollow (UserId) {
+    toggleFollow (userId) {
       // TODO: 將資料傳給後端
       this.profile.isFollowing = !this.profile.isFollowing
-      console.log(UserId)
     },
-    toggleSubscribe (UserId) {
+    toggleSubscribe (userId) {
       // TODO: 將資料傳給後端
       this.profile.isFollowing = !this.profile.isFollowing
-      console.log(UserId)
     }
   }
 }
