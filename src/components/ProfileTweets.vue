@@ -1,91 +1,60 @@
 <template>
   <div>
+   <Spinner v-if="isLoading" />
    <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import Spinner from './../components/Spinner'
 import Tweet from './../components/Tweet'
-const dummyData = {
-  tweets: [
-    {
-      id: 1,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      User: {
-        account: 'account',
-        name: 'John Doe'
-      },
-      isLike: true,
-      likeCounts: 100,
-      replyCounts: 20
-    },
-    {
-      id: 2,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      User: {
-        account: 'account2',
-        name: 'John Doe'
-      },
-      isLike: false,
-      likeCounts: 30,
-      replyCounts: 50
-    },
-    {
-      id: 3,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      User: {
-        id: 3,
-        account: 'account3',
-        name: 'John Doe',
-        avatar: null
-      },
-      isLike: false,
-      likeCounts: 2,
-      replyCounts: 5
-    },
-    {
-      id: 4,
-      description:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      User: {
-        id: 4,
-        account: '',
-        name: 'John Doe',
-        avatar: null
-      },
-      isLike: false,
-      likeCounts: 4,
-      replyCounts: 5
-    }
-  ]
-}
+import { Toast } from './../mixins/helpers'
+import usersAPI from './../apis/users'
+
 export default {
   name: 'profile-tweets',
   components: {
-    Tweet
+    Tweet,
+    Spinner
   },
   data () {
     return {
-      tweets: []
+      tweets: [],
+      isProcessing: false,
+      isLoading: true
     }
   },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   created () {
-    this.fetchTweets()
+    const { userId } = this.$route.params
+    this.fetchTweets(userId)
   },
   methods: {
-    fetchTweets () {
-      this.tweets = dummyData.tweets.map((data) => {
-        return {
-          ...data
+    async fetchTweets (userId) {
+      try {
+        this.isProcessing = true
+        this.isLoading = true
+        const { data } = await usersAPI.getUserProfileTweets(userId)
+
+        if (data.status === 'error') {
+          throw new Error(data.message)
         }
-      })
+        this.tweets = data.map((data) => {
+          return {
+            ...data
+          }
+        })
+        this.isLoading = false
+      } catch (error) {
+        this.isLoading = false
+        Toast.fire({
+          icon: 'error',
+          title: '無法獲取個人資料推文'
+        })
+      }
     }
   }
 }
