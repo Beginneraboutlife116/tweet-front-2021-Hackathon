@@ -38,10 +38,17 @@ const routes = [
             component: () => import('./../views/Replies')
           },
           {
-            path: ':userId/followers' // component用Followers.vue
+            path: ':userId/followers', // component用Followers.vue
+            name: 'followers',
+            component: () => import('./../views/Followers')
           },
           {
-            path: ':userId/', // component用userProfile.vue
+            path: ':userId/followings', // component用Followers.vue
+            name: 'followings',
+            component: () => import('./../views/Followings')
+          },
+          {
+            path: ':userId', // component用userProfile.vue
             name: 'profile',
             redirect: ':userId/tweets',
             component: () => import('./../views/UserProfile'),

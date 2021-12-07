@@ -21,7 +21,7 @@
               >
             </router-link>
             <!-- 點擊時間連到當則推文-->
-            <router-link :to="`/home/tweets/${this.$route.params}`">
+            <router-link :to=" reply.tweet.id ? `/home/tweets/${reply.tweet.id}` : `/home/tweets/${this.$route.params}`">
               <span class="timeStamp">{{ reply.createdAt | fromNow }}</span>
             </router-link>
           </div>

@@ -3,6 +3,7 @@
     <header class="profile__header">
       <div class="profile__header__title">
         <svg
+          @click="$router.back()"
           width="23"
           height="24"
           viewBox="0 0 23 24"
@@ -37,6 +38,7 @@
       </div>
       <div class="main__profile__info">
         <div class="main__profile__info__btn">
+          <template v-if="currentUser.id !== profile.id">
           <svg
             width="35"
             height="35"
@@ -51,7 +53,7 @@
             />
           </svg>
           <svg
-            v-if="!profile.isFollowing"
+            v-if="!profile.isSubscribing"
             @click.stop.prevent="toggleSubscribe(profile.id)"
             width="35"
             height="35"
@@ -65,6 +67,7 @@
               fill="#FF6600"
             />
           </svg>
+          </template>
           <svg
             v-if="profile.isFollowing"
             @click.stop.prevent="toggleSubscribe(profile.id)"
@@ -102,19 +105,24 @@
             {{ profile.isFollowing ? "正在跟隨" : "跟隨" }}
           </button>
         </div>
-        <Spinner v-if="isLoading" />
         <p class="name">{{ profile.name }}</p>
         <p class="account">@{{ profile.account }}</p>
         <p class="introduction">{{ profile.introduction }}</p>
       </div>
       <div class="main__profile__data">
         <div class="main__profile__data--follow">
+          <router-link
+           :to="`/home/${profile.id}/followings`">
           <span class="count">{{ profile.followship.followingCounts }} 個</span>
           <span class="text">跟隨中</span>
+          </router-link>
         </div>
         <div class="main__profile__data--follow">
+          <router-link
+          :to="`/home/${profile.id}/followers`">
           <span class="count">{{ profile.followship.followerCounts }} 位</span>
           <span class="text">跟隨者</span>
+          </router-link>
         </div>
       </div>
       <div class="main__profile__tabs">
@@ -143,11 +151,9 @@
 import { mapState } from 'vuex'
 import { Toast } from './../mixins/helpers'
 import usersAPI from './../apis/users'
-import Spinner from './../components/Spinner'
 export default {
   name: 'UserProfile',
   components: {
-    Spinner
   },
   data () {
     return {
@@ -163,6 +169,7 @@ export default {
         id: 0,
         introduction: null,
         isFollowing: false,
+        isSubscribing: true,
         name: 'user1',
         tweetCounts: 0
       },
@@ -176,7 +183,7 @@ export default {
   },
   beforeRouteUpdate (to, from, next) {
     const { userId } = to.params
-    this.fetchRestaurant(userId)
+    this.fetchProfile(userId)
     next()
   },
   computed: {
@@ -232,6 +239,9 @@ export default {
 }
 
 .profile__header {
+  svg {
+    cursor: pointer;
+  }
   &__title {
     display: flex;
     align-items: center;
@@ -255,6 +265,9 @@ export default {
 }
 
 .main__profile {
+  svg {
+    cursor: pointer;
+  }
   &__img {
     position: relative;
     &--cover {
@@ -321,6 +334,7 @@ export default {
       margin-right: 2rem;
       .count {
         font-weight: 500;
+        color: var(--font-color)
       }
       .text {
         font-weight: 400;
