@@ -98,7 +98,7 @@
         </div>
       </div>
     </header>
-    <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" />
+    <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" :tweet-account="tweet.User.account"/>
   </div>
 </template>
 
@@ -106,47 +106,7 @@
 import Reply from './../components/Reply'
 import { fromNowFilter, Toast } from './../mixins/helpers'
 import tweetsAPI from './../apis/tweets'
-
-const dummyData = {
-  replies: [
-    {
-      id: 1,
-      comment:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2011-12-02T18:42:25.000Z',
-      user: {
-        id: 11,
-        name: 'name11',
-        account: 'account11',
-        avatar: null
-      }
-    },
-    {
-      id: 2,
-      comment:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2011-12-02T16:44:25.000Z',
-      user: {
-        id: 22,
-        name: 'name22',
-        account: 'account22',
-        avatar: null
-      }
-    },
-    {
-      id: 3,
-      comment:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2011-12-02T16:44:25.000Z',
-      user: {
-        id: 33,
-        name: 'name33',
-        account: 'account33',
-        avatar: null
-      }
-    }
-  ]
-}
+import repliesAPI from './../apis/replies'
 
 export default {
   name: 'Replies',
@@ -157,28 +117,54 @@ export default {
   data () {
     return {
       replies: [],
-      tweet: {}
+      tweet: {
+        id: -1,
+        description: '',
+        createdAt: '',
+        User: {
+          id: -1,
+          account: '',
+          name: '',
+          avatar: ''
+        },
+        likeCounts: 0,
+        replyCounts: 0,
+        isLike: false
+      }
     }
   },
   created () {
     const { tweetId } = this.$route.params
     this.fetchPost(tweetId)
-    this.fetchReplies()
+    this.fetchReplies(tweetId)
   },
   methods: {
-    fetchReplies () {
-      this.replies = dummyData.replies.map((data) => {
-        return {
-          ...data
-        }
-      })
+    async fetchReplies (tweetId) {
+      try {
+        const { data } = await repliesAPI.getReplies({ tweetId })
+        console.log(data)
+        this.replies = data.map((data) => {
+          const { id, createdAt, comment, User } = data
+          return {
+            id,
+            createdAt,
+            comment,
+            User: {
+              ...User
+            }
+          }
+        })
+      } catch (err) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得回覆資料，請稍後再試'
+        })
+        console.log(err)
+      }
     },
     async fetchPost (tweetId) {
       try {
         const { data } = await tweetsAPI.getSingleTweet({ tweetId })
-        if (data.status !== 'success') {
-          throw new Error(data.message)
-        }
         const { id, description, createdAt, User, likeCounts, replyCounts, isLike } = data
         this.tweet = {
           id,

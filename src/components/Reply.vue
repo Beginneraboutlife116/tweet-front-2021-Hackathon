@@ -3,10 +3,10 @@
     <div class="reply-container">
       <div class="reply">
         <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-        <router-link :to="`/home/${reply.user.id}`" class="reply__avatar">
+        <router-link :to="`/home/${reply.User.id}`" class="reply__avatar">
           <img
             class="reply__avatar--img"
-            :src="reply.user.avatar || 'https://fakeimg.pl/300/'"
+            :src="reply.User.avatar || 'https://fakeimg.pl/300/'"
             alt="avatar"
             aria-label="avatar"
           />
@@ -14,10 +14,10 @@
         <div class="reply__info">
           <div class="reply__info-replyBy">
             <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-            <router-link :to="`/home/${reply.user.id}`">
-              <span class="name">{{ reply.user.name || "NoName" }} </span>
+            <router-link :to="`/home/${reply.User.id}`">
+              <span class="name">{{ reply.User.name || "NoName" }} </span>
               <span class="account"
-                >@{{ reply.user.account }}・</span
+                >@{{ reply.User.account }}・</span
               >
             </router-link>
             <!-- 點擊時間連到當則推文/home/${top.id} -->
@@ -29,7 +29,7 @@
             <span class="reply__info-replyTo--text">回覆 </span>
             <!-- 發文者的資料需要從推文元件 回傳到這裡目前還無法獲取 先寫poster -->
             <router-link to="/home/1">
-            <span class="reply__info-replyTo--account">@{{ "poster" }}</span>
+            <span class="reply__info-replyTo--account">@{{ tweetAccount }}</span>
             </router-link>
           </div>
           <p class="reply__info-description">{{ reply.comment }}</p>
@@ -48,6 +48,10 @@ export default {
     initialReply: {
       type: Object,
       required: true
+    },
+    tweetAccount: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -56,13 +60,11 @@ export default {
         id: -1,
         comment: '',
         createdAt: '2001-12-02T16:44:25.000Z',
-        tweet: {
+        User: {
           id: -1,
-          user: {
-            id: -1,
-            account: '',
-            avatar: null
-          }
+          account: '',
+          avatar: '',
+          name: ''
         }
       }
     }

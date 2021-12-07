@@ -19,7 +19,7 @@
               <span class="account">@{{ tweet.User.account }}・</span>
             </router-link>
             <!-- 點擊時間連到當則推文 -->
-            <router-link :to="`/home/${tweet.id}`">
+            <router-link :to="`/home/tweets/${tweet.id}`">
               <span class="timeStamp">{{ tweet.createdAt | fromNow }}</span>
             </router-link>
           </div>
