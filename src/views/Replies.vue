@@ -149,6 +149,7 @@ const dummyData = {
 }
 
 export default {
+  name: 'Replies',
   mixins: [fromNowFilter],
   components: {
     Reply
