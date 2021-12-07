@@ -9,21 +9,21 @@
       <main class="modal__body">
         <div class="modal__postBy" v-if="!(modal === 'tweet')">
           <div class="modal__postBy-avatar">
-            <router-link to=""><img src="https://fakeimg.pl/300/" alt="" class="modal__postBy-avatar--img"></router-link>
+            <router-link to=""><img :src="fromReplies.User.avatar || 'https://fakeimg.pl/300/'" alt="" class="modal__postBy-avatar--img"></router-link>
           </div>
           <div class="modal__postBy-detail">
             <p class="modal__postBy-detail-info">
-              <span class="modal__postBy-detail-info--name"><router-link to="">Apple</router-link></span>
-              <span class="modal__postBy-detail-info--account"><router-link to="">@apple</router-link></span>
+              <span class="modal__postBy-detail-info--name"><router-link to=""> {{fromReplies.User.name}} </router-link></span>
+              <span class="modal__postBy-detail-info--account"><router-link to="">@{{fromReplies.User.account}}</router-link></span>
               ・<span class="modal__postBy-detail-info--createdAt">asd</span>
             </p>
             <article class="modal__postBy-detail--content">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa repudiandae est quia impedit odio non! Est eligendi dolore obcaecati itaque!
+              {{ fromReplies.description }}
             </article>
             <p class="modal__postBy-detail-replyTo">
               <span>回覆給</span>
               <router-link to="">
-                <span class="modal__postBy-detail-replyTo--account">@apple</span>
+                <span class="modal__postBy-detail-replyTo--account">@{{fromReplies.User.account}}</span>
               </router-link>
             </p>
           </div>
@@ -50,6 +50,7 @@
 <script>
 import { Toast } from './../mixins/helpers'
 import tweetsAPI from './../apis/tweets'
+import repliesAPI from './../apis/replies'
 
 export default {
   name: 'NewTweet',
@@ -65,6 +66,9 @@ export default {
     },
     modal () {
       return this.$store.state.modal
+    },
+    fromReplies () {
+      return this.$store.state.fromReplies
     }
   },
   methods: {
@@ -84,13 +88,16 @@ export default {
         })
         return
       }
+
+      if (this.modal === 'reply') {
+        this.updateTweetReplies(this.fromReplies.id, this.text)
+        return
+      }
+
       if (this.$route.name !== 'home') {
         this.updateTweets()
       } else {
-        this.$store.commit('recordText', {
-          text: this.text,
-          action: this.modal
-        })
+        this.$store.commit('recordText', this.text)
         this.text = ''
         this.$store.commit('clearModal')
       }
@@ -115,8 +122,26 @@ export default {
         })
       }
     },
-    updateTweetReplies () {
-      // TODO: 將資料上傳
+    async updateTweetReplies (tweetId, comment) {
+      try {
+        const { data } = await repliesAPI.postReplyUnderTweet({
+          tweetId, comment
+        })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        Toast.fire({
+          icon: 'success',
+          title: '成功回覆該則貼文！'
+        })
+        this.text = ''
+        this.$store.commit('clearModal')
+      } catch (err) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法上傳回覆，請稍後再試'
+        })
+      }
     }
   }
 }

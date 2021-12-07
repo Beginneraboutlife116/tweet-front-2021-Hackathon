@@ -47,7 +47,15 @@
         <div class="main__post__action">
           <!-- 點擊回覆打開回覆modal -->
           <span
-            @click.prevent.stop="$store.commit('toggleModal', 'reply')"
+            @click.prevent.stop="$store.commit('toggleModal', {
+              reply: 'reply',
+              id: tweet.id,
+              description: tweet.description,
+              createdAt: tweet.createdAt,
+              User: {
+                ...tweet.User
+              }
+            })"
             class="main__post__action--reply"
           >
             <svg
