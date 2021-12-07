@@ -1,66 +1,81 @@
 <template>
   <div>
-   <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
+    <Spinner v-if="isLoading" />
+    <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Tweet from './../components/Tweet'
-const dummyData = {
-  tweetLikes: [
-    {
-      tweet: {
-        id: 1,
-        description: '123123123',
-        createdAt: '2021-12-02T16:44:25.000Z',
-        User: {
-          id: 1,
-          account: 'account',
-          name: 'name',
-          avatar: null
-        },
-        likeCounts: 5,
-        replyCounts: 3
-      }
-    },
-    {
-      tweet: {
-        id: 2,
-        description: '123123123',
-        createdAt: '2021-12-02T16:44:25.000Z',
-        User: {
-          id: 2,
-          account: 'account',
-          name: 'name',
-          avatar: null
-        },
-        likeCounts: 2,
-        replyCounts: 3
-      }
-    }
-  ]
-}
+import { Toast } from './../mixins/helpers'
+import usersAPI from './../apis/users'
+import Spinner from './../components/Spinner'
+
 export default {
   name: 'profile-likes',
   components: {
-    Tweet
+    Tweet,
+    Spinner
   },
   data () {
     return {
-      tweets: []
+      tweets: [],
+      isProcessing: false,
+      isLoading: true
     }
   },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   created () {
-    this.fetchTweets()
+    const { userId } = this.$route.params
+    this.fetchTweets(userId)
+  },
+  beforeRouteUpdate (to, from, next) {
+    const { userId } = to.params
+    this.fetchTweets(userId)
+    next()
   },
   methods: {
-    fetchTweets () {
-      this.tweets = dummyData.tweetLikes.map((data) => {
-        return {
-          ...data.tweet,
-          isLike: true
+    async fetchTweets (userId) {
+      try {
+        this.isProcessing = true
+        this.isLoading = true
+        const { data } = await usersAPI.getUserProfileLikes(userId)
+
+        if (data.status === 'error') {
+          throw new Error(data.message)
         }
-      })
+
+        this.tweets = data.map((data) => {
+          const userId = data.Tweet.User.id
+          const { id, createdAt, description, likeCounts, replyCounts } =
+            data.Tweet
+          const { account, avatar, name } = data.Tweet.User
+          return {
+            id,
+            description,
+            createdAt,
+            User: {
+              id: userId,
+              account,
+              name,
+              avatar
+            },
+            likeCounts,
+            replyCounts,
+            isLike: true
+          }
+        })
+        this.isLoading = false
+      } catch (error) {
+        this.isLoading = false
+        Toast.fire({
+          icon: 'error',
+          title: '無法獲取個人資料，請稍後再嘗試'
+        })
+      }
     }
   }
 }

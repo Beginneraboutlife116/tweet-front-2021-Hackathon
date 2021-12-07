@@ -6,7 +6,7 @@
         <router-link :to="`/home/${reply.tweet.User.id}`" class="reply__avatar">
           <img
             class="reply__avatar--img"
-            :src="reply.tweet.User.avatar || 'https://fakeimg.pl/300/'"
+            :src="reply.tweet.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
             alt="avatar"
             aria-label="avatar"
           />

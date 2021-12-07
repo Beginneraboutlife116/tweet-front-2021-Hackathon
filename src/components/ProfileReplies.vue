@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Spinner v-if="isLoading" />
     <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" />
   </div>
 </template>
@@ -7,39 +8,15 @@
 <script>
 import { mapState } from 'vuex'
 import Reply from './../components/Reply'
-const dummyData = {
-  replies: [
-    {
-      id: 1,
-      comment: 'amet Lorem ipsum dolor ',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      tweet: {
-        id: 1,
-        User: {
-          id: 11,
-          account: 'account'
-        }
-      }
-    },
-    {
-      id: 2,
-      comment: 'amet Lorem ipsum dolor ',
-      createdAt: '2021-12-02T16:44:25.000Z',
-      tweet: {
-        id: 2,
-        User: {
-          id: 2,
-          account: 'account2'
-        }
-      }
-    }
+import usersAPI from './../apis/users'
+import { Toast } from './../mixins/helpers'
+import Spinner from './../components/Spinner'
 
-  ]
-}
 export default {
   name: 'profile-replies',
   components: {
-    Reply
+    Reply,
+    Spinner
   },
   data () {
     return {
@@ -47,34 +24,51 @@ export default {
     }
   },
   created () {
-    this.fetchReplies()
+    const { userId } = this.$route.params
+    this.fetchReplies(userId)
+  },
+  beforeRouteUpdate (to, from, next) {
+    const { userId } = to.params
+    this.fetchReplies(userId)
+    next()
   },
   computed: {
     ...mapState(['currentUser'])
   },
   methods: {
-    fetchReplies () {
-      this.replies = dummyData.replies.map((data) => {
-        const { id, comment, createdAt, tweet } = data
-        const tweetId = tweet.id
-        const UserId = tweet.User.id
-        const account = tweet.User.account
-        const avatar = this.currentUser.avatar
-        return {
-          id,
-          comment,
-          createdAt,
-          tweet: {
-            id: tweetId,
-            User: {
-              id: UserId,
-              account,
-              avatar
+    async fetchReplies (userId) {
+      try {
+        this.isProcessing = true
+        this.isLoading = true
+        const { data } = await usersAPI.getUserProfileReplies(userId)
+        this.replies = data.map((data) => {
+          const { id, comment, createdAt } = data
+          const tweetId = data.Tweet.id
+          const userId = data.User.id
+          const { avatar, name, account } = this.currentUser
+          return {
+            id,
+            comment,
+            createdAt,
+            tweet: {
+              id: tweetId,
+              User: {
+                id: userId,
+                name,
+                account,
+                avatar
+              }
             }
           }
-
-        }
-      })
+        })
+        this.isLoading = false
+      } catch (error) {
+        this.isLoading = false
+        Toast.fire({
+          icon: 'error',
+          title: '無法獲取個人資料，請稍後再嘗試'
+        })
+      }
     }
   }
 }

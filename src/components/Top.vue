@@ -115,7 +115,7 @@ export default {
         return {
           ...data,
           name: data.name || 'NoName',
-          image: data.image || 'https://fakeimg.pl/300/'
+          image: data.image || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
         }
       })
     },

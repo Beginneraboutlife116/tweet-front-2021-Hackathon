@@ -25,13 +25,13 @@
       <div class="main__profile__img">
         <img
           class="main__profile__img--cover"
-          :src="profile.avatar || 'https://fakeimg.pl/600x200/'"
+          :src="profile.avatar || 'https://fakeimg.pl/600x200/?text=Add%20Your%20Cover'"
           alt="avatar"
           aria-label="avatar"
         />
         <img
           class="main__profile__img--avatar"
-          :src="profile.avatar || 'https://fakeimg.pl/140/'"
+          :src="profile.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
           alt="avatar"
           aria-label="avatar"
         />
