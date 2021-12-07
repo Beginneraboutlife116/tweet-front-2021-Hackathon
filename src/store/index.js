@@ -6,12 +6,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     currentUser: {
-      id: -1,
+      id: 10,
       account: 'account0',
       name: '',
       email: '',
       role: 'user',
-      avatar: null
+      avatar: ''
     },
     isAuthenticated: true,
     token: '',

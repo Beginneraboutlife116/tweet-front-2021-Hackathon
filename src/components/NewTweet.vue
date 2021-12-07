@@ -30,7 +30,7 @@
         </div>
         <div class="modal__user">
           <div class="modal__user-avatar">
-            <router-link to=""><img :src="currentUser.avatar || 'https://fakeimg.pl/300/'" alt="" class="modal__user-avatar--img"></router-link>
+            <router-link to=""><img :src="currentUser.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="modal__user-avatar--img"></router-link>
           </div>
           <div class="modal__user-reply">
             <textarea class="modal__user-reply--textarea" v-model.trim="text" :placeholder="modal === 'tweet' ? '有什麼新鮮事？' : '推你的回覆'" rows="5"/>

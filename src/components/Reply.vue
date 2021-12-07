@@ -7,6 +7,10 @@
           <img
             class="reply__avatar--img"
             :src="reply.User.avatar || 'https://fakeimg.pl/300/'"
+        <router-link :to="`/home/${reply.tweet.User.id}`" class="reply__avatar">
+          <img
+            class="reply__avatar--img"
+            :src="reply.tweet.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
             alt="avatar"
             aria-label="avatar"
           />
@@ -18,10 +22,14 @@
               <span class="name">{{ reply.User.name || "NoName" }} </span>
               <span class="account"
                 >@{{ reply.User.account }}・</span
+            <router-link :to="`/home/${reply.tweet.User.id}`">
+              <span class="name">{{ reply.tweet.User.name || "NoName" }} </span>
+              <span class="account"
+                >@{{ reply.tweet.User.account }}・</span
               >
             </router-link>
-            <!-- 點擊時間連到當則推文/home/${top.id} -->
-            <router-link :to="`/home/tweets/${reply.id}`">
+            <!-- 點擊時間連到當則推文-->
+            <router-link :to=" reply.tweet.id ? `/home/tweets/${reply.tweet.id}` : `/home/tweets/${this.$route.params}`">
               <span class="timeStamp">{{ reply.createdAt | fromNow }}</span>
             </router-link>
           </div>
@@ -60,11 +68,13 @@ export default {
         id: -1,
         comment: '',
         createdAt: '2001-12-02T16:44:25.000Z',
-        User: {
+        tweet: {
           id: -1,
-          account: '',
-          avatar: '',
-          name: ''
+          User: {
+            id: -1,
+            account: '',
+            avatar: null
+          }
         }
       }
     }
