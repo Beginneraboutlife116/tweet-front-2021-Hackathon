@@ -3,10 +3,10 @@
     <div class="reply-container">
       <div class="reply">
         <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-        <router-link :to="`/home/${reply.user.id}`" class="reply__avatar">
+        <router-link :to="`/home/${reply.tweet.User.id}`" class="reply__avatar">
           <img
             class="reply__avatar--img"
-            :src="reply.user.avatar || 'https://fakeimg.pl/300/'"
+            :src="reply.tweet.User.avatar || 'https://fakeimg.pl/300/'"
             alt="avatar"
             aria-label="avatar"
           />
@@ -14,14 +14,14 @@
         <div class="reply__info">
           <div class="reply__info-replyBy">
             <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-            <router-link :to="`/home/${reply.user.id}`">
-              <span class="name">{{ reply.user.name || "NoName" }} </span>
+            <router-link :to="`/home/${reply.tweet.User.id}`">
+              <span class="name">{{ reply.tweet.User.name || "NoName" }} </span>
               <span class="account"
-                >@{{ reply.user.account }}・</span
+                >@{{ reply.tweet.User.account }}・</span
               >
             </router-link>
-            <!-- 點擊時間連到當則推文/home/${top.id} -->
-            <router-link :to="`/home/tweets/${reply.id}`">
+            <!-- 點擊時間連到當則推文-->
+            <router-link :to=" reply.tweet.id ? `/home/tweets/${reply.tweet.id}` : `/home/tweets/${this.$route.params}`">
               <span class="timeStamp">{{ reply.createdAt | fromNow }}</span>
             </router-link>
           </div>
@@ -58,7 +58,7 @@ export default {
         createdAt: '2001-12-02T16:44:25.000Z',
         tweet: {
           id: -1,
-          user: {
+          User: {
             id: -1,
             account: '',
             avatar: null

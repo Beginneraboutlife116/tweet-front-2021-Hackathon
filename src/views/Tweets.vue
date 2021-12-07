@@ -69,6 +69,7 @@ export default {
         if (data.status === 'error') {
           throw new Error(data.message)
         }
+
         this.tweets = data.map((data) => {
           return {
             ...data
