@@ -50,6 +50,7 @@
               </svg>
               <span>{{ tweet.replyCounts }}</span>
             </span>
+            </router-link>
             <!-- 點擊喜歡愛心亮起 -->
             <span
               @click.prevent.stop="toggleLikeModal(tweet.id, tweet.isLike)"
