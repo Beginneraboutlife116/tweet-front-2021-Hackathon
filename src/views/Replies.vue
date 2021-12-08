@@ -47,7 +47,15 @@
         <div class="main__post__action">
           <!-- 點擊回覆打開回覆modal -->
           <span
-            @click.prevent.stop="toggleReplyModal(tweet.id)"
+            @click.prevent.stop="$store.commit('toggleModal', {
+              reply: 'reply',
+              id: tweet.id,
+              description: tweet.description,
+              createdAt: tweet.createdAt,
+              User: {
+                ...tweet.User
+              }
+            })"
             class="main__post__action--reply"
           >
             <svg
@@ -98,115 +106,96 @@
         </div>
       </div>
     </header>
-    <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" />
+    <template>
+      <Spinner v-if="isLoading"/>
+      <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" :initial-tweet="tweet" v-else/>
+    </template>
   </div>
 </template>
 
 <script>
 import Reply from './../components/Reply'
-import { fromNowFilter } from './../mixins/helpers'
-const dummyData = {
-  replies: [
-    {
-      id: 1,
-      comment:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2011-12-02T18:42:25.000Z',
-      User: {
-        id: 11,
-        name: 'name11',
-        account: 'account11',
-        avatar: null
-      }
-    },
-    {
-      id: 2,
-      comment:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2011-12-02T16:44:25.000Z',
-      User: {
-        id: 22,
-        name: 'name22',
-        account: 'account22',
-        avatar: null
-      }
-    },
-    {
-      id: 3,
-      comment:
-        'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit amet',
-      createdAt: '2011-12-02T16:44:25.000Z',
-      User: {
-        id: 33,
-        name: 'name33',
-        account: 'account33',
-        avatar: null
-      }
-    }
-  ]
-}
-
-const postData = {
-  id: 0,
-  description:
-    'Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ',
-  createdAt: '2011-12-02T04:24:25.000Z',
-  User: {
-    id: 1,
-    account: 'account1',
-    name: 'name1',
-    avatar: null
-  },
-  likeCounts: 10,
-  replyCounts: 5,
-  isLike: true
-}
+import Spinner from './../components/Spinner.vue'
+import { fromNowFilter, Toast } from './../mixins/helpers'
+import tweetsAPI from './../apis/tweets'
+import repliesAPI from './../apis/replies'
 
 export default {
+  name: 'Replies',
   mixins: [fromNowFilter],
   components: {
-    Reply
+    Reply,
+    Spinner
   },
   data () {
     return {
       replies: [],
       tweet: {
-        id: 0,
-        description:
-          'amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sitLorem ipsum dolor sit Lorem ipsum dolor sit amet Lorem ipsum',
-        createdAt: '2011-12-02T16:44:25.000Z',
+        id: -1,
+        description: '',
+        createdAt: '',
         User: {
-          id: 1,
-          account: 'account1',
-          name: 'name1',
-          avatar: null
+          id: -1,
+          account: '',
+          name: '',
+          avatar: ''
         },
-        likeCounts: 10,
-        replyCounts: 5,
-        isLike: true
-      }
+        likeCounts: 0,
+        replyCounts: 0,
+        isLike: false
+      },
+      isLoading: true
+    }
+  },
+  computed: {
+    reply () {
+      return this.$store.state.reply
+    }
+  },
+  watch: {
+    reply () {
+      this.fetchReplies(this.tweet.id)
     }
   },
   created () {
-    this.fetchReplies()
-    this.fetchPost()
+    const { tweetId } = this.$route.params
+    this.fetchPost(tweetId)
+    this.fetchReplies(tweetId)
   },
   methods: {
-    fetchReplies () {
-      this.replies = dummyData.replies.map((data) => {
-        return {
-          ...data
-        }
-      })
-    },
-    fetchPost () {
-      this.tweet = {
-        ...postData
+    async fetchReplies (tweetId) {
+      try {
+        this.isLoading = true
+        const { data } = await repliesAPI.getReplies({ tweetId })
+        this.replies = data
+        this.isLoading = false
+      } catch (err) {
+        this.isLoading = false
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得回覆資料，請稍後再試'
+        })
       }
     },
-    toggleReplyModal (tweetId) {
-      // 開啟modal
-      console.log('open reply modal', tweetId)
+    async fetchPost (tweetId) {
+      try {
+        const { data } = await tweetsAPI.getSingleTweet({ tweetId })
+        const { id, description, createdAt, User, likeCounts, replyCounts, isLike } = data
+        this.tweet = {
+          id,
+          description,
+          createdAt,
+          User,
+          likeCounts,
+          replyCounts,
+          isLike
+        }
+      } catch (err) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得該篇推文，請稍後再試'
+        })
+      }
     },
     toggleLikeModal (tweetId) {
       this.tweet = {
@@ -240,7 +229,7 @@ export default {
       font-weight: bold;
     }
     svg {
-      margin: 1.5rem 4.1rem 1.6rem 0;
+      margin: 1.5rem 4.1rem 1.5rem 1.5rem;
     }
   }
 }

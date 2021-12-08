@@ -26,22 +26,25 @@
       </div>
     </header>
     <hr class="tweets-line" />
-    <template v-if="!isLoading">
-      <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
+    <template>
+      <Spinner v-if='isLoading'/>
+      <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" v-else/>
     </template>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Tweet from './../components/Tweet'
+import Spinner from './../components/Spinner.vue'
+import { mapState } from 'vuex'
 import { Toast } from './../mixins/helpers'
 import tweetsAPI from './../apis/tweets'
 
 export default {
   name: 'tweets',
   components: {
-    Tweet
+    Tweet,
+    Spinner
   },
   data () {
     return {
