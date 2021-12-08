@@ -9,7 +9,7 @@
       <main class="modal__body">
         <div class="modal__postBy" v-if="!(modal === 'tweet')">
           <div class="modal__postBy-avatar">
-            <router-link to=""><img :src="fromReplies.User.avatar || 'https://fakeimg.pl/300/'" alt="" class="modal__postBy-avatar--img"></router-link>
+            <router-link to=""><img :src="fromReplies.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="modal__postBy-avatar--img"></router-link>
           </div>
           <div class="modal__postBy-detail">
             <p class="modal__postBy-detail-info">
@@ -144,6 +144,7 @@ export default {
         })
         this.text = ''
         this.$store.commit('clearModal')
+        this.isProcessing = false
       } catch (err) {
         this.isProcessing = false
         Toast.fire({

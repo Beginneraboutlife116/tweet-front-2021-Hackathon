@@ -106,12 +106,16 @@
         </div>
       </div>
     </header>
-    <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" :initial-tweet="tweet"/>
+    <template>
+      <Spinner v-if="isLoading"/>
+      <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" :initial-tweet="tweet" v-else/>
+    </template>
   </div>
 </template>
 
 <script>
 import Reply from './../components/Reply'
+import Spinner from './../components/Spinner.vue'
 import { fromNowFilter, Toast } from './../mixins/helpers'
 import tweetsAPI from './../apis/tweets'
 import repliesAPI from './../apis/replies'
@@ -120,7 +124,8 @@ export default {
   name: 'Replies',
   mixins: [fromNowFilter],
   components: {
-    Reply
+    Reply,
+    Spinner
   },
   data () {
     return {
@@ -138,7 +143,8 @@ export default {
         likeCounts: 0,
         replyCounts: 0,
         isLike: false
-      }
+      },
+      isLoading: true
     }
   },
   computed: {
@@ -159,14 +165,16 @@ export default {
   methods: {
     async fetchReplies (tweetId) {
       try {
+        this.isLoading = true
         const { data } = await repliesAPI.getReplies({ tweetId })
         this.replies = data
+        this.isLoading = false
       } catch (err) {
+        this.isLoading = false
         Toast.fire({
           icon: 'error',
           title: '無法取得回覆資料，請稍後再試'
         })
-        console.log(err)
       }
     },
     async fetchPost (tweetId) {
