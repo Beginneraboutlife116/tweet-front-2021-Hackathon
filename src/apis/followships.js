@@ -7,5 +7,4 @@ export default {
   getFollowers (userId) {
     return apiHelper.get(`/users/${userId}/followers`)
   }
-
 }

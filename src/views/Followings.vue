@@ -34,46 +34,11 @@
         ><p>正在跟隨</p></router-link
       >
     </div>
-    <div
+    <Followship
       v-for="following in followings"
       :key="following.followingId"
-      class="follow"
-    >
-      <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-      <router-link
-        :to="`/home/${following.followingId}`"
-        class="follow__avatar"
-      >
-        <img
-          class="follow__avatar--img"
-          :src="
-            following.avatar ||
-            'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
-          "
-          alt="avatar"
-          aria-label="avatar"
-        />
-      </router-link>
-      <div class="follow__info">
-        <div class="follow__info-following">
-          <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-          <router-link :to="`/home/${following.followingId}`">
-            <p class="name">{{ following.name || "NoName" }}</p>
-            <p class="account">@{{ following.account }}</p>
-          </router-link>
-        </div>
-        <p class="follow__info-description">
-          {{ following.introduction || "（作者目前還沒有自我介紹內容）" }}
-        </p>
-      </div>
-      <button
-        class="active"
-        @click.stop.prevent="toggleFollow(following.followingId)"
-        :class="{ active: following.isFollowing }"
-      >
-        {{ following.isFollowing ? "正在跟隨" : "跟隨" }}
-      </button>
-    </div>
+      :initialFollow="following"
+    />
     <Spinner v-if="isLoading" />
   </div>
 </template>
@@ -81,11 +46,13 @@
 <script>
 import { mapState } from 'vuex'
 import { Toast } from './../mixins/helpers'
-import followAPI from './../apis/followship'
+import Followship from './../components/Followship'
+import followAPI from './../apis/followships'
 import Spinner from './../components/Spinner'
 export default {
   name: 'Followings',
   components: {
+    Followship,
     Spinner
   },
   data () {
@@ -130,6 +97,7 @@ export default {
     },
     toggleFollow (userId) {
       // TODO: 將資料傳給後端
+      this.followers.isFollowing = !this.followers.isFollowing
     }
   }
 }
@@ -188,52 +156,6 @@ export default {
       color: var(--main-color);
       border-bottom: 2px solid var(--main-color);
     }
-  }
-}
-
-.follow {
-  position: relative;
-  display: flex;
-  padding: 1rem 1rem 0rem 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-  &__avatar {
-    margin-top: 0.3rem;
-    margin-right: 1rem;
-    img {
-      max-width: 5rem;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-  }
-  &__info {
-    &-following {
-      margin: 0.4rem 0 0.5rem 0;
-      font-size: $font-md;
-      line-height: $font-md;
-      .name {
-        margin-right: 0.5rem;
-        font-weight: bold;
-        color: var(--font-color);
-      }
-      .account {
-        margin: 0.5rem 0;
-        color: var(--label-color);
-      }
-    }
-    &-description {
-      margin-bottom: 1rem;
-      font-size: $font-md;
-      color: var(--font-color);
-    }
-  }
-  button {
-    @extend %buttonStyle;
-    position: absolute;
-    right: 1.5rem;
-    cursor: pointer;
-    height: 2.5rem;
-    width: 9rem;
-    font-size: $font-md;
   }
 }
 </style>

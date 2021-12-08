@@ -33,47 +33,12 @@
         class="main__follow__tabs--link"
         ><p>正在跟隨</p></router-link
       >
-    </div>
-    <div
+      </div>
+      <Followship
       v-for="follower in followers"
       :key="follower.followerId"
-      class="follow"
-    >
-      <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-      <router-link
-        :to="`/home/${follower.followerId}`"
-        class="follow__avatar"
-      >
-        <img
-          class="follow__avatar--img"
-          :src="
-            follower.avatar ||
-            'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
-          "
-          alt="avatar"
-          aria-label="avatar"
-        />
-      </router-link>
-      <div class="follow__info">
-        <div class="follow__info-follower">
-          <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-          <router-link :to="`/home/${follower.followerId}`">
-            <p class="name">{{ follower.name || "NoName" }}</p>
-            <p class="account">@{{ follower.account }}</p>
-          </router-link>
-        </div>
-        <p class="follow__info-description">
-          {{ follower.introduction || "（作者目前還沒有自我介紹內容）" }}
-        </p>
-      </div>
-      <button
-        class="active"
-        @click.stop.prevent="toggleFollow(follower.followerId)"
-        :class="{ active: following.isFollowing }"
-      >
-        追隨
-      </button>
-    </div>
+      :initialFollow="follower"
+    />
     <Spinner v-if="isLoading" />
   </div>
 </template>
@@ -81,11 +46,13 @@
 <script>
 import { mapState } from 'vuex'
 import { Toast } from './../mixins/helpers'
-import followAPI from './../apis/followship'
+import Followship from './../components/Followship'
+import followAPI from '../apis/followships'
 import Spinner from './../components/Spinner'
 export default {
   name: 'Followers',
   components: {
+    Followship,
     Spinner
   },
   data () {
