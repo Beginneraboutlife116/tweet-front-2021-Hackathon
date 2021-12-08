@@ -19,7 +19,7 @@
               <p class="top__user-info--account"> @{{top.account}} </p>
             </router-link>
           </div>
-          <button v-if="top.id !== currentUser.id" class="top__user-info--follow" :class="{active: top.isFollowing}" @click.stop.prevent="top.isFollowing ? cancelFollow(top.id) : addFollow(top.id)"> {{top.isFollowing ? '正在跟隨' : '跟隨'}} </button>
+          <button v-if="top.id !== currentUser.id" class="top__user-info--follow" :class="{active: top.isFollowing, disabled: top.isProcessing}" :disabled="top.isProcessing" @click.stop.prevent="top.isFollowing ? cancelFollow(top.id) : addFollow(top.id)"> {{top.isFollowing ? '正在跟隨' : '跟隨'}} </button>
         </div>
       </div>
     </main>
@@ -35,8 +35,7 @@ export default {
   name: 'Top',
   data () {
     return {
-      tops: [],
-      isProcessing: false
+      tops: []
     }
   },
   computed: {
@@ -50,7 +49,8 @@ export default {
           return {
             ...data,
             name: data.name || 'NoName',
-            avatar: data.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
+            avatar: data.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg',
+            isProcessing: false
           }
         })
       } catch (err) {
@@ -60,9 +60,23 @@ export default {
         })
       }
     },
+    toggleProcessing (id) {
+      this.tops = this.tops.map(top => {
+        if (top.id === id) {
+          return {
+            ...top,
+            isProcessing: !top.isProcessing
+          }
+        } else {
+          return {
+            ...top
+          }
+        }
+      })
+    },
     async addFollow (id) {
-      // TODO: 將資料傳給後端
       try {
+        this.toggleProcessing(id)
         const { data } = await followshipsAPI.addFollow(id)
         if (data.status !== 'success') {
           throw new Error(data.message)
@@ -71,7 +85,8 @@ export default {
           if (top.id === id) {
             return {
               ...top,
-              isFollowing: true
+              isFollowing: true,
+              isProcessing: !top.isProcessing
             }
           } else {
             return {
@@ -84,6 +99,7 @@ export default {
           title: '追蹤成功！'
         })
       } catch (err) {
+        this.toggleProcessing(id)
         Toast.fire({
           icon: 'error',
           title: '無法追蹤或取消追蹤該使用者，請稍後再試'
@@ -92,12 +108,14 @@ export default {
     },
     async cancelFollow (id) {
       try {
+        this.toggleProcessing(id)
         const { data } = await followshipsAPI.cancelFollow(id)
         this.tops = this.tops.map(top => {
           if (top.id === id) {
             return {
               ...top,
-              isFollowing: false
+              isFollowing: false,
+              isProcessing: !top.isProcessing
             }
           } else {
             return {
@@ -110,6 +128,7 @@ export default {
           title: `${data.message}!`
         })
       } catch (err) {
+        this.toggleProcessing(id)
         Toast.fire({
           icon: 'error',
           title: '無法追蹤或取消追蹤該使用者，請稍後再試'
