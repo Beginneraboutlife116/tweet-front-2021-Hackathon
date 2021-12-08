@@ -61,7 +61,8 @@ export default {
           User: {
             id: -1,
             account: '',
-            avatar: null
+            avatar: null,
+            name: ''
           }
         }
       }

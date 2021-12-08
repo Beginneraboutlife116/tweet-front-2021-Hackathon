@@ -6,7 +6,10 @@
         <router-link :to="`/home/${tweet.User.id}`" class="tweet__avatar">
           <img
             class="tweet__avatar--img"
-            :src="tweet.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
+            :src="
+              tweet.User.avatar ||
+              'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
+            "
             alt="avatar"
             aria-label="avatar"
           />
@@ -15,7 +18,7 @@
           <div class="tweet__info-postBy">
             <!-- 點擊貼文中使用者頭像/name/account時，能到profile頁 -->
             <router-link :to="`/home/${tweet.User.id}`">
-              <span class="name">{{ tweet.User.name || 'NoName'}} </span>
+              <span class="name">{{ tweet.User.name || "NoName" }} </span>
               <span class="account">@{{ tweet.User.account }}・</span>
             </router-link>
             <!-- 點擊時間連到當則推文 -->
@@ -29,7 +32,10 @@
           </router-link>
           <div class="tweet__info-count">
             <!-- 點擊回覆打開回覆modal -->
-            <span @click.prevent.stop="toggleReplyModal(tweet.id)" class="tweet__info-count--reply">
+            <span
+              @click.prevent.stop="toggleReplyModal()"
+              class="tweet__info-count--reply"
+            >
               <svg
                 width="15"
                 height="15"
@@ -42,12 +48,13 @@
                   fill="#657786"
                 />
               </svg>
-              <span>{{
-                tweet.replyCounts
-              }}</span>
+              <span>{{ tweet.replyCounts }}</span>
             </span>
             <!-- 點擊喜歡愛心亮起 -->
-            <span @click.prevent.stop="toggleLikeModal(tweet.id)" class="tweet__info-count--like">
+            <span
+              @click.prevent.stop="toggleLikeModal(tweet.id, tweet.isLike)"
+              class="tweet__info-count--like"
+            >
               <svg
                 v-show="!tweet.isLike"
                 width="15"
@@ -74,9 +81,7 @@
                   fill="#E0245E"
                 />
               </svg>
-              <span>{{
-                tweet.likeCounts
-              }}</span>
+              <span>{{ tweet.likeCounts }}</span>
             </span>
           </div>
         </div>
@@ -86,7 +91,9 @@
 </template>
 
 <script>
-import { fromNowFilter } from './../mixins/helpers'
+import tweetsAPI from './../apis/tweets'
+import { fromNowFilter, Toast } from './../mixins/helpers'
+
 export default {
   mixins: [fromNowFilter],
   name: 'Tweet',
@@ -122,15 +129,34 @@ export default {
       // 開啟modal
       console.log('open reply modal', tweetId)
     },
-    toggleLikeModal (tweetId) {
-      this.tweet = {
-        ...this.tweet,
-        isLike: !this.tweet.isLike
-      }
-      if (this.tweet.isLike === true) {
-        this.tweet.likeCounts++
-      } else {
-        this.tweet.likeCounts--
+    async toggleLikeModal (tweetId, tweetIsLike) {
+      try {
+        console.log(tweetId, tweetIsLike)
+        if (tweetIsLike) {
+          const { data } = await tweetsAPI.postUnlike(tweetId)
+          if (data.status === 'error') {
+            throw new Error(data.message)
+          }
+        } else {
+          const { data } = await tweetsAPI.postLike(tweetId)
+          if (data.status === 'error') {
+            throw new Error(data.message)
+          }
+        }
+        this.tweet = {
+          ...this.tweet,
+          isLike: !this.tweet.isLike
+        }
+        if (!tweetIsLike) {
+          this.tweet.likeCounts++
+        } else {
+          this.tweet.likeCounts--
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法切換喜歡狀態，請稍後再嘗試'
+        })
       }
     },
     fetchTweet () {

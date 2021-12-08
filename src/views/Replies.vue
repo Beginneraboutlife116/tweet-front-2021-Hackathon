@@ -65,7 +65,7 @@
           </span>
           <!-- 點擊喜歡愛心亮起 -->
           <span
-            @click.prevent.stop="toggleLikeModal(tweet.id)"
+            @click.prevent.stop="toggleLikeModal(tweet.id, tweet.isLike)"
             class="reply__info-count--like"
           >
             <svg
@@ -104,7 +104,8 @@
 
 <script>
 import Reply from './../components/Reply'
-import { fromNowFilter } from './../mixins/helpers'
+import { fromNowFilter, Toast } from './../mixins/helpers'
+import tweetsAPI from './../apis/tweets'
 const dummyData = {
   replies: [
     {
@@ -208,15 +209,34 @@ export default {
       // 開啟modal
       console.log('open reply modal', tweetId)
     },
-    toggleLikeModal (tweetId) {
-      this.tweet = {
-        ...this.tweet,
-        isLike: !this.tweet.isLike
-      }
-      if (this.tweet.isLike === true) {
-        this.tweet.likeCounts++
-      } else {
-        this.tweet.likeCounts--
+    async toggleLikeModal (tweetId, tweetIsLike) {
+      try {
+        console.log(tweetId, tweetIsLike)
+        if (tweetIsLike) {
+          const { data } = await tweetsAPI.postUnlike(tweetId)
+          if (data.status === 'error') {
+            throw new Error(data.message)
+          }
+        } else {
+          const { data } = await tweetsAPI.postLike(tweetId)
+          if (data.status === 'error') {
+            throw new Error(data.message)
+          }
+        }
+        this.tweet = {
+          ...this.tweet,
+          isLike: !this.tweet.isLike
+        }
+        if (!tweetIsLike) {
+          this.tweet.likeCounts++
+        } else {
+          this.tweet.likeCounts--
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法切換喜歡狀態，請稍後再嘗試'
+        })
       }
     }
   }

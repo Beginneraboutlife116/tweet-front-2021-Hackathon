@@ -6,5 +6,11 @@ export default {
   },
   postTweets ({ description }) {
     return apiHelper.post('/tweets/', { description })
+  },
+  postLike (tweetId) {
+    return apiHelper.post(`/tweets/${tweetId}/like`)
+  },
+  postUnlike (tweetId) {
+    return apiHelper.post(`/tweets/${tweetId}/unlike`)
   }
 }
