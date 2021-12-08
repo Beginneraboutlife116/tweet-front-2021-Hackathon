@@ -27,7 +27,7 @@
     <button
       @click.stop.prevent="toggleFollow(follow.followingId)"
       :class="{ active: follow.isFollowing }"
-      :disabled="currentUser.id === follow.followingId"
+      :disabled="currentUser.id === follow.followingId || currentUser.id === follow.followerId"
     >
       {{ follow.isFollowing ? "正在跟隨" : "跟隨" }}
     </button>

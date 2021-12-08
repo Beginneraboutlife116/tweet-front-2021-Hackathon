@@ -36,7 +36,7 @@
       </div>
       <Followship
       v-for="follower in followers"
-      :key="follower.following"
+      :key="follower.followerId"
       :initialFollow="follower"
     />
     <Spinner v-if="isLoading" />
