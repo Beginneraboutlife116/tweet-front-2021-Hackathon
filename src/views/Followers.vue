@@ -16,27 +16,27 @@
           />
         </svg>
         <div class="followers__header__title__wrapper">
-          <p class="name">{{ currentUser.name }}</p>
+          <p class="name">{{ profile.name }}</p>
           <!-- nodata now -->
-          <p class="tweetCounts">{{ 25 }} 推文</p>
+          <p class="tweetCounts">{{ profile.tweetCounts }} 推文</p>
         </div>
       </div>
     </header>
     <div class="main__follow__tabs">
       <router-link
-        :to="`/home/${currentUser.id}/followers`"
+        :to="`/home/${profile.id}/followers`"
         class="main__follow__tabs--link"
         ><p>跟隨者</p></router-link
       >
       <router-link
-        :to="`/home/${currentUser.id}/followings`"
+        :to="`/home/${profile.id}/followings`"
         class="main__follow__tabs--link"
         ><p>正在跟隨</p></router-link
       >
       </div>
       <Followship
       v-for="follower in followers"
-      :key="follower.followerId"
+      :key="follower.following"
       :initialFollow="follower"
     />
     <Spinner v-if="isLoading" />
@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import { Toast } from './../mixins/helpers'
+import usersAPI from './../apis/users'
 import Followship from './../components/Followship'
 import followAPI from '../apis/followships'
 import Spinner from './../components/Spinner'
@@ -57,20 +57,24 @@ export default {
   },
   data () {
     return {
-      followers: []
+      followers: [],
+      profile: {
+        id: 0,
+        name: 'user1',
+        tweetCounts: 0
+      }
     }
   },
   created () {
     const { userId } = this.$route.params
     this.fetchFollowers(userId)
+    this.fetchProfile(userId)
   },
   beforeRouteUpdate (to, from, next) {
     const { userId } = to.params
     this.fetchFollowers(userId)
+    this.fetchProfile(userId)
     next()
-  },
-  computed: {
-    ...mapState(['currentUser'])
   },
   methods: {
     async fetchFollowers (userId) {
@@ -95,9 +99,26 @@ export default {
         })
       }
     },
-    toggleFollow (userId) {
-      // TODO: 將資料傳給後端
-      this.followers.isFollowing = !this.followers.isFollowing
+    async fetchProfile (userId) {
+      try {
+        this.isProcessing = true
+        this.isLoading = true
+        const { data } = await usersAPI.getUserProfile(userId)
+        if (data.status === 'error') {
+          throw new Error(data.message)
+        }
+
+        this.profile = {
+          ...data
+        }
+        this.isLoading = false
+      } catch (error) {
+        this.isLoading = false
+        Toast.fire({
+          icon: 'error',
+          title: '無法獲取個人資料，請稍後再嘗試'
+        })
+      }
     }
   }
 }

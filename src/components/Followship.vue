@@ -1,7 +1,7 @@
 <template>
   <div class="follow">
     <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-    <router-link :to="`/home/${follow.id}`" class="follow__avatar">
+    <router-link :to="`/home/${follow.followingId}`" class="follow__avatar">
       <img
         class="follow__avatar--img"
         :src="
@@ -15,7 +15,7 @@
     <div class="follow__info">
       <div class="follow__info-followship">
         <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-        <router-link :to="`/home/${follow.id}`">
+        <router-link :to="`/home/${follow.followingId}`">
           <p class="name">{{ follow.name || "NoName" }}</p>
           <p class="account">@{{ follow.account }}</p>
         </router-link>
@@ -25,8 +25,7 @@
       </p>
     </div>
     <button
-      class="active"
-      @click.stop.prevent="toggleFollow(follow.followId)"
+      @click.stop.prevent="toggleFollow(follow.followingId)"
       :class="{ active: follow.isFollowing }"
     >
       {{ follow.isFollowing ? "正在跟隨" : "跟隨" }}
@@ -36,7 +35,7 @@
 
 <script>
 export default {
-  name: 'profile-replies',
+  name: 'Followship',
   props: {
     initialFollow: {
       type: Object,
@@ -51,7 +50,7 @@ export default {
         name: 'user2',
         avatar: null,
         introduction: null,
-        isFollowing: true
+        isFollowing: false
       }
     }
   },
@@ -62,6 +61,14 @@ export default {
     fetchFollow () {
       this.follow = {
         ...this.initialFollow
+      }
+      console.log(this.follow)
+    },
+    toggleFollow (userId) {
+      // TODO: 將資料傳給後端
+      this.follow = {
+        ...this.follow,
+        isFollowing: !this.follow.isFollowing
       }
     }
   },
