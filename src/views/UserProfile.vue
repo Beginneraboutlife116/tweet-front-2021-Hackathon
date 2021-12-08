@@ -107,9 +107,10 @@
             {{ profile.isFollowing ? "正在跟隨" : "跟隨" }}
           </button>
         </div>
-        <p class="name">{{ profile.name }}</p>
-        <p class="account">@{{ profile.account }}</p>
-        <p class="introduction">{{ profile.introduction }}</p>
+        <Spinner v-if="isLoading" />
+        <p v-if="!isLoading" class="name">{{ profile.name }}</p>
+        <p v-if="!isLoading" class="account">@{{ profile.account }}</p>
+        <p v-if="!isLoading" class="introduction">{{ profile.introduction }}</p>
       </div>
       <div class="main__profile__data">
         <div class="main__profile__data--follow">
@@ -153,9 +154,11 @@
 import { mapState } from 'vuex'
 import { Toast } from './../mixins/helpers'
 import usersAPI from './../apis/users'
+import Spinner from './../components/Spinner'
 export default {
   name: 'UserProfile',
   components: {
+    Spinner
   },
   data () {
     return {
@@ -227,8 +230,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@900&display=swap");
-
 .router-link-exact-active.main__profile__tabs--link {
   color: var(--main-color);
   border-bottom: 2px solid var(--main-color);
