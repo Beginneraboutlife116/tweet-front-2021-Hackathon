@@ -73,7 +73,7 @@
           </span>
           <!-- 點擊喜歡愛心亮起 -->
           <span
-            @click.prevent.stop="toggleLikeModal(tweet.id)"
+            @click.prevent.stop="toggleLikeModal(tweet.id, tweet.isLike)"
             class="reply__info-count--like"
           >
             <svg
@@ -197,15 +197,33 @@ export default {
         })
       }
     },
-    toggleLikeModal (tweetId) {
-      this.tweet = {
-        ...this.tweet,
-        isLike: !this.tweet.isLike
-      }
-      if (this.tweet.isLike === true) {
-        this.tweet.likeCounts++
-      } else {
-        this.tweet.likeCounts--
+    async toggleLikeModal (tweetId, tweetIsLike) {
+      try {
+        if (tweetIsLike) {
+          const { data } = await tweetsAPI.postUnlike(tweetId)
+          if (data.status === 'error') {
+            throw new Error(data.message)
+          }
+        } else {
+          const { data } = await tweetsAPI.postLike(tweetId)
+          if (data.status === 'error') {
+            throw new Error(data.message)
+          }
+        }
+        this.tweet = {
+          ...this.tweet,
+          isLike: !this.tweet.isLike
+        }
+        if (!tweetIsLike) {
+          this.tweet.likeCounts++
+        } else {
+          this.tweet.likeCounts--
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法切換喜歡狀態，請稍後再嘗試'
+        })
       }
     }
   }

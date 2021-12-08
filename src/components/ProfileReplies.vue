@@ -20,7 +20,8 @@ export default {
   },
   data () {
     return {
-      replies: []
+      replies: [],
+      isLoading: true
     }
   },
   created () {
@@ -38,7 +39,6 @@ export default {
   methods: {
     async fetchReplies (userId) {
       try {
-        this.isProcessing = true
         this.isLoading = true
         const { data } = await usersAPI.getUserProfileReplies(userId)
         this.replies = data.map((data) => {
