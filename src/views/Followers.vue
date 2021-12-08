@@ -63,7 +63,7 @@
           </router-link>
         </div>
         <p class="follow__info-description">
-          {{ follower.introduction || "123" }}
+          {{ follower.introduction || "（作者目前還沒有自我介紹內容）" }}
         </p>
       </div>
       <button
