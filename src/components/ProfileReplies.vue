@@ -45,7 +45,7 @@ export default {
           const { id, comment, createdAt } = data
           const tweetId = data.Tweet.id
           const userId = data.User.id
-          const { avatar, name, account } = this.currentUser
+          const { avatar, name, account } = data.User
           return {
             id,
             comment,
