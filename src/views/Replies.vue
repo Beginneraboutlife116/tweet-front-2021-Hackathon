@@ -3,6 +3,7 @@
     <header class="replies__header">
       <div class="replies__header__title">
         <svg
+          @click="$router.back()"
           width="23"
           height="24"
           viewBox="0 0 23 24"
@@ -230,6 +231,7 @@ export default {
     }
     svg {
       margin: 1.5rem 4.1rem 1.5rem 1.5rem;
+      cursor: pointer;
     }
   }
 }
