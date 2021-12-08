@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { Toast } from './../mixins/helpers'
+import followshipsAPI from '../apis/followships'
 const dummyData = [
   {
     id: 1,
@@ -109,8 +111,19 @@ export default {
     }
   },
   methods: {
-    fetchTops () {
+    async fetchTops () {
       // TODO: 與後端串接tops的資料
+      try {
+        const limit = 10
+        const { data } = await followshipsAPI.getTopFollow({ limit })
+        console.log(data)
+      } catch (err) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法讀取到熱門使用者資訊，請稍後再試'
+        })
+        console.log(err)
+      }
       this.tops = dummyData.map(data => {
         return {
           ...data,
