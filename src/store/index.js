@@ -8,7 +8,7 @@ export default new Vuex.Store({
     currentUser: {
       id: 10,
       account: 'account0',
-      name: '',
+      name: 'name',
       email: '',
       role: 'user',
       avatar: ''

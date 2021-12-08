@@ -227,8 +227,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@900&display=swap");
-
 .router-link-exact-active.main__profile__tabs--link {
   color: var(--main-color);
   border-bottom: 2px solid var(--main-color);
