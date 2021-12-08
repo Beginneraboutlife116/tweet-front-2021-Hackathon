@@ -97,7 +97,10 @@ export default {
       if (this.$route.name !== 'home') {
         this.updateTweets()
       } else {
-        this.$store.commit('recordText', this.text)
+        this.$store.commit('recordText', {
+          text: this.text,
+          action: this.modal
+        })
         this.text = ''
         this.$store.commit('clearModal')
       }
@@ -124,12 +127,17 @@ export default {
     },
     async updateTweetReplies (tweetId, comment) {
       try {
+        this.isProcessing = true
         const { data } = await repliesAPI.postReplyUnderTweet({
           tweetId, comment
         })
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
+        this.$store.commit('recordText', {
+          text: this.text,
+          action: this.modal
+        })
         Toast.fire({
           icon: 'success',
           title: '成功回覆該則貼文！'
@@ -137,6 +145,7 @@ export default {
         this.text = ''
         this.$store.commit('clearModal')
       } catch (err) {
+        this.isProcessing = false
         Toast.fire({
           icon: 'error',
           title: '無法上傳回覆，請稍後再試'

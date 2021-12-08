@@ -106,7 +106,7 @@
         </div>
       </div>
     </header>
-    <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" :tweet-account="tweet.User.account"/>
+    <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" :initial-tweet="tweet"/>
   </div>
 </template>
 
@@ -141,6 +141,16 @@ export default {
       }
     }
   },
+  computed: {
+    reply () {
+      return this.$store.state.reply
+    }
+  },
+  watch: {
+    reply () {
+      this.fetchReplies(this.tweet.id)
+    }
+  },
   created () {
     const { tweetId } = this.$route.params
     this.fetchPost(tweetId)
@@ -150,18 +160,7 @@ export default {
     async fetchReplies (tweetId) {
       try {
         const { data } = await repliesAPI.getReplies({ tweetId })
-        console.log(data)
-        this.replies = data.map((data) => {
-          const { id, createdAt, comment, User } = data
-          return {
-            id,
-            createdAt,
-            comment,
-            User: {
-              ...User
-            }
-          }
-        })
+        this.replies = data
       } catch (err) {
         Toast.fire({
           icon: 'error',

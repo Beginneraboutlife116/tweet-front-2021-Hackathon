@@ -16,6 +16,7 @@ export default new Vuex.Store({
     isAuthenticated: true,
     token: '',
     tweet: '',
+    reply: '',
     modal: '',
     fromReplies: {}
   },
@@ -35,7 +36,7 @@ export default new Vuex.Store({
       state.token = ''
     },
     recordText (state, payload) {
-      state.tweet = payload
+      state[payload.action] = payload.text
     },
     toggleModal (state, payload) {
       if (typeof payload === 'string') {
