@@ -2,8 +2,7 @@
   <div class="replies-container">
     <header class="replies__header">
       <div class="replies__header__title">
-        <svg
-          @click="$router.back()"
+        <svg @click.stop.prevent="$router.back()"
           width="23"
           height="24"
           viewBox="0 0 23 24"
