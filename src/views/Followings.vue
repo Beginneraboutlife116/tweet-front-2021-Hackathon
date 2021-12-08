@@ -69,10 +69,9 @@
       <button
         class="active"
         @click.stop.prevent="toggleFollow(following.followingId)"
-        :disabled="isProcessing"
-        :class="{ disabled: isProcessing }"
+        :class="{ active: following.isFollowing }"
       >
-        追隨
+        {{ following.isFollowing ? "正在跟隨" : "跟隨" }}
       </button>
     </div>
     <Spinner v-if="isLoading" />
@@ -131,7 +130,6 @@ export default {
     },
     toggleFollow (userId) {
       // TODO: 將資料傳給後端
-      userId.isFollowing = !userId.isFollowing
     }
   }
 }

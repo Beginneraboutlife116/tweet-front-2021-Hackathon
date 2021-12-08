@@ -68,9 +68,8 @@
       </div>
       <button
         class="active"
-        @click.stop.prevent="toggleFollow(following.followerId)"
-        :disabled="isProcessing"
-        :class="{ disabled: isProcessing }"
+        @click.stop.prevent="toggleFollow(follower.followerId)"
+        :class="{ active: following.isFollowing }"
       >
         追隨
       </button>
