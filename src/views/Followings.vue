@@ -112,7 +112,6 @@ export default {
         this.isProcessing = true
         this.isLoading = true
         const { data } = await followAPI.getFollowings(userId)
-        console.log(data)
         if (data.status === 'error') {
           throw new Error(data.message)
         }
