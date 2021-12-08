@@ -27,6 +27,7 @@
     <button
       @click.stop.prevent="toggleFollow(follow.followingId)"
       :class="{ active: follow.isFollowing }"
+      :disabled="currentUser.id === follow.followingId"
     >
       {{ follow.isFollowing ? "正在跟隨" : "跟隨" }}
     </button>
@@ -34,6 +35,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'Followship',
   props: {
@@ -56,6 +58,9 @@ export default {
   },
   created () {
     this.fetchFollow()
+  },
+  computed: {
+    ...mapState(['currentUser'])
   },
   methods: {
     fetchFollow () {
@@ -127,6 +132,9 @@ export default {
     height: 2.5rem;
     width: 9rem;
     font-size: $font-md;
+    &:disabled {
+      opacity: 0.5;
+    }
   }
 }
 </style>
