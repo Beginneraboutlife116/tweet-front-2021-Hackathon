@@ -85,8 +85,7 @@ export default {
       this.prevAccount = account
       this.prevEmail = email
     },
-    // TODO: 等API串接，再做相對應的流程設計
-    handleSubmit (e) {
+    handleSubmit () {
       this.$refs.account.style.borderColor = ''
       this.$refs.email.style.borderColor = ''
       this.$refs.password.style.borderColor = ''
@@ -156,45 +155,39 @@ export default {
         return
       }
 
-      console.log(e.target.data)
-      // TODO: POST資料給後端
-      // this.editUserInfo({
-      //   id: this.editUser.id,
-      //   name: this.editUser.name,
-      //   account: this.editUser.account,
-      //   email: this.editUser.email,
-      //   password: this.password,
-      //   checkPassword: this.passwordConfirm
-      // })
-      // console.log({
-      //   id: this.editUser.id,
-      //   name: this.editUser.name,
-      //   account: this.editUser.account.slice(1),
-      //   email: this.editUser.email,
-      //   password: this.password
-      // })
+      this.editUserInfo()
     },
-    async editUserInfo (id, account, name, email, password, checkPassword) {
+    async editUserInfo () {
       try {
-        const response = await usersAPI.putUserEdit({
-          id,
-          account,
-          email,
-          password,
-          checkPassword
+        const { data } = await usersAPI.putUserEdit(this.editUser.id, {
+          account: this.editUser.account,
+          name: this.editUser.name,
+          email: this.editUser.email,
+          password: this.password,
+          checkPassword: this.passwordConfirm
         })
-        console.log(response)
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
         Toast.fire({
           icon: 'success',
-          title: '成功修改資料'
+          title: `${data.message}`
         })
-        // this.$router.push('/home')
+        this.$router.push('/home')
       } catch (err) {
+        if (err.message === 'account已重複註冊！') {
+          this.$refs.account.focus()
+          this.$refs.account.style.borderColor = '#fc5a5a'
+        }
+
+        if (err.message === 'email已重複註冊！') {
+          this.$refs.email.focus()
+          this.$refs.email.style.borderColor = '#fc5a5a'
+        }
         Toast.fire({
           icon: 'error',
-          titel: '無法修改個人資料，請稍後再試'
+          title: `${err.message}`
         })
-        console.log(err)
       }
     },
     verifyEmail (email) {
