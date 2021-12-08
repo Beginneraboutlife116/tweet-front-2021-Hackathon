@@ -2,7 +2,7 @@
   <div>
     <div class="reply-container">
       <div class="reply">
-        <router-link :to="avatarLink" class="reply__avatar">
+        <router-link :to="avatarNameLink" class="reply__avatar">
           <img
             class="reply__avatar--img"
             :src="avatar"
@@ -12,7 +12,7 @@
         </router-link>
         <div class="reply__info">
           <div class="reply__info-replyBy">
-            <router-link :to="toNameLink">
+            <router-link :to="avatarNameLink">
               <span class="name"> {{name}} </span>
               <span class="account"
                 >@{{ account }}・</span
@@ -60,34 +60,34 @@ export default {
     }
   },
   computed: {
+    currentUser () {
+      return this.$store.state.currentUser
+    },
     replyAccount () {
       return Object.keys(this.reply).includes('tweet') ? this.reply.tweet.User.account : this.tweet.User.account
     },
-    avatarLink () {
-      return Object.keys(this.reply).includes('tweet') ? `/home/${this.reply.tweet.User.id}` : `/home/${this.reply.User.id}`
+    avatarNameLink () {
+      return Object.keys(this.reply).includes('tweet') ? `/home/${this.reply.userId}` : `/home/${this.reply.User.id}`
     },
     avatar () {
       if (Object.keys(this.reply).includes('tweet')) {
-        return this.reply.tweet.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
+        return this.reply.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
       } else {
         return this.reply.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
       }
-    },
-    toNameLink () {
-      return Object.keys(this.reply).includes('tweet') ? `/home/${this.reply.tweet.User.id}` : `/home/${this.reply.User.id}`
     },
     toAccountLink () {
       return Object.keys(this.reply).includes('tweet') ? `/home/${this.reply.tweet.User.id}` : `/home/${this.tweet.User.id}`
     },
     name () {
       if (Object.keys(this.reply).includes('tweet')) {
-        return this.reply.tweet.User.name || 'NoName'
+        return this.reply.name || 'NoName'
       } else {
         return this.reply.User.name || 'NoName'
       }
     },
     account () {
-      return Object.keys(this.reply).includes('tweet') ? this.reply.tweet.User.account : this.reply.User.account
+      return Object.keys(this.reply).includes('tweet') ? this.currentUser.account : this.reply.User.account
     },
     toRepliesLink () {
       return Object.keys(this.reply).includes('tweet') ? `/home/tweets/${this.reply.tweet.id}` : `/home/tweets/${this.$route.params.tweetId}`
