@@ -7,12 +7,11 @@
       <div class="top__user" v-for="top in tops" :key="top.id">
         <router-link :to="`/home/${top.id}`">
           <div class="top__user-avatar">
-            <img :src="top.image" class="top__user-avatar--img">
+            <img :src="top.avatar" class="top__user-avatar--img">
           </div>
         </router-link>
         <div class="top__user-info">
           <div>
-            <!-- route還沒設定，所以會失敗 -->
             <router-link :to="`/home/${top.id}`">
               <p class="top__user-info--name"> {{top.name}} </p>
             </router-link>
@@ -20,7 +19,7 @@
               <p class="top__user-info--account"> @{{top.account}} </p>
             </router-link>
           </div>
-          <button class="top__user-info--follow" :class="{active: top.isFollowed}" @click.stop.prevent="toggleFollow(top.id)"> {{top.isFollowed ? '正在跟隨' : '跟隨'}} </button>
+          <button v-if="top.id !== currentUser.id" class="top__user-info--follow" :class="{active: top.isFollowing, disabled: top.isProcessing}" :disabled="top.isProcessing" @click.stop.prevent="top.isFollowing ? cancelFollow(top.id) : addFollow(top.id)"> {{top.isFollowing ? '正在跟隨' : '跟隨'}} </button>
         </div>
       </div>
     </main>
@@ -28,78 +27,9 @@
 </template>
 
 <script>
-const dummyData = [
-  {
-    id: 1,
-    account: 'user1',
-    name: 'user1',
-    img: null,
-    isFollowed: true
-  },
-  {
-    id: 2,
-    account: 'user2',
-    name: 'user2',
-    img: null,
-    isFollowed: true
-  },
-  {
-    id: 3,
-    account: '',
-    name: 'user3',
-    img: null,
-    isFollowed: false
-  },
-  {
-    id: 4,
-    account: 'user4',
-    name: 'user4',
-    img: null,
-    isFollowed: false
-  },
-  {
-    id: 5,
-    account: '',
-    name: 'user5',
-    img: null,
-    isFollowed: false
-  },
-  {
-    id: 6,
-    account: 'user6',
-    name: 'user6',
-    img: null,
-    isFollowed: false
-  },
-  {
-    id: 7,
-    account: 'user7',
-    name: 'user7',
-    img: null,
-    isFollowed: false
-  },
-  {
-    id: 8,
-    account: 'user8',
-    name: 'user8',
-    img: null,
-    isFollowed: true
-  },
-  {
-    id: 9,
-    account: '',
-    name: 'user9',
-    img: null,
-    isFollowed: true
-  },
-  {
-    id: 10,
-    account: 'user10',
-    name: 'user10',
-    img: null,
-    isFollowed: true
-  }
-]
+import { Toast } from './../mixins/helpers'
+import followshipsAPI from '../apis/followships'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Top',
@@ -108,30 +38,102 @@ export default {
       tops: []
     }
   },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   methods: {
-    fetchTops () {
-      // TODO: 與後端串接tops的資料
-      this.tops = dummyData.map(data => {
-        return {
-          ...data,
-          name: data.name || 'NoName',
-          image: data.image || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
+    async fetchTops () {
+      try {
+        const { data } = await followshipsAPI.getTopFollow()
+        this.tops = data.results.map(data => {
+          return {
+            ...data,
+            name: data.name || 'NoName',
+            avatar: data.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg',
+            isProcessing: false
+          }
+        })
+      } catch (err) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法讀取到熱門使用者資訊，請稍後再試'
+        })
+      }
+    },
+    toggleProcessing (id) {
+      this.tops = this.tops.map(top => {
+        if (top.id === id) {
+          return {
+            ...top,
+            isProcessing: !top.isProcessing
+          }
+        } else {
+          return {
+            ...top
+          }
         }
       })
     },
-    toggleFollow (userId) {
-      // TODO: 將資料傳給後端
-      this.tops = this.tops.map(top => {
-        if (top.id === userId) {
-          return {
-            ...top,
-            isFollowed: !top.isFollowed
+    async addFollow (id) {
+      try {
+        this.toggleProcessing(id)
+        const { data } = await followshipsAPI.addFollow(id)
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.tops = this.tops.map(top => {
+          if (top.id === id) {
+            return {
+              ...top,
+              isFollowing: true,
+              isProcessing: !top.isProcessing
+            }
+          } else {
+            return {
+              ...top
+            }
           }
-        }
-        return {
-          ...top
-        }
-      })
+        })
+        Toast.fire({
+          icon: 'success',
+          title: '追蹤成功！'
+        })
+      } catch (err) {
+        this.toggleProcessing(id)
+        Toast.fire({
+          icon: 'error',
+          title: '無法追蹤或取消追蹤該使用者，請稍後再試'
+        })
+      }
+    },
+    async cancelFollow (id) {
+      try {
+        this.toggleProcessing(id)
+        const { data } = await followshipsAPI.cancelFollow(id)
+        this.tops = this.tops.map(top => {
+          if (top.id === id) {
+            return {
+              ...top,
+              isFollowing: false,
+              isProcessing: !top.isProcessing
+            }
+          } else {
+            return {
+              ...top
+            }
+          }
+        })
+        Toast.fire({
+          icon: 'success',
+          title: `${data.message}!`
+        })
+      } catch (err) {
+        this.toggleProcessing(id)
+        Toast.fire({
+          icon: 'error',
+          title: '無法追蹤或取消追蹤該使用者，請稍後再試'
+        })
+      }
     }
   },
   created () {
@@ -168,9 +170,10 @@ export default {
       aspect-ratio: 1;
       border-radius: 50%;
       margin-right: 1rem;
+      overflow: hidden;
       &--img {
-        border-radius: 50%;
         object-fit: cover;
+        object-position: center;
       }
     }
     &-info {

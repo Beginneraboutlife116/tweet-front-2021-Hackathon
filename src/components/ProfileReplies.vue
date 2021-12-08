@@ -20,7 +20,8 @@ export default {
   },
   data () {
     return {
-      replies: []
+      replies: [],
+      isLoading: true
     }
   },
   created () {
@@ -38,25 +39,25 @@ export default {
   methods: {
     async fetchReplies (userId) {
       try {
-        this.isProcessing = true
         this.isLoading = true
         const { data } = await usersAPI.getUserProfileReplies(userId)
         this.replies = data.map((data) => {
-          const { id, comment, createdAt } = data
-          const tweetId = data.Tweet.id
-          const userId = data.User.id
-          const { avatar, name, account } = this.currentUser
+          const { id, comment, createdAt, Tweet, User } = data
+          const { avatar, name, id: userId } = User
+          const { User: tweetUser, id: tweetId } = Tweet
+          const { account: tweetUserAccount, id: tweetUserId } = tweetUser
           return {
             id,
             comment,
             createdAt,
+            avatar,
+            userId,
+            name,
             tweet: {
               id: tweetId,
               User: {
-                id: userId,
-                name,
-                account,
-                avatar
+                id: tweetUserId,
+                account: tweetUserAccount
               }
             }
           }

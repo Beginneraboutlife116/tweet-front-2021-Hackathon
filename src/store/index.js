@@ -17,7 +17,8 @@ export default new Vuex.Store({
     token: '',
     tweet: '',
     reply: '',
-    modal: ''
+    modal: '',
+    fromReplies: {}
   },
   mutations: {
     setCurrentUser (state, currentUser) {
@@ -38,9 +39,23 @@ export default new Vuex.Store({
       state[payload.action] = payload.text
     },
     toggleModal (state, payload) {
-      state.modal = payload
+      if (typeof payload === 'string') {
+        state.modal = payload
+      } else {
+        const { id, description, createdAt, User, reply } = payload
+        state.modal = reply
+        state.fromReplies = {
+          id,
+          description,
+          createdAt,
+          User
+        }
+      }
     },
     clearModal (state) {
+      if (typeof payload === 'object') {
+        state.fromReplies = {}
+      }
       state.modal = ''
     }
   },

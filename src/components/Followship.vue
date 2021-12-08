@@ -67,7 +67,6 @@ export default {
       this.follow = {
         ...this.initialFollow
       }
-      console.log(this.follow)
     },
     toggleFollow (userId) {
       // TODO: 將資料傳給後端

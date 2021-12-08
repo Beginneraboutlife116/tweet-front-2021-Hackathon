@@ -2,34 +2,30 @@
   <div>
     <div class="reply-container">
       <div class="reply">
-        <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-        <router-link :to="`/home/${reply.tweet.User.id}`" class="reply__avatar">
+        <router-link :to="avatarNameLink" class="reply__avatar">
           <img
             class="reply__avatar--img"
-            :src="reply.tweet.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
+            :src="avatar"
             alt="avatar"
             aria-label="avatar"
           />
         </router-link>
         <div class="reply__info">
           <div class="reply__info-replyBy">
-            <!-- 點擊回文中使用者頭像/name/account時，能到profile頁 -->
-            <router-link :to="`/home/${reply.tweet.User.id}`">
-              <span class="name">{{ reply.tweet.User.name || "NoName" }} </span>
+            <router-link :to="avatarNameLink">
+              <span class="name"> {{name}} </span>
               <span class="account"
-                >@{{ reply.tweet.User.account }}・</span
+                >@{{ account }}・</span
               >
             </router-link>
-            <!-- 點擊時間連到當則推文-->
-            <router-link :to=" reply.tweet.id ? `/home/tweets/${reply.tweet.id}` : `/home/tweets/${this.$route.params}`">
+            <router-link :to="toRepliesLink">
               <span class="timeStamp">{{ reply.createdAt | fromNow }}</span>
             </router-link>
           </div>
           <div class="reply__info-replyTo">
-            <span class="reply__info-replyTo--text">回覆 </span>
-            <!-- 發文者的資料需要從推文元件 回傳到這裡目前還無法獲取 先寫poster -->
-            <router-link to="/home/1">
-            <span class="reply__info-replyTo--account">@{{ "poster" }}</span>
+            <span class="reply__info-replyTo--text"> 回覆 </span>
+            <router-link :to="toAccountLink">
+              <span class="reply__info-replyTo--account">@{{ replyAccount }}</span>
             </router-link>
           </div>
           <p class="reply__info-description">{{ reply.comment }}</p>
@@ -48,6 +44,9 @@ export default {
     initialReply: {
       type: Object,
       required: true
+    },
+    initialTweet: {
+      type: Object
     }
   },
   data () {
@@ -55,20 +54,50 @@ export default {
       reply: {
         id: -1,
         comment: '',
-        createdAt: '2001-12-02T16:44:25.000Z',
-        tweet: {
-          id: -1,
-          User: {
-            id: -1,
-            account: '',
-            avatar: null
-          }
-        }
+        createdAt: ''
+      },
+      tweet: {}
+    }
+  },
+  computed: {
+    currentUser () {
+      return this.$store.state.currentUser
+    },
+    replyAccount () {
+      return Object.keys(this.reply).includes('tweet') ? this.reply.tweet.User.account : this.tweet.User.account
+    },
+    avatarNameLink () {
+      return Object.keys(this.reply).includes('tweet') ? `/home/${this.reply.userId}` : `/home/${this.reply.User.id}`
+    },
+    avatar () {
+      if (Object.keys(this.reply).includes('tweet')) {
+        return this.reply.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
+      } else {
+        return this.reply.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
       }
+    },
+    toAccountLink () {
+      return Object.keys(this.reply).includes('tweet') ? `/home/${this.reply.tweet.User.id}` : `/home/${this.tweet.User.id}`
+    },
+    name () {
+      if (Object.keys(this.reply).includes('tweet')) {
+        return this.reply.name || 'NoName'
+      } else {
+        return this.reply.User.name || 'NoName'
+      }
+    },
+    account () {
+      return Object.keys(this.reply).includes('tweet') ? this.currentUser.account : this.reply.User.account
+    },
+    toRepliesLink () {
+      return Object.keys(this.reply).includes('tweet') ? `/home/tweets/${this.reply.tweet.id}` : `/home/tweets/${this.$route.params.tweetId}`
     }
   },
   created () {
     this.fetchReply()
+    this.tweet = {
+      ...this.initialTweet
+    }
   },
   methods: {
     fetchReply () {
@@ -81,6 +110,11 @@ export default {
     initialReply (newValue) {
       this.reply = {
         ...this.reply,
+        ...newValue
+      }
+    },
+    initialTweet (newValue) {
+      this.tweet = {
         ...newValue
       }
     }
