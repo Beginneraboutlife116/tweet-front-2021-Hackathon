@@ -131,7 +131,6 @@ export default {
     },
     async toggleLikeModal (tweetId, tweetIsLike) {
       try {
-        console.log(tweetId, tweetIsLike)
         if (tweetIsLike) {
           const { data } = await tweetsAPI.postUnlike(tweetId)
           if (data.status === 'error') {
