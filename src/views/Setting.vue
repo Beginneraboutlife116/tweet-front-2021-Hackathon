@@ -6,8 +6,8 @@
       </header>
       <form class="setting__form" @submit.prevent="handleSubmit">
         <label class="setting__form-row">
-          <p class="setting__form-title">帳號</p>
-          <input type="text" class="setting__form-input" v-model.trim="editUser.account" ref="account" :placeholder="prevAccount" value="editUser.account" required>
+          <p class="setting__form-title account">帳號</p>
+          <input type="text" class="setting__form-input account" v-model.trim="editUser.account" ref="account" :placeholder="prevAccount" value="editUser.account" required>
           <p class="setting__form-error">
             <span class="error" v-if="accountRepeat">帳號 已重複註冊！</span>
           </p>
@@ -38,7 +38,7 @@
             <span class="error" v-if="passwordError">確認密碼與密碼不符，請再試一次</span>
           </p>
         </label>
-        <button class="setting__form-submit active" type="submit">儲存</button>
+        <button class="setting__form-submit active" type="submit" :class="{disabled: isProcessing || waitForFill}"> {{ isProcessing ? '傳送中' : '儲存' }} </button>
       </form>
     </div>
   </div>
@@ -46,17 +46,7 @@
 
 <script>
 import { Toast } from './../mixins/helpers'
-
-const dummyUser = {
-  id: 2,
-  account: 'user2',
-  email: 'user2@example.com',
-  password: '2',
-  name: 'user2',
-  role: 'user',
-  createdAt: '2021-12-01T07:59:14.418Z',
-  updatedAt: '2021-12-01T07:59:14.418Z'
-}
+import usersAPI from './../apis/users'
 
 export default {
   name: 'Setting',
@@ -70,7 +60,8 @@ export default {
       passwordConfirm: '',
       accountRepeat: false,
       emailRepeat: false,
-      passwordError: false
+      passwordError: false,
+      isProcessing: false
     }
   },
   computed: {
@@ -80,6 +71,12 @@ export default {
       nameError.color = this.editUser.name.length > 50 ? '#fc5a5a' : '#0099ff'
       nameError.text = this.editUser.name.length > 50 ? '字數超出上限！' : '字數正確'
       return nameError
+    },
+    waitForFill () {
+      if (!this.editUser.account || !this.editUser.email || !this.password || !this.passwordConfirm) {
+        return true
+      }
+      return false
     }
   },
   methods: {
@@ -88,15 +85,20 @@ export default {
       this.editUser = {
         id,
         name,
-        account: '@' + account,
+        account,
         email
       }
       this.prevName = name
-      this.prevAccount = '@' + account
+      this.prevAccount = account
       this.prevEmail = email
     },
-    // TODO: 等API串接，再做相對應的流程設計
     handleSubmit () {
+      this.$refs.account.style.borderColor = ''
+      this.$refs.email.style.borderColor = ''
+      this.$refs.password.style.borderColor = ''
+      this.$refs.passwordConfirm.style.borderColor = ''
+      this.accountRepeat = false
+      this.emailRepeat = false
       if (!this.editUser.account) {
         Toast.fire({
           icon: 'warning',
@@ -105,18 +107,7 @@ export default {
         this.$refs.account.focus()
         this.$refs.account.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.account.style.borderColor = ''
       }
-
-      let editAccount = ''
-      const num = this.editUser.account.indexOf('@')
-      if (num < 0) {
-        editAccount = this.editUser.account
-      } else {
-        editAccount = this.editUser.account.slice(num + 1)
-      }
-      console.log(editAccount)
 
       if (this.editUser.name > 50) {
         this.editUser.name = this.editUser.name.slice(0, 50)
@@ -130,8 +121,6 @@ export default {
         this.$refs.email.focus()
         this.$refs.email.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.email.style.borderColor = ''
       }
 
       if (!this.verifyEmail(this.editUser.email)) {
@@ -142,8 +131,6 @@ export default {
         this.$refs.email.focus()
         this.$refs.email.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.email.style.borderColor = ''
       }
 
       if (!this.password) {
@@ -154,8 +141,6 @@ export default {
         this.$refs.password.focus()
         this.$refs.password.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.password.style.borderColor = ''
       }
 
       if (!this.passwordConfirm) {
@@ -166,36 +151,6 @@ export default {
         this.$refs.passwordConfirm.focus()
         this.$refs.passwordConfirm.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.passwordConfirm.style.borderColor = ''
-      }
-
-      if (this.editUser.account.slice(1) === dummyUser.account) {
-        Toast.fire({
-          icon: 'error',
-          title: '帳號已重複註冊！'
-        })
-        this.accountRepeat = true
-        this.$refs.account.focus()
-        this.$refs.account.style.borderColor = '#fc5a5a'
-        return
-      } else {
-        this.accountRepeat = false
-        this.$refs.account.style.borderColor = ''
-      }
-
-      if (this.editUser.email === dummyUser.email) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Email已重複註冊！'
-        })
-        this.emailRepeat = true
-        this.$refs.email.focus()
-        this.$refs.email.style.borderColor = '#fc5a5a'
-        return
-      } else {
-        this.emailRepeat = false
-        this.$refs.email.style.borderColor = ''
       }
 
       if (this.password !== this.passwordConfirm) {
@@ -209,20 +164,50 @@ export default {
         return
       }
 
-      // TODO: POST資料給後端
-      console.log({
-        id: this.editUser.id,
-        name: this.editUser.name,
-        account: this.editUser.account.slice(1),
-        email: this.editUser.email,
-        password: this.password
-      })
+      this.editUserInfo()
+    },
+    async editUserInfo () {
+      try {
+        this.isProcessing = true
+        const { data } = await usersAPI.putUserEdit(this.editUser.id, {
+          account: this.editUser.account,
+          name: this.editUser.name,
+          email: this.editUser.email,
+          password: this.password,
+          checkPassword: this.passwordConfirm
+        })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        Toast.fire({
+          icon: 'success',
+          title: `${data.message}`
+        })
+        this.$store.commit('setCurrentUser', {
+          account: this.editUser.account,
+          name: this.editUser.name,
+          email: this.editUser.email,
+          password: this.password
+        })
+        this.$router.push('/home')
+      } catch (err) {
+        this.isProcessing = false
+        if (err.message === 'account已重複註冊！') {
+          this.$refs.account.focus()
+          this.$refs.account.style.borderColor = '#fc5a5a'
+          this.accountRepeat = true
+        }
 
-      Toast.fire({
-        icon: 'success',
-        title: '修改成功'
-      })
-      this.$router.push('/home')
+        if (err.message === 'email已重複註冊！') {
+          this.$refs.email.focus()
+          this.$refs.email.style.borderColor = '#fc5a5a'
+          this.emailRepeat = true
+        }
+        Toast.fire({
+          icon: 'error',
+          title: `${err.message}`
+        })
+      }
     },
     verifyEmail (email) {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -264,6 +249,13 @@ export default {
       font-size: $font-md;
       line-height: $font-md;
       color: var(--label-color);
+      position: relative;
+      &.account::after {
+        content: '@';
+        position: absolute;
+        top: 130%;
+        left: 1rem;
+      }
     }
     &-input {
       all: unset;
@@ -276,6 +268,10 @@ export default {
       &:hover,
       &:focus {
         border-color: var(--link-color);
+      }
+      &.account {
+        padding-left: 2.5rem;
+        width: calc(100% - 3rem);
       }
     }
     &-submit {
