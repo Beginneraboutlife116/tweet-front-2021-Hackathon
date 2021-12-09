@@ -12,5 +12,8 @@ export default {
   },
   getUserProfileLikes (userId) {
     return apiHelper.get(`/users/${userId}/likes`)
+  },
+  putUserEdit (userId, payload) {
+    return apiHelper.put(`/users/${userId}`, payload)
   }
 }
