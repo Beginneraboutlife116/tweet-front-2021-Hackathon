@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import usersAPI from './../apis/users'
+import adminAPI from './../apis/admin'
 
 Vue.use(Vuex)
 
@@ -79,6 +80,18 @@ export default new Vuex.Store({
           introduction,
           role
         })
+        return true
+      } catch (err) {
+        console.error('無法取得現在使用者資訊')
+        commit('revokeAuthentication')
+        return false
+      }
+    },
+    async fetchRootUser ({ state, commit }) {
+      try {
+        const { data } = await adminAPI.getUsers()
+        const root = data.find(data => data.id === state.currentUser.id)
+        commit('setCurrentUser', root)
         return true
       } catch (err) {
         console.error('無法取得現在使用者資訊')

@@ -6,9 +6,12 @@ import store from './../store'
 
 Vue.use(VueRouter)
 
-const authorizeIsAdmin = (to, from, next) => {
+const authorizeIs = (to, from, next) => {
   const currentUser = store.state.currentUser
   if (currentUser && currentUser.role !== 'admin') {
+    next({ name: 'not-found' })
+    return
+  } else if (currentUser && currentUser.role !== 'user') {
     next({ name: 'not-found' })
     return
   }
@@ -41,43 +44,51 @@ const routes = [
           {
             path: '',
             name: 'home',
-            component: () => import('./../views/Tweets')
+            component: () => import('./../views/Tweets'),
+            beforeEnter: authorizeIs
           },
           {
-            path: 'tweets/:tweetId', // component用Replies.vue
+            path: 'tweets/:tweetId',
             name: 'replies',
-            component: () => import('./../views/Replies')
+            component: () => import('./../views/Replies'),
+            beforeEnter: authorizeIs
           },
           {
-            path: ':userId/followers', // component用Followers.vue
+            path: ':userId/followers',
             name: 'followers',
-            component: () => import('./../views/Followers')
+            component: () => import('./../views/Followers'),
+            beforeEnter: authorizeIs
           },
           {
-            path: ':userId/followings', // component用Followers.vue
+            path: ':userId/followings',
             name: 'followings',
-            component: () => import('./../views/Followings')
+            component: () => import('./../views/Followings'),
+            beforeEnter: authorizeIs
           },
           {
-            path: ':userId', // component用userProfile.vue
+            path: ':userId',
             name: 'profile',
             redirect: ':userId/tweets',
             component: () => import('./../views/UserProfile'),
+            beforeEnter: authorizeIs,
             children: [
               {
                 path: 'tweets',
                 name: 'profile-tweets',
-                component: () => import('./../components/ProfileTweets')
+                component: () => import('./../components/ProfileTweets'),
+                beforeEnter: authorizeIs
               },
               {
                 path: 'replies',
                 name: 'profile-replies',
-                component: () => import('./../components/ProfileReplies')
+                component: () => import('./../components/ProfileReplies'),
+                beforeEnter: authorizeIs
               },
               {
                 path: 'likes',
                 name: 'profile-likes',
-                component: () => import('./../components/ProfileLikes')
+                component: () => import('./../components/ProfileLikes'),
+                beforeEnter: authorizeIs
               }
             ]
           }
@@ -86,19 +97,20 @@ const routes = [
       {
         path: ':userId/setting',
         name: 'setting',
-        component: () => import('./../views/Setting')
+        component: () => import('./../views/Setting'),
+        beforeEnter: authorizeIs
       },
       {
         path: '/admin/tweets',
         name: 'admin-tweets',
         component: () => import('./../views/AdminTweets'),
-        beforeEnter: authorizeIsAdmin
+        beforeEnter: authorizeIs
       },
       {
         path: '/admin/users',
         name: 'admin-users',
         component: () => import('./../views/AdminUsers'),
-        beforeEnter: authorizeIsAdmin
+        beforeEnter: authorizeIs
       }
     ]
   },
@@ -121,11 +133,14 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   const tokenInLocalStorage = localStorage.getItem('token')
   const tokenInStore = store.state.token
-  const userIdInLocalStoreage = localStorage.getItem('userId')
+  const userIdInLocalStorage = localStorage.getItem('userId')
   const userIdInStore = store.state.currentUser.id
   let isAuthenticated = store.state.isAuthenticated
 
-  if (tokenInLocalStorage && (tokenInLocalStorage !== tokenInStore || userIdInLocalStoreage !== userIdInStore)) {
+  if (tokenInLocalStorage && (tokenInLocalStorage !== tokenInStore || userIdInLocalStorage !== userIdInStore)) {
+    if (store.state.currentUser.role === 'admin') {
+      isAuthenticated = await store.dispatch('fetchRootUser')
+    }
     isAuthenticated = await store.dispatch('fetchCurrentUser')
   }
   const pathWithoutAuthentication = ['sign-in', 'sign-up', 'admin-sign-in']
@@ -136,7 +151,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (isAuthenticated && pathWithoutAuthentication.includes(to.name)) {
-    next('/home')
+    store.state.currentUser.role === 'user' ? next({ name: 'home' }) : next({ name: 'admin-tweets' })
     return
   }
 

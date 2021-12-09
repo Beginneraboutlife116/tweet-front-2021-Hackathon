@@ -51,13 +51,4 @@
   top: 45%;
   width: 75%;
 }
-
-a {
-  text-decoration: none;
-  color: var(--main-color);
-}
-
-a:hover {
-  text-decoration: underline;
-}
 </style>
