@@ -59,7 +59,7 @@ export default {
     async fetchAllUsers () {
       try {
         const { data } = await adminAPI.getUsers()
-        this.users = [...data]
+        this.users = data.filter(data => data.account !== 'root')
       } catch (err) {
         Toast.fire({
           icon: 'error',
