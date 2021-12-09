@@ -19,7 +19,7 @@
       </div>
       <p class="tweet__info-description--admin">{{ tweet.description }}</p>
       <svg
-        @click.stop.prevent="deletePost(tweet.id)"
+        @click.stop.prevent="deletePostRequest(tweet.id)"
         class="tweet__info--svg"
         width="16"
         height="16"
@@ -38,8 +38,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import { fromNowFilter, Toast } from './../mixins/helpers'
-import adminAPI from './../apis/admin'
+import { fromNowFilter } from './../mixins/helpers'
+
 export default {
   mixins: [fromNowFilter],
   name: 'AdminTweet',
@@ -76,19 +76,9 @@ export default {
         ...this.initialTweet
       }
     },
-    async deletePost (tweetId) {
-      try {
-        const { data } = await adminAPI.delete(tweetId)
-        if (data.status === 'error') {
-          throw new Error(data.message)
-        }
-        this.$emit('deletePost', tweetId)
-      } catch (error) {
-        Toast.fire({
-          icon: 'error',
-          title: '無法刪除餐廳'
-        })
-      }
+    deletePostRequest (tweetId) {
+      console.log(tweetId)
+      this.$emit('delete-post', tweetId)
     }
   }
 }
