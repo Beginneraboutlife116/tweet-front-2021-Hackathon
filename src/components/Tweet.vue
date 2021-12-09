@@ -126,7 +126,6 @@ export default {
   methods: {
     toggleReplyModal (tweetId) {
       // 開啟modal
-      console.log('open reply modal', tweetId)
     },
     async toggleLikeModal (tweetId, tweetIsLike) {
       try {

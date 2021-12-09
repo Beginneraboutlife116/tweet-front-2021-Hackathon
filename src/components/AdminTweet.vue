@@ -77,7 +77,6 @@ export default {
       }
     },
     deletePostRequest (tweetId) {
-      console.log(tweetId)
       this.$emit('delete-post', tweetId)
     }
   }
