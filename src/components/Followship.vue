@@ -25,7 +25,7 @@
       </p>
     </div>
     <button
-      @click.stop.prevent="toggleFollow(follow.followingId, follow.isFollowing)"
+      @click.stop.prevent="toggleFollow(follow.followingId || follow.followerId, follow.isFollowing)"
       :class="{ active: follow.isFollowing }"
       :disabled="currentUser.id === follow.followingId || currentUser.id === follow.followerId"
     >
