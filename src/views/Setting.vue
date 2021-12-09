@@ -73,7 +73,7 @@ export default {
       return nameError
     },
     waitForFill () {
-      if (!this.editUser.account || !this.editUser.email || !this.password || !this.passwordConfirm) {
+      if (!this.editUser.account || !this.editUser.email || !this.password || !this.passwordConfirm || !this.name) {
         return true
       }
       return false
