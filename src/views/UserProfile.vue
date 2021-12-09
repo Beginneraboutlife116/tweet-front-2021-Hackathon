@@ -206,14 +206,6 @@ export default {
     ...mapState(['currentUser'])
 
   },
-  watch: {
-    profileFollow (newValue) {
-      this.profile = {
-        ...this.profile,
-        ...newValue
-      }
-    }
-  },
   methods: {
     async fetchProfile (userId) {
       try {

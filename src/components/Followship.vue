@@ -25,7 +25,7 @@
       </p>
     </div>
     <button
-      @click.stop.prevent="toggleFollow(follow.followingId)"
+      @click.stop.prevent="toggleFollow(follow.followingId, follow.isFollowing)"
       :class="{ active: follow.isFollowing }"
       :disabled="currentUser.id === follow.followingId || currentUser.id === follow.followerId"
     >
@@ -36,6 +36,8 @@
 
 <script>
 import { mapState } from 'vuex'
+import { Toast } from './../mixins/helpers'
+import followAPI from '../apis/followships'
 export default {
   name: 'Followship',
   props: {
@@ -68,11 +70,34 @@ export default {
         ...this.initialFollow
       }
     },
-    toggleFollow (userId) {
-      // TODO: 將資料傳給後端
-      this.follow = {
-        ...this.follow,
-        isFollowing: !this.follow.isFollowing
+    async toggleFollow (userId, userIsFollowing) {
+      try {
+        if (userIsFollowing) {
+          const { data } = await followAPI.cancelFollow(userId)
+          if (data.status === 'error') {
+            throw new Error(data.message)
+          }
+          this.follow.isFollowing = false
+          Toast.fire({
+            icon: 'success',
+            title: '成功取消追隨'
+          })
+        } else {
+          const { data } = await followAPI.addFollow(userId)
+          if (data.status === 'error') {
+            throw new Error(data.message)
+          }
+          this.follow.isFollowing = true
+          Toast.fire({
+            icon: 'success',
+            title: '成功加入追隨'
+          })
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法修改追隨狀態'
+        })
       }
     }
   },
