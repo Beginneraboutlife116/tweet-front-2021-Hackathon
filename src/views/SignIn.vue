@@ -122,8 +122,10 @@ export default {
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
+        console.log(data)
 
         localStorage.setItem('token', data.token)
+        localStorage.setItem('userId', data.user.id)
         this.$store.commit('setCurrentUser', data.user)
 
         Toast.fire({

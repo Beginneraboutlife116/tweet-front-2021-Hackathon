@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import usersAPI from './../apis/users'
 
 Vue.use(Vuex)
 
@@ -10,10 +11,12 @@ export default new Vuex.Store({
       account: '',
       name: '',
       email: '',
-      role: 'user',
-      avatar: ''
+      avatar: '',
+      cover: '',
+      introduction: '',
+      role: 'user'
     },
-    isAuthenticated: true,
+    isAuthenticated: false,
     token: '',
     tweet: '',
     reply: '',
@@ -33,6 +36,7 @@ export default new Vuex.Store({
       state.currentUser = {}
       state.isAuthenticated = false
       localStorage.removeItem('token')
+      localStorage.removeItem('userId')
       state.token = ''
     },
     recordText (state, payload) {
@@ -60,6 +64,25 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    async fetchCurrentUser ({ commit }) {
+      try {
+        const currentUserId = localStorage.getItem('userId')
+        const { data } = await usersAPI.getUserProfile(currentUserId)
+        const { id, account, name, email, avatar, cover, introduction, role } = data
+        commit('setCurrentUser', {
+          id,
+          account,
+          name,
+          email,
+          avatar,
+          cover,
+          introduction,
+          role
+        })
+      } catch (err) {
+        console.error('無法取得現在使用者資訊')
+      }
+    }
   },
   modules: {
   }
