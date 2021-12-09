@@ -31,11 +31,9 @@
             <p class="tweet__info-description">{{ tweet.description }}</p>
           </router-link>
           <div class="tweet__info-count">
-            <!-- 點擊回覆打開回覆modal -->
-            <span
-              @click.prevent.stop="toggleReplyModal()"
-              class="tweet__info-count--reply"
-            >
+            <!-- 點擊回覆打開回覆modal @click.prevent.stop="toggleReplyModal(tweet.id)"-->
+            <router-link :to="`/home/tweets/${tweet.id}`">
+            <span  class="tweet__info-count--reply">
               <svg
                 width="15"
                 height="15"

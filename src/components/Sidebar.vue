@@ -56,7 +56,7 @@
             </router-link>
           </li>
           <li class="sidebar__link">
-            <router-link :to="{ name: 'profile', params: { userId: currentUser.id } }">
+            <router-link :to="{ name: 'profile-tweets', params: { userId: currentUser.id } }">
               <svg
                 width="24"
                 height="24"

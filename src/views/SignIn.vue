@@ -135,26 +135,12 @@ export default {
         this.$router.push(path)
       } catch (err) {
         this.isProcessing = false
-        let message = ''
-
-        if (err.message === 'no such user found') {
-          message = this.isBackLogin ? '帳號錯誤，請洽開發者' : '帳號不存在'
-          this.accountError = true
-          this.$refs.account.focus()
-          this.$refs.account.style.borderColor = '#fc5a5a'
-        }
-
-        if (err.message === 'passwords did not match') {
-          message = '密碼錯誤，請再試一次'
-          this.passwordError = true
-          this.$refs.password.focus()
-          this.$refs.password.style.borderColor = '#fc5a5a'
-        }
-
         Toast.fire({
           icon: 'error',
-          title: `${message}`
+          title: `${err.message}`
         })
+        this.$refs.account.focus()
+        this.$refs.account.style.borderColor = '#fc5a5a'
       }
     },
     checkLoginRoute (path) {

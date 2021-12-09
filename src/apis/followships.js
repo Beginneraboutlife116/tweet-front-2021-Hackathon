@@ -1,4 +1,4 @@
-import { apiHelper } from '../mixins/helpers'
+import { apiHelper } from './../mixins/helpers'
 
 export default {
   getFollowings (userId) {
