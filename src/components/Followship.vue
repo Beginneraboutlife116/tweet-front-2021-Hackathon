@@ -72,7 +72,6 @@ export default {
     },
     async toggleFollow (userId, userIsFollowing) {
       try {
-        console.log(userId, userIsFollowing)
         if (userIsFollowing) {
           const { data } = await followAPI.cancelFollow(userId)
           if (data.status === 'error') {
