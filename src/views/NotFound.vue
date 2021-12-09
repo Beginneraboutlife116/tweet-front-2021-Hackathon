@@ -5,7 +5,7 @@
     <div class="err2">4</div>
     <div class="msg">
       這是個不存在的頁面唷
-      <p>回<router-link to="/home">首頁</router-link>吧</p>
+      <p class="not-found-link" @click="$router.back()">回上一頁吧</p>
     </div>
   </div>
 </template>
@@ -50,5 +50,15 @@
   left: 16%;
   top: 45%;
   width: 75%;
+}
+
+p.not-found-link {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--main-color);
+}
+
+p.not-found:hover {
+  text-decoration: underline;
 }
 </style>

@@ -33,7 +33,7 @@
           <div class="tweet__info-count">
             <!-- 點擊回覆打開回覆modal @click.prevent.stop="toggleReplyModal(tweet.id)"-->
             <router-link :to="`/home/tweets/${tweet.id}`">
-            <span  class="tweet__info-count--reply">
+            <span class="tweet__info-count--reply">
               <svg
                 width="15"
                 height="15"
@@ -46,7 +46,7 @@
                   fill="#657786"
                 />
               </svg>
-              <span>{{ tweet.replyCounts }}</span>
+              <span class="tweet__info-count--replyNumber">{{ tweet.replyCounts }}</span>
             </span>
             </router-link>
             <!-- 點擊喜歡愛心亮起 -->
@@ -135,11 +135,19 @@ export default {
           if (data.status === 'error') {
             throw new Error(data.message)
           }
+          Toast.fire({
+            icon: 'success',
+            title: '成功取消喜歡'
+          })
         } else {
           const { data } = await tweetsAPI.postLike(tweetId)
           if (data.status === 'error') {
             throw new Error(data.message)
           }
+          Toast.fire({
+            icon: 'success',
+            title: '成功喜歡一則推文'
+          })
         }
         this.tweet = {
           ...this.tweet,
@@ -215,6 +223,9 @@ export default {
       position: relative;
       display: flex;
       width: 13rem;
+      &--replyNumber{
+        color: var(--font-color);
+      }
       span {
         display: flex;
         align-items: center;

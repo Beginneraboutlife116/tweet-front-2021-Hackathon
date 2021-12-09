@@ -68,6 +68,7 @@ export default {
   methods: {
     async fetchTweets () {
       try {
+        this.isLoading = true
         const { data } = await tweetsAPI.getTweets()
         if (data.status === 'error') {
           throw new Error(data.message)
@@ -110,25 +111,12 @@ export default {
       try {
         this.isProcessing = true
         this.isLoading = true
-        const { id, name, avatar, account } = this.currentUser
         const description = message
         const { data } = await tweetsAPI.postTweets({ description })
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
-        this.tweets.unshift({
-          description,
-          createdAt: new Date(),
-          User: {
-            id,
-            account,
-            name,
-            avatar
-          },
-          isLike: false,
-          likeCounts: 0,
-          replyCounts: 0
-        })
+        this.fetchTweets()
         this.isProcessing = false
         this.isLoading = false
       } catch (err) {
