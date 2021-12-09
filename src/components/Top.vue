@@ -96,13 +96,13 @@ export default {
         })
         Toast.fire({
           icon: 'success',
-          title: '追蹤成功！'
+          title: '跟隨成功！'
         })
       } catch (err) {
         this.toggleProcessing(id)
         Toast.fire({
           icon: 'error',
-          title: '無法追蹤或取消追蹤該使用者，請稍後再試'
+          title: '無法跟隨或取消跟隨該使用者，請稍後再試'
         })
       }
     },
@@ -131,7 +131,7 @@ export default {
         this.toggleProcessing(id)
         Toast.fire({
           icon: 'error',
-          title: '無法追蹤或取消追蹤該使用者，請稍後再試'
+          title: '無法跟隨或取消跟隨該使用者，請稍後再試'
         })
       }
     }

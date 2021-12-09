@@ -204,11 +204,19 @@ export default {
           if (data.status === 'error') {
             throw new Error(data.message)
           }
+          Toast.fire({
+            icon: 'success',
+            title: '成功取消喜歡'
+          })
         } else {
           const { data } = await tweetsAPI.postLike(tweetId)
           if (data.status === 'error') {
             throw new Error(data.message)
           }
+          Toast.fire({
+            icon: 'success',
+            title: '成功喜歡一則推文'
+          })
         }
         this.tweet = {
           ...this.tweet,
