@@ -183,6 +183,12 @@ export default {
           icon: 'success',
           title: `${data.message}`
         })
+        this.$store.commit('setCurrentUser', {
+          account: this.editUser.account,
+          name: this.editUser.name,
+          email: this.editUser.email,
+          password: this.password
+        })
         this.$router.push('/home')
       } catch (err) {
         this.isProcessing = false
