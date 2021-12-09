@@ -38,7 +38,7 @@
             <span class="error" v-if="passwordError">確認密碼與密碼不符，請再試一次</span>
           </p>
         </label>
-        <button class="setting__form-submit active" type="submit">儲存</button>
+        <button class="setting__form-submit active" type="submit" :class="{disabled: isProcessing || waitForFill}"> {{ isProcessing ? '傳送中' : '儲存' }} </button>
       </form>
     </div>
   </div>
@@ -60,7 +60,8 @@ export default {
       passwordConfirm: '',
       accountRepeat: false,
       emailRepeat: false,
-      passwordError: false
+      passwordError: false,
+      isProcessing: false
     }
   },
   computed: {
@@ -70,6 +71,12 @@ export default {
       nameError.color = this.editUser.name.length > 50 ? '#fc5a5a' : '#0099ff'
       nameError.text = this.editUser.name.length > 50 ? '字數超出上限！' : '字數正確'
       return nameError
+    },
+    waitForFill () {
+      if (!this.editUser.account || !this.editUser.email || !this.password || !this.passwordConfirm) {
+        return true
+      }
+      return false
     }
   },
   methods: {
@@ -90,6 +97,8 @@ export default {
       this.$refs.email.style.borderColor = ''
       this.$refs.password.style.borderColor = ''
       this.$refs.passwordConfirm.style.borderColor = ''
+      this.accountRepeat = false
+      this.emailRepeat = false
       if (!this.editUser.account) {
         Toast.fire({
           icon: 'warning',
@@ -159,6 +168,7 @@ export default {
     },
     async editUserInfo () {
       try {
+        this.isProcessing = true
         const { data } = await usersAPI.putUserEdit(this.editUser.id, {
           account: this.editUser.account,
           name: this.editUser.name,
@@ -175,14 +185,17 @@ export default {
         })
         this.$router.push('/home')
       } catch (err) {
+        this.isProcessing = false
         if (err.message === 'account已重複註冊！') {
           this.$refs.account.focus()
           this.$refs.account.style.borderColor = '#fc5a5a'
+          this.accountRepeat = true
         }
 
         if (err.message === 'email已重複註冊！') {
           this.$refs.email.focus()
           this.$refs.email.style.borderColor = '#fc5a5a'
+          this.emailRepeat = true
         }
         Toast.fire({
           icon: 'error',
