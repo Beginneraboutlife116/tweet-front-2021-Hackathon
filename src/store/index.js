@@ -79,8 +79,11 @@ export default new Vuex.Store({
           introduction,
           role
         })
+        return true
       } catch (err) {
         console.error('無法取得現在使用者資訊')
+        commit('revokeAuthentication')
+        return false
       }
     }
   },
