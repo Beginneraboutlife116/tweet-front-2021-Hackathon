@@ -14,7 +14,7 @@
         </label>
         <label class="setting__form-row">
           <p class="setting__form-title">名稱</p>
-          <input type="text" class="setting__form-input" v-model.trim="editUser.name" value="editUser.name" :placeholder="prevName">
+          <input type="text" class="setting__form-input" v-model.trim="editUser.name" value="editUser.name" :placeholder="prevName" ref="name" required>
           <p class="setting__form-error">
             <span class="error" v-show="editUser.name.length" :style="{color: nameErrorHandler.color}"> {{ nameErrorHandler.text }} </span>
             <span class="limit" v-show="editUser.name.length"> {{ editUser.name.length }}/50</span>
@@ -97,6 +97,7 @@ export default {
       this.$refs.email.style.borderColor = ''
       this.$refs.password.style.borderColor = ''
       this.$refs.passwordConfirm.style.borderColor = ''
+      this.$refs.name.style.borderColor = ''
       this.accountRepeat = false
       this.emailRepeat = false
       if (!this.editUser.account) {
@@ -107,6 +108,15 @@ export default {
         this.$refs.account.focus()
         this.$refs.account.style.borderColor = '#fc5a5a'
         return
+      }
+
+      if (!this.name) {
+        Toast.fire({
+          icon: 'warning',
+          title: '名稱必填'
+        })
+        this.$refs.name.focus()
+        this.$refs.name.style.borderColor = '#fc5a5a'
       }
 
       if (this.editUser.name > 50) {

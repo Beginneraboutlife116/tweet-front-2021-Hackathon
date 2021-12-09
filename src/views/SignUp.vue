@@ -22,7 +22,7 @@
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">名稱</p>
-          <input type="text" class="sign__form-input" v-model.trim="name" :style="{borderColor: nameErrorHandler.borderColor}">
+          <input type="text" class="sign__form-input" v-model.trim="name" :style="{borderColor: nameErrorHandler.borderColor}" ref="name" required>
           <p class="sign__form-error">
             <span class="error" v-show="name.length" :style="{color: nameErrorHandler.color}"> {{ nameErrorHandler.text }} </span>
             <span class="limit" v-show="name.length"> {{name.length}}/50</span>
@@ -77,7 +77,11 @@ export default {
     nameErrorHandler () {
       const nameError = {}
       nameError.borderColor = this.name.length > 50 ? '#fc5a5a' : ''
-      nameError.color = this.name.length > 50 ? '#fc5a5a' : '#0099ff'
+      if ((this.name.length > 50) || (!this.name.length)) {
+        nameError.color = '#fc5a5a'
+      } else {
+        nameError.color = '#0099ff'
+      }
       nameError.text = this.name.length > 50 ? '字數超出上限！' : '字數正確'
       return nameError
     }
@@ -88,6 +92,7 @@ export default {
       this.$refs.email.style.borderColor = ''
       this.$refs.password.style.borderColor = ''
       this.$refs.passwordConfirm.style.borderColor = ''
+      this.$refs.name.style.borderColor = ''
       if (!this.account) {
         Toast.fire({
           icon: 'warning',
@@ -95,6 +100,16 @@ export default {
         })
         this.$refs.account.focus()
         this.$refs.account.style.borderColor = '#fc5a5a'
+        return
+      }
+
+      if (!this.name) {
+        Toast.fire({
+          icon: 'warning',
+          title: '名稱必填'
+        })
+        this.$refs.name.focus()
+        this.$refs.name.style.borderColor = '#fc5a5a'
         return
       }
 
