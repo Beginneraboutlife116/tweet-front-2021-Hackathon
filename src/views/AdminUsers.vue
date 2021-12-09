@@ -1,7 +1,8 @@
 <template>
   <section class="adminUsers">
     <header class="adminUsers-header">使用者列表</header>
-    <main class="cards">
+    <Spinner v-if="isLoading" />
+    <main class="cards" v-else>
       <div class="card" v-for="user in users" :key="user.id">
         <div class="card__cover">
           <img :src="user.cover || 'https://fakeimg.pl/600x200/?text=Add%20Your%20Cover'" alt="" class="card__cover-img">
@@ -31,10 +32,10 @@
             </p>
             <p class="card__follow">
               <span class="card__follow-following">
-                <strong> {{ user.followships.followingCounts }} </strong><span>個跟隨中</span>
+                <strong> {{ user.followships.followingCounts }} 個</strong><span>跟隨中</span>
               </span>
               <span class="card__follow-follower">
-                <strong> {{ user.followships.followerCounts }} </strong><span>位跟隨者</span>
+                <strong> {{ user.followships.followerCounts }} 位</strong><span>跟隨者</span>
               </span>
             </p>
           </div>
@@ -47,12 +48,17 @@
 <script>
 import { Toast } from './../mixins/helpers'
 import adminAPI from './../apis/admin'
+import Spinner from './../components/Spinner.vue'
 
 export default {
   name: 'AdminUser',
+  components: {
+    Spinner
+  },
   data () {
     return {
-      users: []
+      users: [],
+      isLoading: true
     }
   },
   methods: {
@@ -60,7 +66,9 @@ export default {
       try {
         const { data } = await adminAPI.getUsers()
         this.users = data.filter(data => data.account !== 'root')
+        this.isLoading = false
       } catch (err) {
+        this.isLoading = false
         Toast.fire({
           icon: 'error',
           title: '無法獲取資料，請稍後再試'
@@ -82,6 +90,7 @@ export default {
   &-header {
     padding: 1.5rem 0 1.5rem 2.6rem;
     border-bottom: 1px solid var(--border-color);
+    font-weight: bold;
   }
 }
 .cards {
