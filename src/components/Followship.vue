@@ -25,7 +25,7 @@
       </p>
     </div>
     <button
-      @click.stop.prevent="toggleFollow(follow.followingId, follow.isFollowing)"
+      @click.stop.prevent="toggleFollow(follow.followingId || follow.followerId, follow.isFollowing)"
       :class="{ active: follow.isFollowing }"
       :disabled="currentUser.id === follow.followingId || currentUser.id === follow.followerId"
     >
@@ -72,6 +72,7 @@ export default {
     },
     async toggleFollow (userId, userIsFollowing) {
       try {
+        console.log(userId, userIsFollowing)
         if (userIsFollowing) {
           const { data } = await followAPI.cancelFollow(userId)
           if (data.status === 'error') {
