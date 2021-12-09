@@ -58,12 +58,9 @@ export default {
       }
     },
     deletePost (tweetId) {
-      console.log(this.tweets)
-      console.log(tweetId)
       this.tweets = this.tweets.filter(
         (tweet) => tweet.id !== tweetId
       )
-      console.log(this.tweets)
     }
   }
 }

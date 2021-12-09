@@ -78,9 +78,7 @@ export default {
     },
     async deletePost (tweetId) {
       try {
-        console.log(tweetId)
         const { data } = await adminAPI.delete(tweetId)
-        console.log(data)
         if (data.status === 'error') {
           throw new Error(data.message)
         }
