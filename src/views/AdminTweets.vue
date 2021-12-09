@@ -4,7 +4,8 @@
       <h1 class="admin-tweets__header--title">推文清單</h1>
     </header>
     <Spinner v-if="isLoading" />
-    <AdminTweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
+    <AdminTweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet"
+    @delete-post="deletePost"/>
    </div>
 </template>
 
@@ -14,7 +15,7 @@ import Spinner from './../components/Spinner'
 import AdminTweet from './../components/AdminTweet'
 import { Toast } from './../mixins/helpers'
 import tweetsAPI from './../apis/tweets'
-
+import adminAPI from './../apis/admin'
 export default {
   name: 'profile-tweets',
   components: {
@@ -57,10 +58,21 @@ export default {
         })
       }
     },
-    deletePost (tweetId) {
-      this.tweets = this.tweets.filter(
-        (tweet) => tweet.id !== tweetId
-      )
+    async deletePost (tweetId) {
+      try {
+        const { data } = await adminAPI.delete(tweetId)
+        if (data.status === 'error') {
+          throw new Error(data.message)
+        }
+        this.tweets = this.tweets.filter(
+          (tweet) => tweet.id !== tweetId
+        )
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法刪除餐廳'
+        })
+      }
     }
   }
 }
