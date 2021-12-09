@@ -82,6 +82,11 @@ const routes = [
         path: '/admin/tweets',
         name: 'admin-tweets',
         component: () => import('./../views/AdminTweets')
+      },
+      {
+        path: '/admin/users',
+        name: 'admin-users',
+        component: () => import('./../views/AdminUsers')
       }
     ]
   },
