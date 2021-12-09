@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-container">
     <nav class="sidebar">
-      <router-link :to="{ name: 'home' }">
+      <router-link :to="this.currentUser.role === 'admin' ? { name: 'admin-tweets'} : { name: 'home'} ">
         <svg
           class="sidebar__logo"
           width="30"
