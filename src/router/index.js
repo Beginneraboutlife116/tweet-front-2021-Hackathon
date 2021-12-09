@@ -1,9 +1,19 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import SignIn from './../views/SignIn'
+import NotFound from './../views/NotFound'
 import store from './../store'
 
 Vue.use(VueRouter)
+
+const authorizeIsAdmin = (to, from, next) => {
+  const currentUser = store.state.currentUser
+  if (currentUser && currentUser.role !== 'admin') {
+    next({ name: 'not-found' })
+    return
+  }
+  next()
+}
 
 const routes = [
   {
@@ -81,7 +91,14 @@ const routes = [
       {
         path: '/admin/tweets',
         name: 'admin-tweets',
-        component: () => import('./../views/AdminTweets')
+        component: () => import('./../views/AdminTweets'),
+        beforeEnter: authorizeIsAdmin
+      },
+      {
+        path: '/admin/users',
+        name: 'admin-users',
+        component: () => import('./../views/AdminUsers'),
+        beforeEnter: authorizeIsAdmin
       }
     ]
   },
@@ -89,6 +106,11 @@ const routes = [
     path: '/admin/signin',
     name: 'admin-sign-in',
     component: () => import('./../views/SignIn')
+  },
+  {
+    path: '*',
+    name: 'not-found',
+    component: NotFound
   }
 ]
 
