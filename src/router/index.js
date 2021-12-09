@@ -128,7 +128,7 @@ router.beforeEach(async (to, from, next) => {
   if (tokenInLocalStorage && (tokenInLocalStorage !== tokenInStore || userIdInLocalStoreage !== userIdInStore)) {
     isAuthenticated = await store.dispatch('fetchCurrentUser')
   }
-  const pathWithoutAuthentication = ['sign-in', 'sign-up']
+  const pathWithoutAuthentication = ['sign-in', 'sign-up', 'admin-sign-in']
 
   if (!isAuthenticated && !pathWithoutAuthentication.includes(to.name)) {
     next('/signin')
