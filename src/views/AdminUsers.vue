@@ -94,6 +94,8 @@ export default {
   }
 }
 .cards {
+  height: 100vh;
+  overflow: scroll;
   padding: 1.5rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, 24.5rem);
