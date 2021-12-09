@@ -5,5 +5,8 @@ module.exports = {
         prependData: '@import "@/scss/main.scss";'
       }
     }
-  }
+  },
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/tweet-front-2021/'
+    : '/'
 }
