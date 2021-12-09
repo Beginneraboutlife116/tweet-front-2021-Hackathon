@@ -6,12 +6,9 @@ import store from './../store'
 
 Vue.use(VueRouter)
 
-const authorizeIs = (to, from, next) => {
+const authorizeIsAdmin = (to, from, next) => {
   const currentUser = store.state.currentUser
   if (currentUser && currentUser.role !== 'admin') {
-    next({ name: 'not-found' })
-    return
-  } else if (currentUser && currentUser.role !== 'user') {
     next({ name: 'not-found' })
     return
   }
@@ -44,51 +41,50 @@ const routes = [
           {
             path: '',
             name: 'home',
-            component: () => import('./../views/Tweets'),
-            beforeEnter: authorizeIs
+            component: () => import('./../views/Tweets')
+            // beforeEnter: authorizeIsUser
           },
           {
             path: 'tweets/:tweetId',
             name: 'replies',
-            component: () => import('./../views/Replies'),
-            beforeEnter: authorizeIs
+            component: () => import('./../views/Replies')
+            // beforeEnter: authorizeIsUser
           },
           {
             path: ':userId/followers',
             name: 'followers',
-            component: () => import('./../views/Followers'),
-            beforeEnter: authorizeIs
+            component: () => import('./../views/Followers')
+            // beforeEnter: authorizeIsUser
           },
           {
             path: ':userId/followings',
             name: 'followings',
-            component: () => import('./../views/Followings'),
-            beforeEnter: authorizeIs
+            component: () => import('./../views/Followings')
+            // beforeEnter: authorizeIsUser
           },
           {
             path: ':userId',
             name: 'profile',
             redirect: ':userId/tweets',
             component: () => import('./../views/UserProfile'),
-            beforeEnter: authorizeIs,
             children: [
               {
                 path: 'tweets',
                 name: 'profile-tweets',
-                component: () => import('./../components/ProfileTweets'),
-                beforeEnter: authorizeIs
+                component: () => import('./../components/ProfileTweets')
+                // beforeEnter: authorizeIsUser
               },
               {
                 path: 'replies',
                 name: 'profile-replies',
-                component: () => import('./../components/ProfileReplies'),
-                beforeEnter: authorizeIs
+                component: () => import('./../components/ProfileReplies')
+                // beforeEnter: authorizeIsUser
               },
               {
                 path: 'likes',
                 name: 'profile-likes',
-                component: () => import('./../components/ProfileLikes'),
-                beforeEnter: authorizeIs
+                component: () => import('./../components/ProfileLikes')
+                // beforeEnter: authorizeIsUser
               }
             ]
           }
@@ -97,20 +93,20 @@ const routes = [
       {
         path: ':userId/setting',
         name: 'setting',
-        component: () => import('./../views/Setting'),
-        beforeEnter: authorizeIs
+        component: () => import('./../views/Setting')
+        // beforeEnter: authorizeIsUser
       },
       {
         path: '/admin/tweets',
         name: 'admin-tweets',
         component: () => import('./../views/AdminTweets'),
-        beforeEnter: authorizeIs
+        beforeEnter: authorizeIsAdmin
       },
       {
         path: '/admin/users',
         name: 'admin-users',
         component: () => import('./../views/AdminUsers'),
-        beforeEnter: authorizeIs
+        beforeEnter: authorizeIsAdmin
       }
     ]
   },
@@ -136,13 +132,14 @@ router.beforeEach(async (to, from, next) => {
   const userIdInLocalStorage = localStorage.getItem('userId')
   const userIdInStore = store.state.currentUser.id
   let isAuthenticated = store.state.isAuthenticated
+  if (store.state.currentUser.role === 'admin') {
+    isAuthenticated = await store.dispatch('fetchRootUser')
+  }
 
-  if (tokenInLocalStorage && (tokenInLocalStorage !== tokenInStore || userIdInLocalStorage !== userIdInStore)) {
-    if (store.state.currentUser.role === 'admin') {
-      isAuthenticated = await store.dispatch('fetchRootUser')
-    }
+  if (tokenInLocalStorage && (tokenInLocalStorage !== tokenInStore || userIdInLocalStorage !== userIdInStore) && store.state.currentUser.role === 'user') {
     isAuthenticated = await store.dispatch('fetchCurrentUser')
   }
+
   const pathWithoutAuthentication = ['sign-in', 'sign-up', 'admin-sign-in']
 
   if (!isAuthenticated && !pathWithoutAuthentication.includes(to.name)) {

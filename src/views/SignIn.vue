@@ -132,8 +132,8 @@ export default {
           title: '成功登入!'
         })
 
-        const path = this.isBackLogin ? 'admin-tweets' : 'home'
-        this.$router.replace({ name: path })
+        const path = this.isBackLogin ? '/admin/tweets' : '/home'
+        this.$router.push(path)
       } catch (err) {
         this.isProcessing = false
         Toast.fire({
