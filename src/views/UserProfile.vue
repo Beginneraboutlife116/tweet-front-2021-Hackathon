@@ -269,7 +269,6 @@ export default {
       }
     },
     toggleSubscribe (userId) {
-      // TODO: 將資料傳給後端
       this.profile.isSubscribing = !this.profile.isSubscribing
     }
   }
