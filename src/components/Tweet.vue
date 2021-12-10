@@ -193,7 +193,8 @@ export default {
   &__avatar {
     margin-right: 1rem;
     img {
-      max-width: 5rem;
+      width: 5rem;
+      height: 5rem;
       border-radius: 50%;
       object-fit: cover;
     }

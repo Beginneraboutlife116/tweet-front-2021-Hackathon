@@ -21,7 +21,8 @@
         </div>
       </div>
     </header>
-    <div class="main__profile">
+    <Spinner v-if="isLoading"/>
+    <div class="main__profile" v-else>
       <div class="main__profile__img">
         <img
           class="main__profile__img--cover"
@@ -45,7 +46,6 @@
       <div class="main__profile__info">
         <div class="main__profile__info__btn">
           <template v-if="currentUser.id !== profile.id">
-            <!-- msg -->
             <svg
               width="35"
               height="35"
@@ -59,9 +59,8 @@
                 fill="#FF6600"
               />
             </svg>
-            <!-- notificationfilled -->
             <svg
-              v-if="!profile.isSubscribing"
+              v-if="profile.isSubscribing"
               @click.stop.prevent="toggleSubscribe(profile.id, profile.isSubscribing)"
               width="35"
               height="35"
@@ -81,9 +80,8 @@
                 fill="white"
               />
             </svg>
-            <!-- notification -->
             <svg
-              v-if="profile.isSubscribing"
+              v-else
               @click.stop.prevent="
                 toggleSubscribe(profile.id)
               "
@@ -117,7 +115,6 @@
             {{ profile.isFollowing ? "正在跟隨" : "跟隨" }}
           </button>
         </div>
-        <Spinner v-if="isLoading" />
         <p v-if="!isLoading" class="name">{{ profile.name }}</p>
         <p v-if="!isLoading" class="account">@{{ profile.account }}</p>
         <p v-if="!isLoading" class="introduction">{{ profile.introduction }}</p>
@@ -181,7 +178,7 @@ export default {
         account: 'null',
         avatar: null,
         cover: null,
-        email: 'user1@example.com',
+        email: '',
         followship: {
           followingCounts: 0,
           followerCounts: 0
@@ -190,7 +187,7 @@ export default {
         introduction: null,
         isFollowing: false,
         isSubscribing: false,
-        name: 'user1',
+        name: '',
         tweetCounts: 0
       },
       isProcessing: false,
@@ -330,6 +327,7 @@ export default {
       width: 100%;
       height: 20rem;
       object-fit: cover;
+      overflow: hidden;
     }
     &--avatar {
       position: absolute;
@@ -337,7 +335,8 @@ export default {
       left: 1.5rem;
       transform: translateY(-25%);
       border-radius: 50%;
-      max-width: 14rem;
+      width: 14rem;
+      height: 14rem;
       border: 4px solid var(--basic-color);
       object-fit: cover;
     }
@@ -367,7 +366,7 @@ export default {
       font-size: $font-md;
     }
     .name {
-      margin-top: 2.4rem; //按鈕跟名字間距
+      margin-top: 2.4rem;
       font-weight: 900;
       font-size: $font-xl;
     }
