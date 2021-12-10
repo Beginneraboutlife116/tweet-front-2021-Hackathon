@@ -146,12 +146,10 @@ router.beforeEach(async (to, from, next) => {
   const idCompareResult = userIdInLocalStorage !== userIdInStore
 
   if (tokenInLocalStorage && tokenCompareResult) {
-    console.log('第一個比較： ', tokenInLocalStorage && tokenCompareResult)
     isAuthenticated = store.state.currentUser.role === 'admin' ? await store.dispatch('fetchRootUser') : await store.dispatch('fetchCurrentUser')
   }
 
   if (tokenInLocalStorage && idCompareResult) {
-    console.log('第二個比較： ', tokenInLocalStorage && idCompareResult)
     isAuthenticated = store.state.currentUser.role === 'admin' ? await store.dispatch('fetchRootUser') : await store.dispatch('fetchCurrentUser')
   }
 
