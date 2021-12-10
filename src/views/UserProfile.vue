@@ -26,7 +26,7 @@
         <img
           class="main__profile__img--cover"
           :src="
-            profile.avatar ||
+            profile.cover ||
             'https://fakeimg.pl/600x200/?text=Add%20Your%20Cover'
           "
           alt="avatar"
@@ -103,9 +103,11 @@
           <button
             v-if="currentUser.id === profile.id"
             class="main__profile__info__btn--edit"
+            @click.stop.prevent="toggleEditModal"
           >
             編輯個人資料
           </button>
+          <UserEdit v-if="isOpen" @close-modal="toggleEditModal" :initial-profile="profile" @after-submit="handleAfterSubmit"/>
           <button
             v-if="currentUser.id !== profile.id"
             class="main__profile__info__btn--follow"
@@ -166,10 +168,12 @@ import { Toast } from './../mixins/helpers'
 import usersAPI from './../apis/users'
 import followAPI from '../apis/followships'
 import Spinner from './../components/Spinner'
+import UserEdit from './../components/UserEdit.vue'
 export default {
   name: 'UserProfile',
   components: {
-    Spinner
+    Spinner,
+    UserEdit
   },
   data () {
     return {
@@ -190,7 +194,8 @@ export default {
         tweetCounts: 0
       },
       isProcessing: false,
-      isLoading: true
+      isLoading: true,
+      isOpen: false
     }
   },
   created () {
@@ -207,6 +212,15 @@ export default {
 
   },
   methods: {
+    handleAfterSubmit (data) {
+      this.profile.avatar = data.avatar
+      this.profile.cover = data.cover
+      this.profile.name = data.name
+      this.profile.introduction = data.introduction
+    },
+    toggleEditModal () {
+      this.isOpen = !this.isOpen
+    },
     async fetchProfile (userId) {
       try {
         this.isProcessing = true
@@ -261,7 +275,6 @@ export default {
       }
     },
     toggleSubscribe (userId) {
-      // TODO: 將資料傳給後端
       this.profile.isSubscribing = !this.profile.isSubscribing
     }
   }
