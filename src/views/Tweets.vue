@@ -56,6 +56,8 @@ export default {
   },
   created () {
     this.fetchTweets()
+    this.$socket.emit('test', 'test')
+    console.log(this.$socket)
   },
   computed: {
     ...mapState(['currentUser', 'tweet'])

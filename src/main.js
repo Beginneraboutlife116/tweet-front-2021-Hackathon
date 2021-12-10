@@ -1,25 +1,29 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import VueSocketIO from 'vue-socket.io'
+/* eslint-disable */
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+import VueSocketIO from "vue-socket.io";
 
-Vue.config.productionTip = false
+import SocketIO from "socket.io-client";
 
-// vue-socket.io範例
-Vue.use(new VueSocketIO({
-  debug: true,
-  connection: 'http://metinseylan.com:1992',
-  vuex: {
-    store,
-    actionPrefix: 'SOCKET_',
-    mutationPrefix: 'SOCKET_'
-  },
-  options: { path: '//' }
-}))
+Vue.config.productionTip = false;
+
+Vue.use(
+  new VueSocketIO({
+    connection: SocketIO("http://5149-81-31-74-124.ngrok.io"),
+  })
+);
 
 new Vue({
   router,
   store,
-  render: h => h(App)
-}).$mount('#app')
+  store,
+  sockets: {
+    connect: function () {
+      console.log("Connected. Sending Authentication");
+      this.$socket.emit("test", "this is a test")
+    }
+  },
+  render: (h) => h(App),
+}).$mount("#app");

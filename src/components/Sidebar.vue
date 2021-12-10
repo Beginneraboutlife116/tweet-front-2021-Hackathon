@@ -1,7 +1,13 @@
 <template>
   <div class="sidebar-container">
     <nav class="sidebar">
-      <router-link :to="this.currentUser.role === 'admin' ? { name: 'admin-tweets'} : { name: 'home'} ">
+      <router-link
+        :to="
+          this.currentUser.role === 'admin'
+            ? { name: 'admin-tweets' }
+            : { name: 'home' }
+        "
+      >
         <svg
           class="sidebar__logo"
           width="30"
@@ -38,6 +44,7 @@
       </router-link>
       <template v-if="currentUser.role === 'user'">
         <ul>
+          <!-- home -->
           <li class="sidebar__link">
             <router-link :to="{ name: 'home' }">
               <svg
@@ -55,8 +62,61 @@
               <span>首頁</span>
             </router-link>
           </li>
+          <!-- notification 待後續有通知再加-->
+          <!-- public chatroom -->
           <li class="sidebar__link">
-            <router-link :to="{ name: 'profile-tweets', params: { userId: currentUser.id } }">
+            <router-link
+              :to="{
+                name: 'public-chatroom',
+                params: { userId: currentUser.id },
+              }"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19.25 3.01801H4.75C3.233 3.01801 2 4.25201 2 5.77001V18.265C2 19.783 3.233 21.018 4.75 21.018H19.25C20.767 21.018 22 19.783 22 18.265V5.77001C22 4.25201 20.767 3.01801 19.25 3.01801ZM4.75 4.51801H19.25C19.94 4.51801 20.5 5.07801 20.5 5.76801V6.48201L12.45 11.849C12.177 12.029 11.824 12.031 11.55 11.847L3.5 6.48201V5.76801C3.5 5.07801 4.06 4.51801 4.75 4.51801ZM19.25 19.516H4.75C4.06 19.516 3.5 18.956 3.5 18.266V8.24001L10.74 13.07C11.123 13.326 11.562 13.454 12 13.454C12.44 13.454 12.877 13.326 13.26 13.071L20.5 8.24101V18.263C20.5 18.953 19.94 19.513 19.25 19.513V19.516Z"
+                  fill="black"
+                />
+              </svg>
+              <span>公開聊天室</span>
+            </router-link>
+          </li>
+          <!-- private msg -->
+          <li class="sidebar__link">
+            <router-link
+              :to="{
+                name: 'private',
+                params: { userId: currentUser.id },
+              }"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19.25 3.01801H4.75C3.233 3.01801 2 4.25201 2 5.77001V18.265C2 19.783 3.233 21.018 4.75 21.018H19.25C20.767 21.018 22 19.783 22 18.265V5.77001C22 4.25201 20.767 3.01801 19.25 3.01801ZM4.75 4.51801H19.25C19.94 4.51801 20.5 5.07801 20.5 5.76801V6.48201L12.45 11.849C12.177 12.029 11.824 12.031 11.55 11.847L3.5 6.48201V5.76801C3.5 5.07801 4.06 4.51801 4.75 4.51801ZM19.25 19.516H4.75C4.06 19.516 3.5 18.956 3.5 18.266V8.24001L10.74 13.07C11.123 13.326 11.562 13.454 12 13.454C12.44 13.454 12.877 13.326 13.26 13.071L20.5 8.24101V18.263C20.5 18.953 19.94 19.513 19.25 19.513V19.516Z"
+                  fill="black"
+                />
+              </svg>
+              <span>私人訊息</span>
+            </router-link>
+          </li>
+          <!-- personal data -->
+          <li class="sidebar__link">
+            <router-link
+              :to="{
+                name: 'profile-tweets',
+                params: { userId: currentUser.id },
+              }"
+            >
               <svg
                 width="24"
                 height="24"
@@ -73,7 +133,9 @@
             </router-link>
           </li>
           <li class="sidebar__link">
-            <router-link :to="{ name: 'setting', params: { userId: currentUser.id } }">
+            <router-link
+              :to="{ name: 'setting', params: { userId: currentUser.id } }"
+            >
               <svg
                 width="24"
                 height="24"
@@ -133,7 +195,11 @@
           </li>
         </ul>
       </template>
-      <button class="active sidebar__button" @click.stop.prevent="$store.commit('toggleModal', 'tweet')" v-if="currentUser.role === 'user'">
+      <button
+        class="active sidebar__button"
+        @click.stop.prevent="$store.commit('toggleModal', 'tweet')"
+        v-if="currentUser.role === 'user'"
+      >
         推文
       </button>
       <span class="sidebar--logout" @click.stop.prevent="logout">

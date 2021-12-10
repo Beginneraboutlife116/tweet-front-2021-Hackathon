@@ -96,8 +96,20 @@ const routes = [
                 beforeEnter: authorizeIsUser
               }
             ]
+          },
+          {
+            path: 'private',
+            name: 'private',
+            component: () => import('./../components/PersonalMsg'),
+            beforeEnter: authorizeIsUser
           }
         ]
+      },
+      {
+        path: 'public-chatroom',
+        name: 'public-chatroom',
+        component: () => import('./../views/ChatRoom'),
+        beforeEnter: authorizeIsUser
       },
       {
         path: ':userId/setting',

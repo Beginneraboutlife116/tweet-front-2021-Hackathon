@@ -5,10 +5,40 @@
       <p class="out__timeStamp">時間</p>
     </div>
     <div class="out__avatar">
-      <img src="https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg" alt="" class="out__avatar-img">
+      <img
+        src="https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg"
+        alt=""
+        class="out__avatar-img"
+      />
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'chat',
+  data () {
+    return {
+    }
+  },
+  sockets: {
+    connect: function () {
+      console.log('socket connected')
+    },
+    customEmit: function (data) {
+      console.log(
+        'this method was fired by the socket server. eg: io.emit("customEmit", data)'
+      )
+    }
+  },
+  methods: {
+    clickButton: function (data) {
+      // $socket is socket.io-client instance
+      this.$socket.emit('emit_method', data)
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 .out {
