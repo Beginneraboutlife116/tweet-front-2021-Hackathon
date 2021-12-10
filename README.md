@@ -5,10 +5,10 @@ Alphitter is a platform  for user to share their life with their friends
 # 專案名稱 Alphitter
 Alphitter 是一個模擬Twitter的社交媒體平台，使用者可以於平台中，和自己的朋友分享生活。
 
-
-![login](https://imgur.com/a/yV80HdZ)
-
-![main](https://imgur.com/a/sZefDmP)
+<p>Login<p/>
+<a href="https://ibb.co/qdbNr3S"><img src="https://i.ibb.co/vH23j6F/2021-12-09-7-19-45.png" alt="LOGIN" border="0" /></a>
+<p>Main<p/>
+<a href="https://ibb.co/0GBZNKJ"><img src="https://i.ibb.co/Ny1phrY/2021-12-09-7-18-52.png" alt="MAIN" border="0"></a>
 
 
 # 平台入口
