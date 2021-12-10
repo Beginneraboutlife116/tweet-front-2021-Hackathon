@@ -8,7 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     currentUser: {
-      id: 10,
+      id: '',
       account: '',
       name: '',
       email: '',
@@ -34,7 +34,16 @@ export default new Vuex.Store({
       state.token = localStorage.getItem('token')
     },
     revokeAuthentication (state) {
-      state.currentUser = {}
+      state.currentUser = {
+        id: '',
+        account: '',
+        name: '',
+        email: '',
+        avatar: '',
+        cover: '',
+        introduction: '',
+        role: ''
+      }
       state.isAuthenticated = false
       localStorage.removeItem('token')
       localStorage.removeItem('userId')
