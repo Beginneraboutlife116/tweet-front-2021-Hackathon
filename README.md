@@ -68,45 +68,21 @@ Clone API repository https://github.com/paulchnag0801/twitter-api-2020.git
 
 Clone Vue repository https://github.com/Beginneraboutlife116/tweet-front-2021.git
    
-   
+### Go to file
 
-Install Dependancies
+    cd tweet-front-2021
+
+### Install Dependancies
 
     npm install
 
-Spin up server
+### Run Web
 
-**if you have nodemon**
+    npm run serve
 
-    npm run dev
+#### The website should start running on
 
-**if you dont have nodemon**
-
-    npm run start
-
-The website should start running on
-
-    http://localhost:3000/
-
-Set up .env file
-
-    please change .env.example to .env and change the SKIP parameter to your own credentials
-
-## Set up data base
-
-In this project, we use MySQL
-
-Create database in MySQL
-
-`create database ac_twitter_workspace;`
-
-Set up data base
-
-    npx seqeulize db:migrate
-
-Set up seed 
-
-    npx sequelize db:seed:all
+    http://localhost:8080/
 
 ## User login
 
@@ -118,7 +94,7 @@ we provide both user and admin access. Please use below login to test user and a
 | Role | User account | Password |
 | ----------- | ----------- | ----------- |
 | Admin | root | 12345678 |
-| User | user1 | 1 |
+| User | user1 | 12345678 |
 
 ## Author
 
