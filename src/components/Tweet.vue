@@ -92,95 +92,95 @@
 </template>
 
 <script>
-import tweetsAPI from "./../apis/tweets";
-import { fromNowFilter, Toast } from "./../mixins/helpers";
+import tweetsAPI from './../apis/tweets'
+import { fromNowFilter, Toast } from './../mixins/helpers'
 
 export default {
   mixins: [fromNowFilter],
-  name: "Tweet",
+  name: 'Tweet',
   props: {
     initialTweet: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
-  data() {
+  data () {
     return {
       tweet: {
         id: 0,
-        description: "",
-        createdAt: "2001-12-02T16:44:25.000Z",
+        description: '',
+        createdAt: '2001-12-02T16:44:25.000Z',
         User: {
           id: -1,
-          account: "",
-          name: "",
-          avatar: "",
+          account: '',
+          name: '',
+          avatar: ''
         },
         isLike: true,
         likeCounts: 100,
-        replyCounts: 20,
-      },
-    };
+        replyCounts: 20
+      }
+    }
   },
-  created() {
-    this.fetchTweet();
+  created () {
+    this.fetchTweet()
   },
   methods: {
-    toggleReplyModal(tweetId) {
+    toggleReplyModal (tweetId) {
       // 開啟modal
     },
-    async toggleLikeModal(tweetId, tweetIsLike) {
+    async toggleLikeModal (tweetId, tweetIsLike) {
       try {
         if (tweetIsLike) {
-          const { data } = await tweetsAPI.postUnlike(tweetId);
-          if (data.status === "error") {
-            throw new Error(data.message);
+          const { data } = await tweetsAPI.postUnlike(tweetId)
+          if (data.status === 'error') {
+            throw new Error(data.message)
           }
           Toast.fire({
-            icon: "success",
-            title: "成功取消喜歡",
-          });
+            icon: 'success',
+            title: '成功取消喜歡'
+          })
         } else {
-          const { data } = await tweetsAPI.postLike(tweetId);
-          if (data.status === "error") {
-            throw new Error(data.message);
+          const { data } = await tweetsAPI.postLike(tweetId)
+          if (data.status === 'error') {
+            throw new Error(data.message)
           }
           Toast.fire({
-            icon: "success",
-            title: "成功喜歡一則推文",
-          });
+            icon: 'success',
+            title: '成功喜歡一則推文'
+          })
         }
         this.tweet = {
           ...this.tweet,
-          isLike: !this.tweet.isLike,
-        };
+          isLike: !this.tweet.isLike
+        }
         if (!tweetIsLike) {
-          this.tweet.likeCounts++;
+          this.tweet.likeCounts++
         } else {
-          this.tweet.likeCounts--;
+          this.tweet.likeCounts--
         }
       } catch (error) {
         Toast.fire({
-          icon: "error",
-          title: "無法切換喜歡狀態，請稍後再嘗試",
-        });
+          icon: 'error',
+          title: '無法切換喜歡狀態，請稍後再嘗試'
+        })
       }
     },
-    fetchTweet() {
+    fetchTweet () {
       this.tweet = {
-        ...this.initialTweet,
-      };
-    },
+        ...this.initialTweet
+      }
+    }
   },
   watch: {
-    initialTweet(newValue) {
+    initialTweet (newValue) {
       this.tweet = {
         ...this.tweet,
-        ...newValue,
-      };
-    },
-  },
-};
+        ...newValue
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss">

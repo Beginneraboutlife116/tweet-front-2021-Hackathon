@@ -17,7 +17,12 @@ Vue.use(
       reconnectionDelay: 1000,
       reconnectionDelayMax : 5000,
       reconnectionAttempts: Infinity
-    })
+    }),
+    vuex: {
+      store,
+      actionPrefix: "SOCKET_",
+      mutationPrefix: "SOCKET_"
+    }
   })
 );
 

@@ -95,121 +95,121 @@
 </template>
 
 <script>
-import { Toast } from "./../mixins/helpers";
-import authorizationAPI from "./../apis/authorization";
+import { Toast } from './../mixins/helpers'
+import authorizationAPI from './../apis/authorization'
 
 export default {
-  name: "SignIn",
-  data() {
+  name: 'SignIn',
+  data () {
     return {
-      account: "",
-      password: "",
+      account: '',
+      password: '',
       accountError: false,
       passwordError: false,
       isBackLogin: false,
-      isProcessing: false,
-    };
+      isProcessing: false
+    }
   },
   methods: {
-    handleSubmit() {
-      this.accountError = false;
-      this.passwordError = false;
-      this.$refs.account.style.borderColor = "";
-      this.$refs.password.style.borderColor = "";
+    handleSubmit () {
+      this.accountError = false
+      this.passwordError = false
+      this.$refs.account.style.borderColor = ''
+      this.$refs.password.style.borderColor = ''
 
       if (!this.account) {
         Toast.fire({
-          icon: "warning",
-          title: "請輸入帳號",
-        });
-        this.$refs.account.focus();
-        this.$refs.account.style.borderColor = "#fc5a5a";
-        return;
+          icon: 'warning',
+          title: '請輸入帳號'
+        })
+        this.$refs.account.focus()
+        this.$refs.account.style.borderColor = '#fc5a5a'
+        return
       }
 
       if (!this.password) {
         Toast.fire({
-          icon: "warning",
-          title: "請輸入密碼",
-        });
-        this.$refs.password.focus();
-        this.$refs.password.style.borderColor = "#fc5a5a";
-        return;
+          icon: 'warning',
+          title: '請輸入密碼'
+        })
+        this.$refs.password.focus()
+        this.$refs.password.style.borderColor = '#fc5a5a'
+        return
       }
 
       if (this.isBackLogin) {
-        if (this.account !== "root") {
+        if (this.account !== 'root') {
           Toast.fire({
-            icon: "error",
-            title: "帳號不存在，請洽開發者",
-          });
-          this.accountError = true;
-          this.$refs.account.focus();
-          this.$refs.account.style.borderColor = "#fc5a5a";
-          return;
+            icon: 'error',
+            title: '帳號不存在，請洽開發者'
+          })
+          this.accountError = true
+          this.$refs.account.focus()
+          this.$refs.account.style.borderColor = '#fc5a5a'
+          return
         }
       } else {
-        if (this.account === "root") {
+        if (this.account === 'root') {
           Toast.fire({
-            icon: "error",
-            title: "密碼錯誤，請再試一次",
-          });
-          this.passwordError = true;
-          this.$refs.password.focus();
-          this.$refs.password.style.borderColor = "#fc5a5a";
-          return;
+            icon: 'error',
+            title: '密碼錯誤，請再試一次'
+          })
+          this.passwordError = true
+          this.$refs.password.focus()
+          this.$refs.password.style.borderColor = '#fc5a5a'
+          return
         }
       }
 
-      this.login();
+      this.login()
     },
-    async login() {
+    async login () {
       try {
-        this.isProcessing = true;
+        this.isProcessing = true
         const { data } = await authorizationAPI.signIn({
           account: this.account,
-          password: this.password,
-        });
+          password: this.password
+        })
 
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
 
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data.user.id);
-        this.$store.commit("setCurrentUser", data.user);
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('userId', data.user.id)
+        this.$store.commit('setCurrentUser', data.user)
 
         Toast.fire({
-          icon: "success",
-          title: "成功登入!",
-        });
-        //reconnect
-        this.$socket.disconnected && this.$socket.open();
-        this.$socket.emit("USER_ONLINE", { user: data.user });
-        //send over user detail
-        const path = this.isBackLogin ? "/admin/tweets" : "/home";
-        this.$router.push(path);
+          icon: 'success',
+          title: '成功登入!'
+        })
+        // reconnect
+        this.$socket.disconnected && this.$socket.open()
+        this.$socket.emit('USER_ONLINE', { user: data.user })
+        // send over user detail
+        const path = this.isBackLogin ? '/admin/tweets' : '/home'
+        this.$router.push(path)
       } catch (err) {
-        this.isProcessing = false;
+        this.isProcessing = false
         Toast.fire({
-          icon: "error",
-          title: `${err.message}`,
-        });
-        this.$refs.account.focus();
-        this.$refs.account.style.borderColor = "#fc5a5a";
+          icon: 'error',
+          title: `${err.message}`
+        })
+        this.$refs.account.focus()
+        this.$refs.account.style.borderColor = '#fc5a5a'
       }
     },
-    checkLoginRoute(path) {
-      this.isBackLogin = path.includes("admin");
-    },
+    checkLoginRoute (path) {
+      this.isBackLogin = path.includes('admin')
+    }
   },
-  created() {
-    this.checkLoginRoute(this.$route.path);
+  created () {
+    this.checkLoginRoute(this.$route.path)
   },
-  mounted() {
-    this.$refs.account.focus();
-  },
-};
+  mounted () {
+    this.$refs.account.focus()
+  }
+}
 </script>
 
 <style lang="scss">

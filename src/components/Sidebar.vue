@@ -176,22 +176,22 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
 export default {
-  name: "Sidebar",
+  name: 'Sidebar',
   methods: {
-    logout() {
-      this.$socket.emit("USER_ONLINE", { user: this.currentUser.id });
-      this.$store.commit("revokeAuthentication");
-      this.$router.push("/signin");
-      this.$socket.disconnect();
-    },
+    logout () {
+      this.$socket.emit('USER_ONLINE', { user: this.currentUser.id })
+      this.$store.commit('revokeAuthentication')
+      this.$router.push('/signin')
+      this.$socket.disconnect()
+    }
   },
   computed: {
-    ...mapState(["currentUser"]),
-  },
-};
+    ...mapState(['currentUser'])
+  }
+}
 </script>
 <style lang="scss">
 .router-link-exact-active {

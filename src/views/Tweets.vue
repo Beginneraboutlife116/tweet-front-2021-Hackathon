@@ -53,109 +53,108 @@
 </template>
 
 <script>
-import Tweet from "./../components/Tweet";
-import Spinner from "./../components/Spinner.vue";
-import { mapState } from "vuex";
-import { Toast } from "./../mixins/helpers";
-import tweetsAPI from "./../apis/tweets";
+import Tweet from './../components/Tweet'
+import Spinner from './../components/Spinner.vue'
+import { mapState } from 'vuex'
+import { Toast } from './../mixins/helpers'
+import tweetsAPI from './../apis/tweets'
 
 export default {
-  name: "tweets",
+  name: 'tweets',
   components: {
     Tweet,
-    Spinner,
+    Spinner
   },
-  data() {
+  data () {
     return {
       tweets: [],
-      text: "",
+      text: '',
       isProcessing: false,
-      isLoading: true,
-    };
+      isLoading: true
+    }
   },
-  created() {
-    this.fetchTweets();
-    console.log(this.$socket);
+  created () {
+    this.fetchTweets()
+    console.log(this.$socket)
   },
   computed: {
-    ...mapState(["currentUser", "tweet"]),
+    ...mapState(['currentUser', 'tweet'])
   },
   watch: {
-    tweet() {
-      this.sendTweet(this.tweet);
-    },
+    tweet () {
+      this.sendTweet(this.tweet)
+    }
   },
-  // mounted() {
-  //   console.log("mount");
-  //   this.$socket.on("LIST_UPDATE", (data) => {
-  //     console.log("list update", data);
-  //   });
-  // },
+  sockets: {
+    LIST_UPDATE (data) {
+      console.log('list update', data)
+    }
+  },
   methods: {
-    async fetchTweets() {
+    async fetchTweets () {
       try {
-        this.isLoading = true;
-        const { data } = await tweetsAPI.getTweets();
-        if (data.status === "error") {
-          throw new Error(data.message);
+        this.isLoading = true
+        const { data } = await tweetsAPI.getTweets()
+        if (data.status === 'error') {
+          throw new Error(data.message)
         }
 
         this.tweets = data.map((data) => {
           return {
-            ...data,
-          };
-        });
-        this.isLoading = false;
+            ...data
+          }
+        })
+        this.isLoading = false
       } catch (error) {
-        this.isLoading = false;
+        this.isLoading = false
         Toast.fire({
-          icon: "error",
-          title: "無法獲取推文，請稍後再嘗試",
-        });
+          icon: 'error',
+          title: '無法獲取推文，請稍後再嘗試'
+        })
       }
     },
-    sendTweet(message) {
+    sendTweet (message) {
       if (!message) {
         Toast.fire({
-          icon: "warning",
-          title: "內容不可空白",
-        });
-        return;
+          icon: 'warning',
+          title: '內容不可空白'
+        })
+        return
       }
 
       if (message.length > 140) {
         Toast.fire({
-          icon: "warning",
-          title: "超過推文字數限制",
-        });
-        return;
+          icon: 'warning',
+          title: '超過推文字數限制'
+        })
+        return
       }
-      this.updateTweets(message);
-      this.text = "";
+      this.updateTweets(message)
+      this.text = ''
     },
-    async updateTweets(message) {
+    async updateTweets (message) {
       try {
-        this.isProcessing = true;
-        this.isLoading = true;
-        const description = message;
-        const { data } = await tweetsAPI.postTweets({ description });
-        if (data.status !== "success") {
-          throw new Error(data.message);
+        this.isProcessing = true
+        this.isLoading = true
+        const description = message
+        const { data } = await tweetsAPI.postTweets({ description })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
-        this.fetchTweets();
-        this.isProcessing = false;
-        this.isLoading = false;
+        this.fetchTweets()
+        this.isProcessing = false
+        this.isLoading = false
       } catch (err) {
-        this.isProcessing = false;
-        this.isLoading = false;
+        this.isProcessing = false
+        this.isLoading = false
         Toast.fire({
-          icon: "error",
-          title: "推文失敗，請稍後再試",
-        });
+          icon: 'error',
+          title: '推文失敗，請稍後再試'
+        })
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss">
