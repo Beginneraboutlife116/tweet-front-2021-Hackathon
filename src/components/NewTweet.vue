@@ -9,28 +9,28 @@
       <main class="modal__body">
         <div class="modal__postBy" v-if="!(modal === 'tweet')">
           <div class="modal__postBy-avatar">
-            <router-link to=""><img src="https://fakeimg.pl/300/" alt="" class="modal__postBy-avatar--img"></router-link>
+            <router-link to=""><img :src="fromReplies.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="modal__postBy-avatar--img"></router-link>
           </div>
           <div class="modal__postBy-detail">
             <p class="modal__postBy-detail-info">
-              <span class="modal__postBy-detail-info--name"><router-link to="">Apple</router-link></span>
-              <span class="modal__postBy-detail-info--account"><router-link to="">@apple</router-link></span>
+              <span class="modal__postBy-detail-info--name"><router-link to=""> {{fromReplies.User.name}} </router-link></span>
+              <span class="modal__postBy-detail-info--account"><router-link to="">@{{fromReplies.User.account}}</router-link></span>
               ・<span class="modal__postBy-detail-info--createdAt">asd</span>
             </p>
             <article class="modal__postBy-detail--content">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa repudiandae est quia impedit odio non! Est eligendi dolore obcaecati itaque!
+              {{ fromReplies.description }}
             </article>
             <p class="modal__postBy-detail-replyTo">
               <span>回覆給</span>
               <router-link to="">
-                <span class="modal__postBy-detail-replyTo--account">@apple</span>
+                <span class="modal__postBy-detail-replyTo--account">@{{fromReplies.User.account}}</span>
               </router-link>
             </p>
           </div>
         </div>
         <div class="modal__user">
           <div class="modal__user-avatar">
-            <router-link to=""><img :src="currentUser.avatar || 'https://fakeimg.pl/300/'" alt="" class="modal__user-avatar--img"></router-link>
+            <router-link to=""><img :src="currentUser.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="modal__user-avatar--img"></router-link>
           </div>
           <div class="modal__user-reply">
             <textarea class="modal__user-reply--textarea" v-model.trim="text" :placeholder="modal === 'tweet' ? '有什麼新鮮事？' : '推你的回覆'" rows="5"/>
@@ -50,6 +50,7 @@
 <script>
 import { Toast } from './../mixins/helpers'
 import tweetsAPI from './../apis/tweets'
+import repliesAPI from './../apis/replies'
 
 export default {
   name: 'NewTweet',
@@ -65,6 +66,9 @@ export default {
     },
     modal () {
       return this.$store.state.modal
+    },
+    fromReplies () {
+      return this.$store.state.fromReplies
     }
   },
   methods: {
@@ -84,6 +88,12 @@ export default {
         })
         return
       }
+
+      if (this.modal === 'reply') {
+        this.updateTweetReplies(this.fromReplies.id, this.text)
+        return
+      }
+
       if (this.$route.name !== 'home') {
         this.updateTweets()
       } else {
@@ -112,6 +122,34 @@ export default {
         Toast.fire({
           icon: 'error',
           title: '推文失敗，請稍後再試'
+        })
+      }
+    },
+    async updateTweetReplies (tweetId, comment) {
+      try {
+        this.isProcessing = true
+        const { data } = await repliesAPI.postReplyUnderTweet({
+          tweetId, comment
+        })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.$store.commit('recordText', {
+          text: this.text,
+          action: this.modal
+        })
+        Toast.fire({
+          icon: 'success',
+          title: '成功回覆該則貼文！'
+        })
+        this.text = ''
+        this.$store.commit('clearModal')
+        this.isProcessing = false
+      } catch (err) {
+        this.isProcessing = false
+        Toast.fire({
+          icon: 'error',
+          title: '無法上傳回覆，請稍後再試'
         })
       }
     }

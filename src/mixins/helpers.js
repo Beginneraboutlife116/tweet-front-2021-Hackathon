@@ -2,10 +2,14 @@ import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
-const baseURL = 'http://localhost:3000/api'
+const baseURL = 'https://simple-twitter-paul-heidi.herokuapp.com/api'
+// const baseURL = 'http://localhost:3000/api'
 
 const axiosInstance = axios.create({
-  baseURL
+  baseURL,
+  validateStatus: (status) => {
+    return status >= 200 && status < 501
+  }
 })
 
 axiosInstance.interceptors.request.use(
@@ -30,7 +34,6 @@ export const Toast = Swal.mixin({
   showConfirmButton: false,
   timer: 3000
 })
-
 export const fromNowFilter = {
   filters: {
     fromNow (datetime) {

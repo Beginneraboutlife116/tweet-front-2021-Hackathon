@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import SignIn from './../views/SignIn'
+import NotFound from './../views/NotFound'
 
 Vue.use(VueRouter)
 
@@ -33,17 +34,42 @@ const routes = [
             component: () => import('./../views/Tweets')
           },
           {
-            path: ':tweetId', // component用Replies.vue
+            path: 'tweets/:tweetId', // component用Replies.vue
             name: 'replies',
             component: () => import('./../views/Replies')
           },
           {
-            path: ':userId/followers' // component用Followers.vue
+            path: ':userId/followers', // component用Followers.vue
+            name: 'followers',
+            component: () => import('./../views/Followers')
           },
           {
-            path: ':userId', // component用Profile.vue
-            name: 'profile'
-
+            path: ':userId/followings', // component用Followers.vue
+            name: 'followings',
+            component: () => import('./../views/Followings')
+          },
+          {
+            path: ':userId', // component用userProfile.vue
+            name: 'profile',
+            redirect: ':userId/tweets',
+            component: () => import('./../views/UserProfile'),
+            children: [
+              {
+                path: 'tweets',
+                name: 'profile-tweets',
+                component: () => import('./../components/ProfileTweets')
+              },
+              {
+                path: 'replies',
+                name: 'profile-replies',
+                component: () => import('./../components/ProfileReplies')
+              },
+              {
+                path: 'likes',
+                name: 'profile-likes',
+                component: () => import('./../components/ProfileLikes')
+              }
+            ]
           }
         ]
       },
@@ -56,6 +82,11 @@ const routes = [
         path: '/admin/tweets',
         name: 'admin-tweets',
         component: () => import('./../views/AdminTweets')
+      },
+      {
+        path: '/admin/users',
+        name: 'admin-users',
+        component: () => import('./../views/AdminUsers')
       }
     ]
   },
@@ -63,6 +94,11 @@ const routes = [
     path: '/admin/signin',
     name: 'admin-sign-in',
     component: () => import('./../views/SignIn')
+  },
+  {
+    path: '*',
+    name: 'not-found',
+    component: NotFound
   }
 ]
 

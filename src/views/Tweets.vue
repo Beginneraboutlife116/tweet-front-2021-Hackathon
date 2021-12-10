@@ -9,7 +9,7 @@
           :to="`/home/${currentUser.id}`"
           class="tweets__header__post--avatar"
         >
-          <img :src="currentUser.avatar || 'https://fakeimg.pl/300/'" alt="avatar" aria-label="avatar"/>
+          <img :src="currentUser.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="avatar" aria-label="avatar"/>
         </router-link>
         <div class="tweets__header__post__wrapper">
           <textarea
@@ -26,22 +26,25 @@
       </div>
     </header>
     <hr class="tweets-line" />
-    <template v-if="!isLoading">
-      <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" />
+    <template>
+      <Spinner v-if='isLoading'/>
+      <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" v-else/>
     </template>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Tweet from './../components/Tweet'
+import Spinner from './../components/Spinner.vue'
+import { mapState } from 'vuex'
 import { Toast } from './../mixins/helpers'
 import tweetsAPI from './../apis/tweets'
 
 export default {
   name: 'tweets',
   components: {
-    Tweet
+    Tweet,
+    Spinner
   },
   data () {
     return {
@@ -65,10 +68,12 @@ export default {
   methods: {
     async fetchTweets () {
       try {
+        this.isLoading = true
         const { data } = await tweetsAPI.getTweets()
         if (data.status === 'error') {
           throw new Error(data.message)
         }
+
         this.tweets = data.map((data) => {
           return {
             ...data
@@ -106,25 +111,12 @@ export default {
       try {
         this.isProcessing = true
         this.isLoading = true
-        const { id, name, avatar, account } = this.currentUser
         const description = message
         const { data } = await tweetsAPI.postTweets({ description })
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
-        this.tweets.unshift({
-          description,
-          createdAt: new Date(),
-          User: {
-            id,
-            account,
-            name,
-            avatar
-          },
-          isLike: false,
-          likeCounts: 0,
-          replyCounts: 0
-        })
+        this.fetchTweets()
         this.isProcessing = false
         this.isLoading = false
       } catch (err) {

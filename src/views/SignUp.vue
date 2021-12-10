@@ -22,7 +22,7 @@
         </label>
         <label class="sign__form-row">
           <p class="sign__form-title">名稱</p>
-          <input type="text" class="sign__form-input" v-model.trim="name" :style="{borderColor: nameErrorHandler.borderColor}">
+          <input type="text" class="sign__form-input" v-model.trim="name" :style="{borderColor: nameErrorHandler.borderColor}" ref="name" required>
           <p class="sign__form-error">
             <span class="error" v-show="name.length" :style="{color: nameErrorHandler.color}"> {{ nameErrorHandler.text }} </span>
             <span class="limit" v-show="name.length"> {{name.length}}/50</span>
@@ -57,17 +57,7 @@
 
 <script>
 import { Toast } from './../mixins/helpers'
-
-const dummyUser = {
-  id: 3,
-  account: 'user3',
-  email: 'user3@example.com',
-  password: '3',
-  name: 'user3',
-  role: 'user',
-  createdAt: '2021-12-01T07:59:14.418Z',
-  updatedAt: '2021-12-01T07:59:14.418Z'
-}
+import authorizationAPI from './../apis/authorization'
 
 export default {
   name: 'SignUp',
@@ -87,14 +77,22 @@ export default {
     nameErrorHandler () {
       const nameError = {}
       nameError.borderColor = this.name.length > 50 ? '#fc5a5a' : ''
-      nameError.color = this.name.length > 50 ? '#fc5a5a' : '#0099ff'
+      if ((this.name.length > 50) || (!this.name.length)) {
+        nameError.color = '#fc5a5a'
+      } else {
+        nameError.color = '#0099ff'
+      }
       nameError.text = this.name.length > 50 ? '字數超出上限！' : '字數正確'
       return nameError
     }
   },
   methods: {
-    // TODO: 等API串接，再做相對應的流程設計
     handleSubmit () {
+      this.$refs.account.style.borderColor = ''
+      this.$refs.email.style.borderColor = ''
+      this.$refs.password.style.borderColor = ''
+      this.$refs.passwordConfirm.style.borderColor = ''
+      this.$refs.name.style.borderColor = ''
       if (!this.account) {
         Toast.fire({
           icon: 'warning',
@@ -103,8 +101,16 @@ export default {
         this.$refs.account.focus()
         this.$refs.account.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.account.style.borderColor = ''
+      }
+
+      if (!this.name) {
+        Toast.fire({
+          icon: 'warning',
+          title: '名稱必填'
+        })
+        this.$refs.name.focus()
+        this.$refs.name.style.borderColor = '#fc5a5a'
+        return
       }
 
       if (this.name.length > 50) {
@@ -119,8 +125,6 @@ export default {
         this.$refs.email.focus()
         this.$refs.email.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.email.style.borderColor = ''
       }
 
       if (!this.verifyEmail(this.email)) {
@@ -131,8 +135,6 @@ export default {
         this.$refs.email.focus()
         this.$refs.email.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.email.style.borderColor = ''
       }
 
       if (!this.password) {
@@ -143,8 +145,6 @@ export default {
         this.$refs.password.focus()
         this.$refs.password.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.password.style.borderColor = ''
       }
 
       if (!this.passwordConfirm) {
@@ -155,36 +155,6 @@ export default {
         this.$refs.passwordConfirm.focus()
         this.$refs.passwordConfirm.style.borderColor = '#fc5a5a'
         return
-      } else {
-        this.$refs.passwordConfirm.style.borderColor = ''
-      }
-
-      if (this.account === dummyUser.account) {
-        Toast.fire({
-          icon: 'error',
-          title: '帳號已重複註冊！'
-        })
-        this.accountRepeat = true
-        this.$refs.account.focus()
-        this.$refs.account.style.borderColor = '#fc5a5a'
-        return
-      } else {
-        this.accountRepeat = false
-        this.$refs.account.style.borderColor = ''
-      }
-
-      if (this.email === dummyUser.email) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Email已重複註冊！'
-        })
-        this.emailRepeat = true
-        this.$refs.email.focus()
-        this.$refs.email.style.borderColor = '#fc5a5a'
-        return
-      } else {
-        this.emailRepeat = false
-        this.$refs.email.style.borderColor = ''
       }
 
       if (this.password !== this.passwordConfirm) {
@@ -198,23 +168,31 @@ export default {
         return
       }
 
-      // TODO: 要傳送出去的
-      console.log(`{
-        account: ${this.account},
-        name: ${this.name},
-        email: ${this.email},
-        password: ${this.password},
-        passwordConfirm: ${this.passwordConfirm}
-      }`)
-      Toast.fire({
-        icon: 'success',
-        title: '成功註冊！'
-      })
-      this.$router.push('/signin')
+      this.signUp(this.account, this.name, this.email, this.password, this.passwordConfirm)
     },
     verifyEmail (email) {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return re.test(String(email).toLowerCase())
+    },
+    async signUp (account, name, email, password, checkPassword) {
+      try {
+        const { data } = await authorizationAPI.signUp({ account, name, email, password, checkPassword })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        Toast.fire({
+          icon: 'success',
+          title: '成功註冊！'
+        })
+        this.$router.push('/signin')
+      } catch (err) {
+        Toast.fire({
+          icon: 'error',
+          title: `${err.message}`
+        })
+        this.$refs.account.focus()
+        this.$refs.account.style.borderColor = '#fc5a5a'
+      }
     }
   },
   mounted () {
