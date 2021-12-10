@@ -62,7 +62,9 @@
             <!-- notificationfilled -->
             <svg
               v-if="!profile.isSubscribing"
-              @click.stop.prevent="toggleSubscribe(profile.id, profile.isSubscribing)"
+              @click.stop.prevent="
+                toggleSubscribe(profile.id, profile.isSubscribing)
+              "
               width="35"
               height="35"
               viewBox="0 0 35 35"
@@ -84,9 +86,7 @@
             <!-- notification -->
             <svg
               v-if="profile.isSubscribing"
-              @click.stop.prevent="
-                toggleSubscribe(profile.id)
-              "
+              @click.stop.prevent="toggleSubscribe(profile.id)"
               width="35"
               height="35"
               viewBox="0 0 35 35"
@@ -161,111 +161,110 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { Toast } from './../mixins/helpers'
-import usersAPI from './../apis/users'
-import followAPI from '../apis/followships'
-import Spinner from './../components/Spinner'
+import { mapState } from "vuex";
+import { Toast } from "./../mixins/helpers";
+import usersAPI from "./../apis/users";
+import followAPI from "../apis/followships";
+import Spinner from "./../components/Spinner";
 export default {
-  name: 'UserProfile',
+  name: "UserProfile",
   components: {
-    Spinner
+    Spinner,
   },
-  data () {
+  data() {
     return {
       profile: {
-        account: 'null',
+        account: "null",
         avatar: null,
         cover: null,
-        email: 'user1@example.com',
+        email: "user1@example.com",
         followship: {
           followingCounts: 0,
-          followerCounts: 0
+          followerCounts: 0,
         },
         id: 0,
         introduction: null,
         isFollowing: false,
         isSubscribing: false,
-        name: 'user1',
-        tweetCounts: 0
+        name: "user1",
+        tweetCounts: 0,
       },
       isProcessing: false,
-      isLoading: true
-    }
+      isLoading: true,
+    };
   },
-  created () {
-    const { userId } = this.$route.params
-    this.fetchProfile(userId)
+  created() {
+    const { userId } = this.$route.params;
+    this.fetchProfile(userId);
   },
-  beforeRouteUpdate (to, from, next) {
-    const { userId } = to.params
-    this.fetchProfile(userId)
-    next()
+  beforeRouteUpdate(to, from, next) {
+    const { userId } = to.params;
+    this.fetchProfile(userId);
+    next();
   },
   computed: {
-    ...mapState(['currentUser'])
-
+    ...mapState(["currentUser"]),
   },
   methods: {
-    async fetchProfile (userId) {
+    async fetchProfile(userId) {
       try {
-        this.isProcessing = true
-        this.isLoading = true
-        const { data } = await usersAPI.getUserProfile(userId)
-        if (data.status === 'error') {
-          throw new Error(data.message)
+        this.isProcessing = true;
+        this.isLoading = true;
+        const { data } = await usersAPI.getUserProfile(userId);
+        if (data.status === "error") {
+          throw new Error(data.message);
         }
         this.profile = {
           ...data,
-          isSubscribing: false
-        }
-        this.isLoading = false
+          isSubscribing: false,
+        };
+        this.isLoading = false;
       } catch (error) {
-        this.isLoading = false
+        this.isLoading = false;
         Toast.fire({
-          icon: 'error',
-          title: '無法獲取個人資料，請稍後再嘗試'
-        })
+          icon: "error",
+          title: "無法獲取個人資料，請稍後再嘗試",
+        });
       }
     },
-    async toggleFollow (userId, userIsFollowing) {
+    async toggleFollow(userId, userIsFollowing) {
       try {
         if (userIsFollowing) {
-          const { data } = await followAPI.cancelFollow(userId)
-          if (data.status === 'error') {
-            throw new Error(data.message)
+          const { data } = await followAPI.cancelFollow(userId);
+          if (data.status === "error") {
+            throw new Error(data.message);
           }
-          this.profile.followship.followerCounts--
-          this.profile.isFollowing = false
+          this.profile.followship.followerCounts--;
+          this.profile.isFollowing = false;
           Toast.fire({
-            icon: 'success',
-            title: '成功取消追隨'
-          })
+            icon: "success",
+            title: "成功取消追隨",
+          });
         } else {
-          const { data } = await followAPI.addFollow(userId)
-          if (data.status === 'error') {
-            throw new Error(data.message)
+          const { data } = await followAPI.addFollow(userId);
+          if (data.status === "error") {
+            throw new Error(data.message);
           }
-          this.profile.followship.followerCounts++
-          this.profile.isFollowing = true
+          this.profile.followship.followerCounts++;
+          this.profile.isFollowing = true;
           Toast.fire({
-            icon: 'success',
-            title: '成功加入追隨'
-          })
+            icon: "success",
+            title: "成功加入追隨",
+          });
         }
       } catch (error) {
         Toast.fire({
-          icon: 'error',
-          title: '無法修改追隨狀態'
-        })
+          icon: "error",
+          title: "無法修改追隨狀態",
+        });
       }
     },
-    toggleSubscribe (userId) {
+    toggleSubscribe(userId) {
       // TODO: 將資料傳給後端
-      this.profile.isSubscribing = !this.profile.isSubscribing
-    }
-  }
-}
+      this.profile.isSubscribing = !this.profile.isSubscribing;
+    },
+  },
+};
 </script>
 
 <style lang="scss">

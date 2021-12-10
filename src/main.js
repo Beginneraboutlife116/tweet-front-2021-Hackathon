@@ -1,12 +1,37 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+/* eslint-disable */
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+import VueSocketIO from "vue-socket.io";
 
-Vue.config.productionTip = false
+import SocketIO from "socket.io-client";
+
+Vue.config.productionTip = false;
+
+Vue.use(
+  new VueSocketIO({
+    connection: SocketIO("http://5149-81-31-74-124.ngrok.io",
+    {
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax : 5000,
+      reconnectionAttempts: Infinity
+    })
+  })
+);
 
 new Vue({
+  sockets: {
+    connect: function () {
+      console.log("Connected");
+    },
+    disconnect: function () {
+      console.log('disconnected');
+    }
+  },
   router,
   store,
-  render: h => h(App)
-}).$mount('#app')
+  store,
+  render: (h) => h(App),
+}).$mount("#app");

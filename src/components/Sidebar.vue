@@ -1,7 +1,13 @@
 <template>
   <div class="sidebar-container">
     <nav class="sidebar">
-      <router-link :to="this.currentUser.role === 'admin' ? { name: 'admin-tweets'} : { name: 'home'} ">
+      <router-link
+        :to="
+          this.currentUser.role === 'admin'
+            ? { name: 'admin-tweets' }
+            : { name: 'home' }
+        "
+      >
         <svg
           class="sidebar__logo"
           width="30"
@@ -56,7 +62,12 @@
             </router-link>
           </li>
           <li class="sidebar__link">
-            <router-link :to="{ name: 'profile-tweets', params: { userId: currentUser.id } }">
+            <router-link
+              :to="{
+                name: 'profile-tweets',
+                params: { userId: currentUser.id },
+              }"
+            >
               <svg
                 width="24"
                 height="24"
@@ -73,7 +84,9 @@
             </router-link>
           </li>
           <li class="sidebar__link">
-            <router-link :to="{ name: 'setting', params: { userId: currentUser.id } }">
+            <router-link
+              :to="{ name: 'setting', params: { userId: currentUser.id } }"
+            >
               <svg
                 width="24"
                 height="24"
@@ -133,7 +146,11 @@
           </li>
         </ul>
       </template>
-      <button class="active sidebar__button" @click.stop.prevent="$store.commit('toggleModal', 'tweet')" v-if="currentUser.role === 'user'">
+      <button
+        class="active sidebar__button"
+        @click.stop.prevent="$store.commit('toggleModal', 'tweet')"
+        v-if="currentUser.role === 'user'"
+      >
         推文
       </button>
       <span class="sidebar--logout" @click.stop.prevent="logout">
@@ -159,20 +176,22 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 
 export default {
-  name: 'Sidebar',
+  name: "Sidebar",
   methods: {
-    logout () {
-      this.$store.commit('revokeAuthentication')
-      this.$router.push('/signin')
-    }
+    logout() {
+      this.$socket.emit("USER_ONLINE", { user: this.currentUser.id });
+      this.$store.commit("revokeAuthentication");
+      this.$router.push("/signin");
+      this.$socket.disconnect();
+    },
   },
   computed: {
-    ...mapState(['currentUser'])
-  }
-}
+    ...mapState(["currentUser"]),
+  },
+};
 </script>
 <style lang="scss">
 .router-link-exact-active {

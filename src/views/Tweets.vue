@@ -9,7 +9,14 @@
           :to="`/home/${currentUser.id}`"
           class="tweets__header__post--avatar"
         >
-          <img :src="currentUser.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="avatar" aria-label="avatar"/>
+          <img
+            :src="
+              currentUser.avatar ||
+              'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'
+            "
+            alt="avatar"
+            aria-label="avatar"
+          />
         </router-link>
         <div class="tweets__header__post__wrapper">
           <textarea
@@ -21,115 +28,134 @@
             autofocus
           >
           </textarea>
-          <button class="active" @click.stop.prevent="sendTweet(text)" :disabled="isProcessing" :class="{disabled: isProcessing}">推文</button>
+          <button
+            class="active"
+            @click.stop.prevent="sendTweet(text)"
+            :disabled="isProcessing"
+            :class="{ disabled: isProcessing }"
+          >
+            推文
+          </button>
         </div>
       </div>
     </header>
     <hr class="tweets-line" />
     <template>
-      <Spinner v-if='isLoading'/>
-      <Tweet v-for="tweet in tweets" :key="tweet.id" :initial-tweet="tweet" v-else/>
+      <Spinner v-if="isLoading" />
+      <Tweet
+        v-for="tweet in tweets"
+        :key="tweet.id"
+        :initial-tweet="tweet"
+        v-else
+      />
     </template>
   </div>
 </template>
 
 <script>
-import Tweet from './../components/Tweet'
-import Spinner from './../components/Spinner.vue'
-import { mapState } from 'vuex'
-import { Toast } from './../mixins/helpers'
-import tweetsAPI from './../apis/tweets'
+import Tweet from "./../components/Tweet";
+import Spinner from "./../components/Spinner.vue";
+import { mapState } from "vuex";
+import { Toast } from "./../mixins/helpers";
+import tweetsAPI from "./../apis/tweets";
 
 export default {
-  name: 'tweets',
+  name: "tweets",
   components: {
     Tweet,
-    Spinner
+    Spinner,
   },
-  data () {
+  data() {
     return {
       tweets: [],
-      text: '',
+      text: "",
       isProcessing: false,
-      isLoading: true
-    }
+      isLoading: true,
+    };
   },
-  created () {
-    this.fetchTweets()
+  created() {
+    this.fetchTweets();
+    console.log(this.$socket);
   },
   computed: {
-    ...mapState(['currentUser', 'tweet'])
+    ...mapState(["currentUser", "tweet"]),
   },
   watch: {
-    tweet () {
-      this.sendTweet(this.tweet)
-    }
+    tweet() {
+      this.sendTweet(this.tweet);
+    },
   },
+  // mounted() {
+  //   console.log("mount");
+  //   this.$socket.on("LIST_UPDATE", (data) => {
+  //     console.log("list update", data);
+  //   });
+  // },
   methods: {
-    async fetchTweets () {
+    async fetchTweets() {
       try {
-        this.isLoading = true
-        const { data } = await tweetsAPI.getTweets()
-        if (data.status === 'error') {
-          throw new Error(data.message)
+        this.isLoading = true;
+        const { data } = await tweetsAPI.getTweets();
+        if (data.status === "error") {
+          throw new Error(data.message);
         }
 
         this.tweets = data.map((data) => {
           return {
-            ...data
-          }
-        })
-        this.isLoading = false
+            ...data,
+          };
+        });
+        this.isLoading = false;
       } catch (error) {
-        this.isLoading = false
+        this.isLoading = false;
         Toast.fire({
-          icon: 'error',
-          title: '無法獲取推文，請稍後再嘗試'
-        })
+          icon: "error",
+          title: "無法獲取推文，請稍後再嘗試",
+        });
       }
     },
-    sendTweet (message) {
+    sendTweet(message) {
       if (!message) {
         Toast.fire({
-          icon: 'warning',
-          title: '內容不可空白'
-        })
-        return
+          icon: "warning",
+          title: "內容不可空白",
+        });
+        return;
       }
 
       if (message.length > 140) {
         Toast.fire({
-          icon: 'warning',
-          title: '超過推文字數限制'
-        })
-        return
+          icon: "warning",
+          title: "超過推文字數限制",
+        });
+        return;
       }
-      this.updateTweets(message)
-      this.text = ''
+      this.updateTweets(message);
+      this.text = "";
     },
-    async updateTweets (message) {
+    async updateTweets(message) {
       try {
-        this.isProcessing = true
-        this.isLoading = true
-        const description = message
-        const { data } = await tweetsAPI.postTweets({ description })
-        if (data.status !== 'success') {
-          throw new Error(data.message)
+        this.isProcessing = true;
+        this.isLoading = true;
+        const description = message;
+        const { data } = await tweetsAPI.postTweets({ description });
+        if (data.status !== "success") {
+          throw new Error(data.message);
         }
-        this.fetchTweets()
-        this.isProcessing = false
-        this.isLoading = false
+        this.fetchTweets();
+        this.isProcessing = false;
+        this.isLoading = false;
       } catch (err) {
-        this.isProcessing = false
-        this.isLoading = false
+        this.isProcessing = false;
+        this.isLoading = false;
         Toast.fire({
-          icon: 'error',
-          title: '推文失敗，請稍後再試'
-        })
+          icon: "error",
+          title: "推文失敗，請稍後再試",
+        });
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
