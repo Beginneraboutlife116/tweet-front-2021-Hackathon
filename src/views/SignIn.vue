@@ -124,11 +124,12 @@ export default {
         }
 
         localStorage.setItem('token', data.token)
+        localStorage.setItem('userId', data.user.id)
         this.$store.commit('setCurrentUser', data.user)
 
         Toast.fire({
           icon: 'success',
-          title: '成功登入！'
+          title: '成功登入!'
         })
 
         const path = this.isBackLogin ? '/admin/tweets' : '/home'
