@@ -26,7 +26,7 @@
         <img
           class="main__profile__img--cover"
           :src="
-            profile.avatar ||
+            profile.cover ||
             'https://fakeimg.pl/600x200/?text=Add%20Your%20Cover'
           "
           alt="avatar"
@@ -107,7 +107,7 @@
           >
             編輯個人資料
           </button>
-          <UserEdit v-if="isOpen" @close-modal="toggleEditModal"/>
+          <UserEdit v-if="isOpen" @close-modal="toggleEditModal" :initial-profile="profile" @after-submit="handleAfterSubmit"/>
           <button
             v-if="currentUser.id !== profile.id"
             class="main__profile__info__btn--follow"
@@ -212,6 +212,12 @@ export default {
 
   },
   methods: {
+    handleAfterSubmit (data) {
+      this.profile.avatar = data.avatar
+      this.profile.cover = data.cover
+      this.profile.name = data.name
+      this.profile.introduction = data.introduction
+    },
     toggleEditModal () {
       this.isOpen = !this.isOpen
     },
