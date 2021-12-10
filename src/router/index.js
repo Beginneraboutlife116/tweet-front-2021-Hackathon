@@ -147,12 +147,10 @@ router.beforeEach(async (to, from, next) => {
 
   if (tokenInLocalStorage && tokenCompareResult) {
     isAuthenticated = store.state.currentUser.role === 'admin' ? await store.dispatch('fetchRootUser') : await store.dispatch('fetchCurrentUser')
-    console.log(store.state.currentUser.id)
   }
 
   if (tokenInLocalStorage && idCompareResult) {
     isAuthenticated = store.state.currentUser.role === 'admin' ? await store.dispatch('fetchRootUser') : await store.dispatch('fetchCurrentUser')
-    console.log(store.state.currentUser.id)
   }
 
   const pathWithoutAuthentication = ['sign-in', 'sign-up', 'admin-sign-in']
