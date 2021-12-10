@@ -7,14 +7,14 @@
       <form class="setting__form" @submit.prevent="handleSubmit">
         <label class="setting__form-row">
           <p class="setting__form-title account">帳號</p>
-          <input type="text" class="setting__form-input account" v-model.trim="editUser.account" ref="account" :placeholder="prevAccount" value="editUser.account" required>
+          <input type="text" class="setting__form-input account" v-model.trim="editUser.account" ref="account" :placeholder="prevAccount" value="editUser.account" maxlength="30" required>
           <p class="setting__form-error">
             <span class="error" v-if="accountRepeat">帳號 已重複註冊！</span>
           </p>
         </label>
         <label class="setting__form-row">
           <p class="setting__form-title">名稱</p>
-          <input type="text" class="setting__form-input" v-model.trim="editUser.name" value="editUser.name" :placeholder="prevName" ref="name" required>
+          <input type="text" class="setting__form-input" v-model.trim="editUser.name" value="editUser.name" :placeholder="prevName" ref="name" maxlength="50" required>
           <p class="setting__form-error">
             <span class="error" v-show="editUser.name.length" :style="{color: nameErrorHandler.color}"> {{ nameErrorHandler.text }} </span>
             <span class="limit" v-show="editUser.name.length"> {{ editUser.name.length }}/50</span>
@@ -38,7 +38,7 @@
             <span class="error" v-if="passwordError">確認密碼與密碼不符，請再試一次</span>
           </p>
         </label>
-        <button class="setting__form-submit active" type="submit" :class="{disabled: isProcessing || waitForFill}"> {{ isProcessing ? '傳送中' : '儲存' }} </button>
+        <button class="setting__form-submit active" type="submit" :class="{disabled: isProcessing || waitForFill}" :disabled="waitForFill"> {{ isProcessing ? '傳送中' : '儲存' }} </button>
       </form>
     </div>
   </div>
@@ -73,7 +73,7 @@ export default {
       return nameError
     },
     waitForFill () {
-      if (!this.editUser.account || !this.editUser.email || !this.password || !this.passwordConfirm || !this.name) {
+      if (!this.editUser.account || !this.editUser.email || !this.password || !this.passwordConfirm || !this.editUser.name) {
         return true
       }
       return false
@@ -110,13 +110,14 @@ export default {
         return
       }
 
-      if (!this.name) {
+      if (!this.editUser.name) {
         Toast.fire({
           icon: 'warning',
           title: '名稱必填'
         })
         this.$refs.name.focus()
         this.$refs.name.style.borderColor = '#fc5a5a'
+        return
       }
 
       if (this.editUser.name > 50) {

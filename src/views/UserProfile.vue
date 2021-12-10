@@ -21,12 +21,13 @@
         </div>
       </div>
     </header>
-    <div class="main__profile">
+    <Spinner v-if="isLoading"/>
+    <div class="main__profile" v-else>
       <div class="main__profile__img">
         <img
           class="main__profile__img--cover"
           :src="
-            profile.avatar ||
+            profile.cover ||
             'https://fakeimg.pl/600x200/?text=Add%20Your%20Cover'
           "
           alt="avatar"
@@ -45,7 +46,6 @@
       <div class="main__profile__info">
         <div class="main__profile__info__btn">
           <template v-if="currentUser.id !== profile.id">
-            <!-- msg -->
             <svg
               width="35"
               height="35"
@@ -59,9 +59,8 @@
                 fill="#FF6600"
               />
             </svg>
-            <!-- notificationfilled -->
             <svg
-              v-if="!profile.isSubscribing"
+              v-if="profile.isSubscribing"
               @click.stop.prevent="toggleSubscribe(profile.id, profile.isSubscribing)"
               width="35"
               height="35"
@@ -81,9 +80,8 @@
                 fill="white"
               />
             </svg>
-            <!-- notification -->
             <svg
-              v-if="profile.isSubscribing"
+              v-else
               @click.stop.prevent="
                 toggleSubscribe(profile.id)
               "
@@ -103,9 +101,11 @@
           <button
             v-if="currentUser.id === profile.id"
             class="main__profile__info__btn--edit"
+            @click.stop.prevent="toggleEditModal"
           >
             編輯個人資料
           </button>
+          <UserEdit v-if="isOpen" @close-modal="toggleEditModal" :initial-profile="profile" @after-submit="handleAfterSubmit"/>
           <button
             v-if="currentUser.id !== profile.id"
             class="main__profile__info__btn--follow"
@@ -115,7 +115,6 @@
             {{ profile.isFollowing ? "正在跟隨" : "跟隨" }}
           </button>
         </div>
-        <Spinner v-if="isLoading" />
         <p v-if="!isLoading" class="name">{{ profile.name }}</p>
         <p v-if="!isLoading" class="account">@{{ profile.account }}</p>
         <p v-if="!isLoading" class="introduction">{{ profile.introduction }}</p>
@@ -166,10 +165,12 @@ import { Toast } from './../mixins/helpers'
 import usersAPI from './../apis/users'
 import followAPI from '../apis/followships'
 import Spinner from './../components/Spinner'
+import UserEdit from './../components/UserEdit.vue'
 export default {
   name: 'UserProfile',
   components: {
-    Spinner
+    Spinner,
+    UserEdit
   },
   data () {
     return {
@@ -177,7 +178,7 @@ export default {
         account: 'null',
         avatar: null,
         cover: null,
-        email: 'user1@example.com',
+        email: '',
         followship: {
           followingCounts: 0,
           followerCounts: 0
@@ -186,11 +187,12 @@ export default {
         introduction: null,
         isFollowing: false,
         isSubscribing: false,
-        name: 'user1',
+        name: '',
         tweetCounts: 0
       },
       isProcessing: false,
-      isLoading: true
+      isLoading: true,
+      isOpen: false
     }
   },
   created () {
@@ -207,6 +209,15 @@ export default {
 
   },
   methods: {
+    handleAfterSubmit (data) {
+      this.profile.avatar = data.avatar
+      this.profile.cover = data.cover
+      this.profile.name = data.name
+      this.profile.introduction = data.introduction
+    },
+    toggleEditModal () {
+      this.isOpen = !this.isOpen
+    },
     async fetchProfile (userId) {
       try {
         this.isProcessing = true
@@ -261,7 +272,6 @@ export default {
       }
     },
     toggleSubscribe (userId) {
-      // TODO: 將資料傳給後端
       this.profile.isSubscribing = !this.profile.isSubscribing
     }
   }
@@ -317,6 +327,7 @@ export default {
       width: 100%;
       height: 20rem;
       object-fit: cover;
+      overflow: hidden;
     }
     &--avatar {
       position: absolute;
@@ -324,7 +335,8 @@ export default {
       left: 1.5rem;
       transform: translateY(-25%);
       border-radius: 50%;
-      max-width: 14rem;
+      width: 14rem;
+      height: 14rem;
       border: 4px solid var(--basic-color);
       object-fit: cover;
     }
@@ -354,7 +366,7 @@ export default {
       font-size: $font-md;
     }
     .name {
-      margin-top: 2.4rem; //按鈕跟名字間距
+      margin-top: 2.4rem;
       font-weight: 900;
       font-size: $font-xl;
     }
