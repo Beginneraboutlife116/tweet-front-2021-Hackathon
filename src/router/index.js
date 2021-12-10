@@ -106,6 +106,11 @@ const routes = [
         beforeEnter: authorizeIsUser
       },
       {
+        path: ':userId/public',
+        name: 'public',
+        component: () => import('./../views/ChatRoom.vue')
+      },
+      {
         path: '/admin/tweets',
         name: 'admin-tweets',
         component: () => import('./../views/AdminTweets'),
