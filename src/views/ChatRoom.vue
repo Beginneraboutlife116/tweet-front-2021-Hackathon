@@ -2,7 +2,7 @@
   <div class="public-container">
     <div class="users-container">
       <header class="users__header">
-        <p class="users__title">上線使用者(5)</p>
+        <p class="users__title">上線使用者({{allOnlineUsers.length}})</p>
       </header>
       <User v-for="user in allOnlineUsers" :key="user.id" :user="user"/>
     </div>
@@ -11,11 +11,11 @@
         <p class="chatroom__title">公開聊天室</p>
       </header>
       <main class="chatroom__box">
-        <ChatMsg v-for="msg in chatroomList" :key="msg.id" :msg="msg"/>
+        <ChatMsg v-for="(msg, index) in chatroomList" :key="index" :msg="msg"/>
       </main>
       <footer class="chatroom__send">
-        <input type="text" class="chatroom__send-input" placeholder="輸入訊息...">
-        <button class="chatroom__send-btn">
+        <input type="text" class="chatroom__send-input" placeholder="輸入訊息..." v-model.trim="text">
+        <button class="chatroom__send-btn" @click.stop.prevent="sendMessage">
           <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M19.1301 9.35798L1.61406 0.107979C1.32406 -0.0440207 0.97406 0.00597923 0.74106 0.233979C0.51106 0.459979 0.44806 0.810979 0.59106 1.10198L4.95306 10.022L0.59106 18.942C0.44806 19.234 0.51106 19.585 0.74106 19.81C0.88606 19.95 1.07406 20.022 1.26406 20.022C1.38406 20.022 1.50406 19.994 1.61406 19.935L19.1311 10.685C19.3761 10.555 19.5311 10.299 19.5311 10.021C19.5311 9.74298 19.3761 9.48898 19.1311 9.35898L19.1301 9.35798ZM2.94806 2.50998L15.7521 9.27198H6.25506L2.94806 2.51198V2.50998ZM6.25506 10.77H15.7531L2.94806 17.535L6.25506 10.772V10.77Z" fill="#FF6600"/>
           </svg>
@@ -36,7 +36,8 @@ export default {
   },
   data () {
     return {
-      chatroomList: []
+      chatroomList: [],
+      text: ''
     }
   },
   computed: {
@@ -45,6 +46,17 @@ export default {
     },
     user () {
       return this.$store.state.user
+    }
+  },
+  methods: {
+    sendMessage () {
+      const user = {
+        id: this.$store.state.currentUser.id,
+        name: this.$store.state.currentUser.name,
+        avatar: this.$store.state.currentUser.avatar
+      }
+      this.$socket.emit('MESSAGE', { user, message: this.text, timeStamp: new Date() })
+      this.text = ''
     }
   },
   watch: {
@@ -58,7 +70,10 @@ export default {
   sockets: {
     ONLINE_LIST_UPDATE (data) {
       this.$store.commit('SOCKET_storeUsers', data)
-      console.log('list update', data)
+    },
+    MESSAGE_UPDATE (data) {
+      this.$store.commit('SOCKET_storeUsers', data)
+      console.log('>>>>>>>>>>>>>message update: ', data)
     }
   }
 }

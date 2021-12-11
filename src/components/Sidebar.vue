@@ -234,7 +234,9 @@ export default {
       this.$socket.emit('USER_OFFLINE', { id: this.currentUser.id, name: this.currentUser.name })
       this.$store.commit('revokeAuthentication')
       this.$router.push('/signin')
-      this.$socket.disconnect()
+      setTimeout(() => {
+        this.$socket.disconnect()
+      }, 1000)
     }
   },
   computed: {
