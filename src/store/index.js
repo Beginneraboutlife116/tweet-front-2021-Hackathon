@@ -22,9 +22,15 @@ export default new Vuex.Store({
     tweet: '',
     reply: '',
     modal: '',
-    fromReplies: {}
+    fromReplies: {},
+    allOnlineUsers: [],
+    user: {}
   },
   mutations: {
+    SOCKET_storeUsers (state, users) {
+      state.allOnlineUsers = users.userList
+      state.user = users.user
+    },
     setCurrentUser (state, currentUser) {
       state.currentUser = {
         ...state.currentUser,

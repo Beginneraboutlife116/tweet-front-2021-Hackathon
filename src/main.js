@@ -11,13 +11,7 @@ Vue.config.productionTip = false;
 
 Vue.use(
   new VueSocketIO({
-    connection: SocketIO("http://5149-81-31-74-124.ngrok.io",
-    {
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax : 5000,
-      reconnectionAttempts: Infinity
-    }),
+    connection: SocketIO("http://5149-81-31-74-124.ngrok.io"),
     vuex: {
       store,
       actionPrefix: "SOCKET_",

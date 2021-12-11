@@ -75,7 +75,6 @@ export default {
   },
   created () {
     this.fetchTweets()
-    console.log(this.$socket)
   },
   computed: {
     ...mapState(['currentUser', 'tweet'])
@@ -86,7 +85,8 @@ export default {
     }
   },
   sockets: {
-    LIST_UPDATE (data) {
+    ONLINE_LIST_UPDATE (data) {
+      this.$store.commit('SOCKET_storeUsers', data)
       console.log('list update', data)
     }
   },

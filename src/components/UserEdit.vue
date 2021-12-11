@@ -224,12 +224,14 @@ export default {
     transform: translateY(-50%);
     border: 4px solid #fff;
     overflow: hidden;
+    display: grid;
+    place-items: center;
     &:hover {
       border-color: var(--main-color);
     }
     &-img {
       object-fit: cover;
-      object-position: center;
+      object-position: center center;
       cursor: pointer;
     }
     &-input {

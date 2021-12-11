@@ -4,16 +4,14 @@
       <header class="users__header">
         <p class="users__title">上線使用者(5)</p>
       </header>
-      <User />
+      <User v-for="user in allOnlineUsers" :key="user.id" :user="user"/>
     </div>
     <div class="chatroom-container">
       <header class="chatroom__header">
         <p class="chatroom__title">公開聊天室</p>
       </header>
       <main class="chatroom__box">
-        <Noti />
-        <ChatIn />
-        <ChatOut />
+        <ChatMsg v-for="msg in chatroomList" :key="msg.id" :msg="msg"/>
       </main>
       <footer class="chatroom__send">
         <input type="text" class="chatroom__send-input" placeholder="輸入訊息...">
@@ -29,16 +27,39 @@
 
 <script>
 import User from './../components/User'
-import Noti from './../components/RoomNotification.vue'
-import ChatIn from './../components/ChatIn.vue'
-import ChatOut from './../components/ChatOut.vue'
+import ChatMsg from '../components/ChatMsg.vue'
 
 export default {
   components: {
     User,
-    Noti,
-    ChatIn,
-    ChatOut
+    ChatMsg
+  },
+  data () {
+    return {
+      chatroomList: []
+    }
+  },
+  computed: {
+    allOnlineUsers () {
+      return this.$store.state.allOnlineUsers
+    },
+    user () {
+      return this.$store.state.user
+    }
+  },
+  watch: {
+    user: {
+      handler () {
+        this.chatroomList.push(this.user)
+      },
+      deep: true
+    }
+  },
+  sockets: {
+    ONLINE_LIST_UPDATE (data) {
+      this.$store.commit('SOCKET_storeUsers', data)
+      console.log('list update', data)
+    }
   }
 }
 </script>

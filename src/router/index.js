@@ -106,12 +106,6 @@ const routes = [
         ]
       },
       {
-        path: 'public-chatroom',
-        name: 'public-chatroom',
-        component: () => import('./../views/ChatRoom'),
-        beforeEnter: authorizeIsUser
-      },
-      {
         path: ':userId/setting',
         name: 'setting',
         component: () => import('./../views/Setting'),
