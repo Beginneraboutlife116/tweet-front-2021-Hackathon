@@ -55,6 +55,7 @@ export default {
   },
   created () {
     this.loginMessageHistory()
+    this.$socket.emit('USER_ONLINE', { user: this.$store.state.currentUser })
   },
   methods: {
     sendMessage () {
@@ -71,27 +72,24 @@ export default {
       try {
         const { data } = await usersAPI.getMessageHistory()
         this.chatroomList = data
-        console.log('chatroom', this.chatroomList.length)
-        console.log('data: ', data.length)
       } catch (err) {
         Toast.fire({
           icon: 'fire',
           title: '無法讀取歷史訊息'
         })
-        console.log(err)
       }
     }
   },
   watch: {
     userStatus: {
       handler () {
-        this.chatroomList.push(this.userStatus)
+        this.chatroomList.unshift(this.userStatus)
       },
       deep: true
     },
     userMsg: {
       handler () {
-        this.chatroomList.push(this.userMsg)
+        this.chatroomList.unshift(this.userMsg)
       },
       deep: true
     }
@@ -128,30 +126,34 @@ export default {
 
 .chatroom {
   &-container {
-    height: 100vh;
+    flex: 1;
     border-left: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    position: relative;
   }
   &__header {
     padding: 1.5rem;
     font-size: $font-xl;
     font-weight: 700;
     border-bottom: 1px solid var(--border-color);
-    flex: 0;
+    position: fixed;
+    top: 0;
+    width: calc(673 / 1440 * 100%);
+    z-index: 1;
+    background-color: #fff;
   }
   &__box {
+    height: 100vh;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: 2rem;
-    padding-inline: 1.5rem;
+    padding: 8rem 1.5rem 5rem;
+    transform: rotate(180deg);
   }
   &__send {
-    flex: 0;
+    position: fixed;
+    width: calc(673 / 1440 * 100%);
+    bottom: 0;
     padding: 1.2rem 1.5rem 1.1rem 1.5rem;
+    z-index: 1;
+    background-color: #fff;
     display: flex;
     gap: 1.7rem;
     align-items: center;
@@ -167,6 +169,6 @@ export default {
   }
 }
 .noti {
-  margin: 0 auto;
+  margin: 0 auto 1.5rem;
 }
 </style>

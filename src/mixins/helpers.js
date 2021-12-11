@@ -2,9 +2,7 @@ import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import axios from 'axios'
 
-// const baseURL = 'https://simple-twitter-paul-heidi.herokuapp.com/api'
-const baseURL = 'http://5149-81-31-74-124.ngrok.io/api/'
-// const baseURL = 'http://b520-2001-b400-e270-b4f2-9421-c0bb-cd26-a065.ngrok.io/api/'
+const baseURL = 'https://twitter-paul-heidi-chatroom.herokuapp.com/api/'
 
 const axiosInstance = axios.create({
   baseURL,

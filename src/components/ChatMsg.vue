@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!msg.status">
+  <div v-if="!msg.status" class="chat-container">
     <div class="out" v-if="msg.user.id === currentUser.id">
       <div class="out__info">
         <p class="out__text"> {{msg.message}} </p>
@@ -50,6 +50,9 @@ export default {
 </script>
 
 <style lang="scss">
+.chat-container {
+  width: 100%;
+}
 .in,
 .out {
   display: flex;
@@ -57,22 +60,26 @@ export default {
   width: max-content;
   height: max-content;
   gap: 1rem;
+  transform: rotate(180deg);
+  margin-bottom: 2.5rem;
   &__avatar {
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
     &-img {
       border-radius: 50%;
+      width: 4rem;
+      height: 4rem;
     }
   }
   &__info {
     position: relative;
   }
   &__text {
-    background-color: var(--border-color);
+    background-color: var(--main-color);
     padding: 1rem 1.5rem;
-    border-radius: 99em 99em 99em 0;
-    color: var(--font-color);
+    border-radius: 99em 99em 0em 99em;
+    color: white;
     max-width: 50rem;
   }
   &__timeStamp {
@@ -86,13 +93,13 @@ export default {
   }
 }
 
-.out {
+.in {
   margin-left: auto;
   &__text {
-    background-color: var(--main-color);
+    background-color: var(--border-color);
     padding: 1rem 1.5rem;
-    border-radius: 99em 99em 0 99em;
-    color: white;
+    border-radius: 99em 99em 99em 0;
+    color: var(--font-color);
   }
 }
 
@@ -102,6 +109,7 @@ export default {
   padding: 0.7rem 1.4rem;
   border-radius: 99em;
   color: var(--label-color);
+  transform: rotate(180deg);
   &__name {
     margin-right: 0.3rem;
   }

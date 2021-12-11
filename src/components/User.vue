@@ -34,7 +34,10 @@ export default {
     height: 5rem;
     border-radius: 50%;
     &-img {
+      width: 5rem;
+      height: 5rem;
       border-radius: 50%;
+      object-fit: cover;
     }
   }
   &__info {
