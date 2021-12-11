@@ -28,6 +28,8 @@
 <script>
 import User from './../components/User'
 import ChatMsg from '../components/ChatMsg.vue'
+import usersAPI from './../apis/users'
+import { Toast } from './../mixins/helpers'
 
 export default {
   components: {
@@ -51,6 +53,9 @@ export default {
       return this.$store.state.userMsg
     }
   },
+  created () {
+    this.loginMessageHistory()
+  },
   methods: {
     sendMessage () {
       if (!this.text) { return }
@@ -61,6 +66,20 @@ export default {
       }
       this.$socket.emit('MESSAGE', { user, message: this.text, timeStamp: new Date() })
       this.text = ''
+    },
+    async loginMessageHistory () {
+      try {
+        const { data } = await usersAPI.getMessageHistory()
+        this.chatroomList = data
+        console.log('chatroom', this.chatroomList.length)
+        console.log('data: ', data.length)
+      } catch (err) {
+        Toast.fire({
+          icon: 'fire',
+          title: '無法讀取歷史訊息'
+        })
+        console.log(err)
+      }
     }
   },
   watch: {
@@ -109,7 +128,7 @@ export default {
 
 .chatroom {
   &-container {
-    flex: 1;
+    height: 100vh;
     border-left: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
@@ -123,11 +142,10 @@ export default {
     flex: 0;
   }
   &__box {
-    flex: 1;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    overflow-y: scroll;
     gap: 2rem;
     padding-inline: 1.5rem;
   }

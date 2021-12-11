@@ -34,7 +34,7 @@ export default new Vuex.Store({
     },
     SOCKET_storeMessage (state, data) {
       state.userMsg = {
-        ...data.user,
+        user: data.user,
         message: data.message || '',
         timeStamp: data.timeStamp || ''
       }

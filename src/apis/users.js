@@ -15,5 +15,8 @@ export default {
   },
   putUserEdit (userId, payload) {
     return apiHelper.put(`/users/${userId}`, payload)
+  },
+  getMessageHistory () {
+    return apiHelper.get('/chats')
   }
 }

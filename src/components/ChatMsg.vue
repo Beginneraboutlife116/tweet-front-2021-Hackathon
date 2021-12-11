@@ -1,13 +1,13 @@
 <template>
   <div v-if="!msg.status">
-    <div class="out" v-if="msg.id === currentUser.id">
+    <div class="out" v-if="msg.user.id === currentUser.id">
       <div class="out__info">
         <p class="out__text"> {{msg.message}} </p>
         <p class="out__timeStamp"> {{msg.timeStamp | absoluteTimeShort}} </p>
       </div>
       <div class="out__avatar">
         <img
-          :src="msg.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
+          :src="msg.user.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
           alt=""
           class="out__avatar-img"
         />
@@ -15,7 +15,7 @@
     </div>
     <div class="in" v-else>
       <div class="in__avatar">
-        <img :src="msg.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="in__avatar-img">
+        <img :src="msg.user.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="in__avatar-img">
       </div>
       <div class="in__info">
         <p class="in__text"> {{msg.message}} </p>
@@ -73,12 +73,12 @@ export default {
     padding: 1rem 1.5rem;
     border-radius: 99em 99em 99em 0;
     color: var(--font-color);
-    max-width: 65rem;
+    max-width: 50rem;
   }
   &__timeStamp {
     position: absolute;
     top: 105%;
-    left: 0;
+    right: 0;
     font-size: $font-xs;
     line-height: $font-xs;
     color: var(--label-color);
