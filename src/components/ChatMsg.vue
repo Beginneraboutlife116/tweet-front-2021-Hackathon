@@ -61,7 +61,7 @@ export default {
   height: max-content;
   gap: 1rem;
   transform: rotate(180deg);
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   &__avatar {
     width: 4rem;
     height: 4rem;
