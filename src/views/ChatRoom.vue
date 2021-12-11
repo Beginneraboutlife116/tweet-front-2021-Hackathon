@@ -29,6 +29,8 @@
 import User from './../components/User'
 import ChatMsg from '../components/ChatMsg.vue'
 
+const dummy = { id: 10, name: 'user1', avatar: null, message: '吐血啦', timeStamp: '2021-12-11T11:36:03.778Z' }
+
 export default {
   components: {
     User,
@@ -39,6 +41,9 @@ export default {
       chatroomList: [],
       text: ''
     }
+  },
+  created () {
+    this.chatroomList.push(dummy)
   },
   computed: {
     allOnlineUsers () {
@@ -72,7 +77,7 @@ export default {
       this.$store.commit('SOCKET_storeUsers', data)
     },
     MESSAGE_UPDATE (data) {
-      this.$store.commit('SOCKET_storeUsers', data)
+      this.$store.commit('SOCKET_storeMessage', data)
       console.log('>>>>>>>>>>>>>message update: ', data)
     }
   }

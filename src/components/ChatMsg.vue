@@ -1,24 +1,26 @@
 <template>
-  <div class="out" v-if="msg.id !== currentUser.id">
-    <div class="out__info">
-      <p class="out__text"> {{msg.message}} </p>
-      <p class="out__timeStamp"> {{msg.timeStamp | absoluteTimeShort}} </p>
+  <div v-if="!msg.status">
+    <div class="out" v-if="msg.id === currentUser.id">
+      <div class="out__info">
+        <p class="out__text"> {{msg.message}} </p>
+        <p class="out__timeStamp"> {{msg.timeStamp | absoluteTimeShort}} </p>
+      </div>
+      <div class="out__avatar">
+        <img
+          src="https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg"
+          alt=""
+          class="out__avatar-img"
+        />
+      </div>
     </div>
-    <div class="out__avatar">
-      <img
-        src="https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg"
-        alt=""
-        class="out__avatar-img"
-      />
-    </div>
-  </div>
-  <div class="in" v-else-if="msg.id === currentUser.id">
-    <div class="in__avatar">
-      <img src="https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg" alt="" class="in__avatar-img">
-    </div>
-    <div class="in__info">
-      <p class="in__text"> {{msg.message}} </p>
-      <p class="in__timeStamp"> {{msg.timeStamp | absoluteTimeShort}} </p>
+    <div class="in" v-else>
+      <div class="in__avatar">
+        <img src="https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg" alt="" class="in__avatar-img">
+      </div>
+      <div class="in__info">
+        <p class="in__text"> {{msg.message}} </p>
+        <p class="in__timeStamp"> {{msg.timeStamp | absoluteTimeShort}} </p>
+      </div>
     </div>
   </div>
   <div class="noti" v-else>

@@ -29,10 +29,17 @@ export default new Vuex.Store({
   mutations: {
     SOCKET_storeUsers (state, users) {
       state.allOnlineUsers = users.userList
+      // state.user = {
+      //   ...users.user,
+      //   message: users.message || '',
+      //   timeStamp: users.timeStamp || ''
+      // }
+    },
+    SOCKET_storeMessage (state, data) {
       state.user = {
-        ...users.user,
-        message: users.message || '',
-        timeStamp: users.timeStamp || ''
+        ...data.user,
+        message: data.message || '',
+        timeStamp: data.timeStamp || ''
       }
     },
     setCurrentUser (state, currentUser) {
