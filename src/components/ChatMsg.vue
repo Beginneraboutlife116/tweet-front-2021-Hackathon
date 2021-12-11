@@ -1,8 +1,8 @@
 <template>
-  <div class="out" v-if="false">
+  <div class="out" v-if="msg.id !== currentUser.id">
     <div class="out__info">
-      <p class="out__text">安安你好</p>
-      <p class="out__timeStamp">時間</p>
+      <p class="out__text"> {{msg.message}} </p>
+      <p class="out__timeStamp"> {{msg.timeStamp | absoluteTimeShort}} </p>
     </div>
     <div class="out__avatar">
       <img
@@ -12,13 +12,13 @@
       />
     </div>
   </div>
-  <div class="in" v-else-if="false">
+  <div class="in" v-else-if="msg.id === currentUser.id">
     <div class="in__avatar">
       <img src="https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg" alt="" class="in__avatar-img">
     </div>
     <div class="in__info">
-      <p class="in__text">我先離開了唷</p>
-      <p class="in__timeStamp">時間</p>
+      <p class="in__text"> {{msg.message}} </p>
+      <p class="in__timeStamp"> {{msg.timeStamp | absoluteTimeShort}} </p>
     </div>
   </div>
   <div class="noti" v-else>
@@ -28,12 +28,20 @@
 </template>
 
 <script>
+import { fromNowFilter } from './../mixins/helpers'
+
 export default {
   name: 'chat',
+  mixins: [fromNowFilter],
   props: {
     msg: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    currentUser () {
+      return this.$store.state.currentUser
     }
   }
 }
