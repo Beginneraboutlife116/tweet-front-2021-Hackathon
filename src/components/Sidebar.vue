@@ -44,6 +44,7 @@
       </router-link>
       <template v-if="currentUser.role === 'user'">
         <ul>
+          <!-- home -->
           <li class="sidebar__link">
             <router-link :to="{ name: 'home' }">
               <svg
@@ -61,6 +62,8 @@
               <span>首頁</span>
             </router-link>
           </li>
+          <!-- notification 待後續有通知再加-->
+          <!-- public chatroom -->
           <li class="sidebar__link">
             <router-link
               :to="{

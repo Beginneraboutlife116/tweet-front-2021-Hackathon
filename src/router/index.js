@@ -96,14 +96,31 @@ const routes = [
                 beforeEnter: authorizeIsUser
               }
             ]
+          },
+          {
+            path: 'private',
+            name: 'private',
+            component: () => import('./../components/PersonalMsg'),
+            beforeEnter: authorizeIsUser
           }
         ]
+      },
+      {
+        path: 'public-chatroom',
+        name: 'public-chatroom',
+        component: () => import('./../views/ChatRoom'),
+        beforeEnter: authorizeIsUser
       },
       {
         path: ':userId/setting',
         name: 'setting',
         component: () => import('./../views/Setting'),
         beforeEnter: authorizeIsUser
+      },
+      {
+        path: ':userId/public',
+        name: 'public',
+        component: () => import('./../views/ChatRoom.vue')
       },
       {
         path: '/admin/tweets',
