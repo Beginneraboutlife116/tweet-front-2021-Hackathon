@@ -24,19 +24,16 @@ export default new Vuex.Store({
     modal: '',
     fromReplies: {},
     allOnlineUsers: [],
-    user: {}
+    userStatus: {},
+    userMsg: {}
   },
   mutations: {
-    SOCKET_storeUsers (state, users) {
-      state.allOnlineUsers = users.userList
-      // state.user = {
-      //   ...users.user,
-      //   message: users.message || '',
-      //   timeStamp: users.timeStamp || ''
-      // }
+    SOCKET_storeUserList (state, data) {
+      state.allOnlineUsers = data.userList
+      state.userStatus = data.user
     },
     SOCKET_storeMessage (state, data) {
-      state.user = {
+      state.userMsg = {
         ...data.user,
         message: data.message || '',
         timeStamp: data.timeStamp || ''

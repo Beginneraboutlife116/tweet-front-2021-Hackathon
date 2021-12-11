@@ -7,7 +7,7 @@
       </div>
       <div class="out__avatar">
         <img
-          src="https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg"
+          :src="msg.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
           alt=""
           class="out__avatar-img"
         />
@@ -15,7 +15,7 @@
     </div>
     <div class="in" v-else>
       <div class="in__avatar">
-        <img src="https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg" alt="" class="in__avatar-img">
+        <img :src="msg.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="in__avatar-img">
       </div>
       <div class="in__info">
         <p class="in__text"> {{msg.message}} </p>
@@ -50,41 +50,8 @@ export default {
 </script>
 
 <style lang="scss">
+.in,
 .out {
-  display: flex;
-  align-items: end;
-  width: max-content;
-  height: max-content;
-  gap: 1rem;
-  margin-left: auto;
-  &__avatar {
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    &-img {
-      border-radius: 50%;
-    }
-  }
-  &__info {
-    position: relative;
-  }
-  &__text {
-    background-color: var(--main-color);
-    padding: 1rem 1.5rem;
-    border-radius: 99em 99em 0 99em;
-    color: white;
-  }
-  &__timeStamp {
-    position: absolute;
-    top: 105%;
-    right: 0;
-    font-size: $font-xs;
-    line-height: $font-xs;
-    color: var(--label-color);
-  }
-}
-
-.in {
   display: flex;
   align-items: end;
   width: max-content;
@@ -106,6 +73,7 @@ export default {
     padding: 1rem 1.5rem;
     border-radius: 99em 99em 99em 0;
     color: var(--font-color);
+    max-width: 65rem;
   }
   &__timeStamp {
     position: absolute;
@@ -114,6 +82,17 @@ export default {
     font-size: $font-xs;
     line-height: $font-xs;
     color: var(--label-color);
+    width: max-content;
+  }
+}
+
+.out {
+  margin-left: auto;
+  &__text {
+    background-color: var(--main-color);
+    padding: 1rem 1.5rem;
+    border-radius: 99em 99em 0 99em;
+    color: white;
   }
 }
 
