@@ -156,7 +156,7 @@ router.beforeEach(async (to, from, next) => {
   const tokenInLocalStorage = localStorage.getItem('token')
   const tokenInStore = store.state.token
   const userIdInLocalStorage = localStorage.getItem('userId')
-  const userIdInStore = store.state.currentUser.id.toString()
+  const userIdInStore = store.state.currentUser.id ? store.state.currentUser.id.toString() : ''
   let isAuthenticated = store.state.isAuthenticated
 
   const tokenCompareResult = tokenInLocalStorage !== tokenInStore

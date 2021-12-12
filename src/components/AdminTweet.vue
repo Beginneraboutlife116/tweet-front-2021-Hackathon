@@ -94,6 +94,8 @@ export default {
     height: 5rem;
     border-radius: 50%;
     margin-right: 1rem;
+    border-radius: 50%;
+    overflow: hidden;
     &--img {
       width: 5rem;
       height: 5rem;
