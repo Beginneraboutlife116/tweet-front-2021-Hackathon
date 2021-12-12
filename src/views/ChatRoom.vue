@@ -83,6 +83,9 @@ export default {
   watch: {
     userStatus: {
       handler () {
+        if (!this.userStatus.name) {
+          return
+        }
         this.chatroomList.unshift(this.userStatus)
       },
       deep: true

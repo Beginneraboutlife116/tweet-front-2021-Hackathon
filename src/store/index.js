@@ -30,9 +30,6 @@ export default new Vuex.Store({
   mutations: {
     SOCKET_storeUserList (state, data) {
       state.allOnlineUsers = data.userList
-      if (!data.user.name) {
-        state.userStatus = {}
-      }
       state.userStatus = data.user
     },
     SOCKET_storeMessage (state, data) {
