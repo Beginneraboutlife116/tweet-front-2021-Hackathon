@@ -121,15 +121,17 @@ export default {
   &__avatar {
     border-radius: 50%;
     width: 10rem;
+    height: 10rem;
     position: absolute;
     border: 0.4rem solid white;
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     overflow: hidden;
+    display: grid;
+    place-items: center;
     &-img {
       object-fit: cover;
-      object-position: center;
     }
   }
   &__description {
