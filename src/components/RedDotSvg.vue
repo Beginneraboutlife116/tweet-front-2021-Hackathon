@@ -1,0 +1,5 @@
+<template>
+  <svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg" class="red-dot">
+    <circle cx="4" cy="3" r="3.5" fill="#FF6600" stroke="white"/>
+  </svg>
+</template>

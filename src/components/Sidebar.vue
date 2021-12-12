@@ -77,6 +77,7 @@
                   fill="#1C1C1C"
                 />
               </svg>
+              <RedDotSvg v-if="false"/>
               <span>通知</span>
             </router-link>
           </li>
@@ -100,6 +101,7 @@
                   fill="black"
                 />
               </svg>
+              <RedDotSvg v-if="publicNoti"/>
               <span>公開聊天室</span>
             </router-link>
           </li>
@@ -123,6 +125,7 @@
                   fill="black"
                 />
               </svg>
+              <RedDotSvg v-if="false"/>
               <span>私人訊息</span>
             </router-link>
           </li>
@@ -242,10 +245,18 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import RedDotSvg from './../components/RedDotSvg.vue'
 
 export default {
   name: 'Sidebar',
+  components: {
+    RedDotSvg
+  },
+  data () {
+    return {
+      publicNoti: false
+    }
+  },
   methods: {
     logout () {
       this.$socket.emit('USER_OFFLINE', { id: this.currentUser.id, name: this.currentUser.name })
@@ -257,7 +268,29 @@ export default {
     }
   },
   computed: {
-    ...mapState(['currentUser'])
+    currentUser () {
+      return this.$store.state.currentUser
+    },
+    userMsg () {
+      return this.$store.state.userMsg
+    }
+  },
+  sockets: {
+    MESSAGE_UPDATE (data) {
+      this.$store.commit('SOCKET_storeMessage', data)
+    }
+  },
+  watch: {
+    userMsg: {
+      handler () {
+        if (!this.$route.path.includes('public')) {
+          this.publicNoti = true
+        } else {
+          this.publicNoti = false
+        }
+      },
+      deep: true
+    }
   }
 }
 </script>
@@ -287,6 +320,7 @@ export default {
   }
   ul {
     .sidebar__link {
+      position: relative;
       height: 5.6rem;
       padding: 1.5rem 0 1.5rem 1rem;
       a {
@@ -298,6 +332,10 @@ export default {
           font-size: $font-lg;
           font-weight: bold;
         }
+      }
+      .red-dot {
+        position: absolute;
+        left: 3rem;
       }
       a:hover {
         span {
