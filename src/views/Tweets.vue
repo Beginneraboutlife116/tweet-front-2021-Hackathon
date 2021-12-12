@@ -87,7 +87,6 @@ export default {
   sockets: {
     ONLINE_LIST_UPDATE (data) {
       this.$store.commit('SOCKET_storeUserList', data)
-      console.log('list update', data)
     }
   },
   methods: {

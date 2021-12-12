@@ -121,9 +121,13 @@ export default {
   &__avatar {
     margin-top: 0.3rem;
     margin-right: 1rem;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    overflow: hidden;
     img {
-      max-width: 5rem;
-      border-radius: 50%;
+      width: 5rem;
+      height: 5rem;
       object-fit: cover;
     }
   }
@@ -145,7 +149,6 @@ export default {
     &-description {
       margin-bottom: 1rem;
       font-size: $font-md;
-      color: var(--font-color);
     }
   }
   button {

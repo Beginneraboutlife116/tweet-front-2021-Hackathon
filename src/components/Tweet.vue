@@ -193,11 +193,14 @@ export default {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
   &__avatar {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    overflow: hidden;
     margin-right: 1rem;
-    img {
+    &--img {
       width: 5rem;
       height: 5rem;
-      border-radius: 50%;
       object-fit: cover;
     }
   }

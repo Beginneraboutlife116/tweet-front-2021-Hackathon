@@ -72,6 +72,12 @@ const routes = [
             beforeEnter: authorizeIsUser
           },
           {
+            path: ':userId/notifications',
+            name: 'notifications',
+            component: () => import('./../views/Notifications'),
+            beforeEnter: authorizeIsUser
+          },
+          {
             path: ':userId',
             name: 'profile',
             redirect: ':userId/tweets',
@@ -96,12 +102,6 @@ const routes = [
                 beforeEnter: authorizeIsUser
               }
             ]
-          },
-          {
-            path: 'private',
-            name: 'private',
-            component: () => import('./../components/PersonalMsg'),
-            beforeEnter: authorizeIsUser
           }
         ]
       },
@@ -115,6 +115,12 @@ const routes = [
         path: ':userId/public',
         name: 'public',
         component: () => import('./../views/ChatRoom.vue')
+      },
+      {
+        path: ':userId/private',
+        name: 'private',
+        component: () => import('./../views/PersonalMsg'),
+        beforeEnter: authorizeIsUser
       },
       {
         path: '/admin/tweets',

@@ -16,9 +16,9 @@
           />
         </svg>
         <div class="followings__header__title__wrapper">
-          <p class="name">{{ profile.name }}</p>
+          <p class="name" :style="{visibility: isLoading ? 'hidden;' : 'visible;'}">{{ isLoading ? '-' : profile.name }}</p>
           <!-- nodata now -->
-          <p class="tweetCounts">{{ profile.tweetCounts }} 推文</p>
+          <p class="tweetCounts" :style="{visibility: isLoading ? 'hidden;' : 'visible;'}">{{ profile.tweetCounts }} 推文</p>
         </div>
       </div>
     </header>
@@ -62,7 +62,8 @@ export default {
         id: 0,
         name: 'user1',
         tweetCounts: 0
-      }
+      },
+      isLoading: true
     }
   },
   created () {

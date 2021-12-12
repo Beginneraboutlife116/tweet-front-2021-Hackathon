@@ -126,10 +126,10 @@ export default {
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
+    overflow: hidden;
     &-img {
       object-fit: cover;
       object-position: center;
-      border-radius: 50%;
     }
   }
   &__description {

@@ -166,14 +166,13 @@ export default {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--border-color);
     &-avatar {
-      max-width: 5rem;
-      aspect-ratio: 1;
+      width: 5rem;
+      height: 5rem;
       border-radius: 50%;
       margin-right: 1rem;
       overflow: hidden;
       &--img {
         object-fit: cover;
-        object-position: center;
       }
     }
     &-info {

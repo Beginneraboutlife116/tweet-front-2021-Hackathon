@@ -231,7 +231,6 @@ export default {
     }
     &-img {
       object-fit: cover;
-      object-position: center center;
       cursor: pointer;
     }
     &-input {

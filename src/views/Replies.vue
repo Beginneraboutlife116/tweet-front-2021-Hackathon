@@ -279,7 +279,6 @@ export default {
       line-height: 2.1rem;
       .name {
         font-weight: bold;
-        color: var(--font-color);
       }
       .account {
         color: var(--label-color);

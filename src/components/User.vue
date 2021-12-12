@@ -1,11 +1,21 @@
 <template>
   <div class="user">
     <div class="user__avatar">
-      <img :src="user.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="user__avatar-img">
+      <router-link :to="{name: 'profile-tweets', params: { userId: user.id } }">
+        <img :src="user.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="user__avatar-img">
+      </router-link>
     </div>
     <p class="user__info">
-      <span class="user__info-name"> {{user.name}} </span>
-      <span class="user__info-account">@{{user.account}}</span>
+      <span class="user__info-name">
+        <router-link :to="{name: 'profile-tweets', params: { userId: user.id } }">
+          {{user.name}}
+        </router-link>
+      </span>
+      <span class="user__info-account">
+        <router-link :to="{name: 'profile-tweets', params: { userId: user.id } }">
+          @{{user.account}}
+        </router-link>
+      </span>
     </p>
   </div>
 </template>
@@ -33,10 +43,10 @@ export default {
     width: 5rem;
     height: 5rem;
     border-radius: 50%;
+    overflow: hidden;
     &-img {
       width: 5rem;
       height: 5rem;
-      border-radius: 50%;
       object-fit: cover;
     }
   }
@@ -45,9 +55,15 @@ export default {
       font-size: $font-md;
       font-weight: bold;
       margin-right: 0.5rem;
+      & a {
+        color: var(--font-color);
+      }
     }
     &-account {
       color: var(--label-color);
+      & a {
+        color: var(--label-color)
+      }
     }
   }
 }

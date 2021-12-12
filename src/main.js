@@ -26,7 +26,7 @@ new Vue({
       console.log("Connected");
     },
     disconnect: function () {
-      console.log('disconnected');
+      console.log('Disconnected');
     }
   },
   router,

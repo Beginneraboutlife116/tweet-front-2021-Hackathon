@@ -90,13 +90,14 @@ export default {
   padding: 1.5rem 0 1.2rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
   &__avatar {
-    padding-top: 0.3rem;
-    max-width: 5rem;
-    aspect-ratio: 1;
+    width: 5rem;
+    height: 5rem;
     border-radius: 50%;
     margin-right: 1rem;
     &--img {
-      border-radius: 50%;
+      width: 5rem;
+      height: 5rem;
+      object-fit: cover;
     }
   }
   &__info {
@@ -107,7 +108,6 @@ export default {
       .name {
         margin-right: 0.5rem;
         font-weight: bold;
-        color: var(--font-color);
       }
       .account,
       .timeStamp {
@@ -121,7 +121,6 @@ export default {
       text-overflow: ellipsis;
       width: 37rem;
       font-size: $font-md;
-      color: var(--font-color);
     }
     &--svg {
       position: absolute;

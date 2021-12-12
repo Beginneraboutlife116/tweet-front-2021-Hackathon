@@ -2,14 +2,16 @@
   <div>
     <div class="reply-container">
       <div class="reply">
-        <router-link :to="avatarNameLink" class="reply__avatar">
-          <img
-            class="reply__avatar--img"
-            :src="avatar"
-            alt="avatar"
-            aria-label="avatar"
-          />
-        </router-link>
+        <div class="reply__avatar">
+          <router-link :to="avatarNameLink">
+            <img
+              class="reply__avatar--img"
+              :src="avatar"
+              alt="avatar"
+              aria-label="avatar"
+            />
+          </router-link>
+        </div>
         <div class="reply__info">
           <div class="reply__info-replyBy">
             <router-link :to="avatarNameLink">
@@ -128,18 +130,22 @@ export default {
 }
 .reply {
   display: flex;
+  gap: 1rem;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
   &__avatar {
-    margin-right: 1rem;
-    img {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    &--img {
       width: 5rem;
       height: 5rem;
-      border-radius: 50%;
       object-fit: cover;
     }
   }
   &__info {
+    flex: 1;
     &-replyBy {
       margin: 0.4rem 0 0.5rem 0;
       font-size: $font-md;
@@ -156,7 +162,6 @@ export default {
     }
     &-description {
       font-size: $font-md;
-      color: var(--font-color);
     }
     &-replyTo {
       font-size: $font-md;

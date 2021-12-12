@@ -6,16 +6,20 @@
         <p class="out__timeStamp"> {{msg.timeStamp | absoluteTimeShort}} </p>
       </div>
       <div class="out__avatar">
-        <img
-          :src="msg.user.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
-          alt=""
-          class="out__avatar-img"
-        />
+        <router-link :to="{ name: 'profile-tweets', params: { userId: msg.user.id } }">
+          <img
+            :src="msg.user.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
+            alt=""
+            class="out__avatar-img"
+          />
+        </router-link>
       </div>
     </div>
     <div class="in" v-else>
       <div class="in__avatar">
-        <img :src="msg.user.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="in__avatar-img">
+        <router-link :to="{ name: 'profile-tweets', params: { userId: msg.user.id } }">
+          <img :src="msg.user.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="in__avatar-img">
+        </router-link>
       </div>
       <div class="in__info">
         <p class="in__text"> {{msg.message}} </p>
@@ -61,15 +65,17 @@ export default {
   height: max-content;
   gap: 1rem;
   transform: rotate(180deg);
+  margin-top: 1rem;
   margin-bottom: 3rem;
   &__avatar {
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
+    overflow: hidden;
     &-img {
-      border-radius: 50%;
       width: 4rem;
       height: 4rem;
+      object-fit: cover;
     }
   }
   &__info {
@@ -100,6 +106,9 @@ export default {
     padding: 1rem 1.5rem;
     border-radius: 99em 99em 99em 0;
     color: var(--font-color);
+  }
+  &__timeStamp {
+    left: 0;
   }
 }
 
