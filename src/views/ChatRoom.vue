@@ -55,7 +55,7 @@ export default {
   },
   created () {
     this.loginMessageHistory()
-    this.$socket.emit('USER_ONLINE', { user: this.$store.state.currentUser })
+    this.$socket.emit('USER_ONLINE', { user: { ...this.$store.state.currentUser, name: '' } })
   },
   methods: {
     sendMessage () {
