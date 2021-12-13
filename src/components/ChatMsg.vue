@@ -68,6 +68,7 @@ export default {
   margin-top: 1rem;
   margin-bottom: 3rem;
   &__avatar {
+    flex-shrink: 0;
     width: 4rem;
     height: 4rem;
     border-radius: 50%;

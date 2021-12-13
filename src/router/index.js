@@ -9,7 +9,6 @@ Vue.use(VueRouter)
 const authorizeIsAdmin = (to, from, next) => {
   const currentUser = store.state.currentUser
   if (currentUser && currentUser.role !== 'admin') {
-    console.log('admin驗證')
     next({ path: '/404', replace: true })
     return
   }
@@ -19,7 +18,6 @@ const authorizeIsAdmin = (to, from, next) => {
 const authorizeIsUser = (to, from, next) => {
   const currentUser = store.state.currentUser
   if (currentUser && currentUser.role !== 'user') {
-    console.log('admin驗證')
     next({ path: '/404', replace: true })
     return
   }
@@ -164,7 +162,6 @@ router.beforeEach(async (to, from, next) => {
   // const idCompareResult = userIdInLocalStorage !== userIdInStore
 
   if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
-    console.log(userIdInLocalStorage === '60')
     if (!isAuthenticated && userIdInLocalStorage === '60') {
       isAuthenticated = await store.dispatch('fetchRootUser')
     } else {
@@ -177,11 +174,6 @@ router.beforeEach(async (to, from, next) => {
       }
     }
   }
-  console.log(isAuthenticated)
-
-  // if (tokenInLocalStorage && idCompareResult) {
-  //   isAuthenticated = store.state.currentUser.role === 'admin' ? await store.dispatch('fetchRootUser') : await store.dispatch('fetchCurrentUser')
-  // }
 
   const pathWithoutAuthentication = ['sign-in', 'sign-up', 'admin-sign-in']
 

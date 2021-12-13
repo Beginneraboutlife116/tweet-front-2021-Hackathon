@@ -176,9 +176,11 @@ export default {
   &__post {
     display: flex;
     &--avatar {
+      flex-shrink: 0;
       padding: 1rem 1rem 1rem 1.5rem;
       img {
-        max-width: 5rem;
+        width: 5rem;
+        height: 5rem;
         border-radius: 50%;
         object-fit: cover;
       }

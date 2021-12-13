@@ -45,8 +45,6 @@ export default {
     border-radius: 50%;
     overflow: hidden;
     &-img {
-      width: 5rem;
-      height: 5rem;
       object-fit: cover;
     }
   }

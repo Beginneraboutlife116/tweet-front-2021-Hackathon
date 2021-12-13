@@ -93,7 +93,6 @@ export default new Vuex.Store({
         const currentUserId = localStorage.getItem('userId')
         const { data } = await usersAPI.getUserProfile(currentUserId)
         const { id, account, name, email, avatar, cover, introduction, role } = data
-        console.log(data)
         commit('setCurrentUser', {
           id,
           account,
@@ -118,7 +117,6 @@ export default new Vuex.Store({
           throw new Error('非管理者')
         }
         const { data } = await adminAPI.getUsers()
-        console.log(data)
         const root = data.find(data => data.id === Number(currentUserId))
         commit('setCurrentUser', {
           ...root,

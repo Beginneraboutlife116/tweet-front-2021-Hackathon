@@ -191,12 +191,14 @@ export default {
     gap: 1rem;
     margin-bottom: 1rem;
     &-avatar {
-      max-width: 5rem;
-      aspect-ratio: 1;
+      flex-shrink: 0;
+      width: 5rem;
+      height: 5rem;
       border-radius: 50%;
       position: relative;
+      overflow: hidden;
       &--img {
-        border-radius: 50%;
+        object-fit: cover;
       }
       &::after {
         content: '';
@@ -245,11 +247,13 @@ export default {
     display: flex;
     gap: 1rem;
     &-avatar {
-      max-width: 5rem;
-      aspect-ratio: 1;
+      flex-shrink: 0;
+      width: 5rem;
+      height: 5rem;
       border-radius: 50%;
+      overflow: hidden;
       &--img {
-        border-radius: 50%;
+        object-fit: cover;
       }
     }
     &-reply {

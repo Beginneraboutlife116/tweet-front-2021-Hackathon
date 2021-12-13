@@ -187,6 +187,7 @@ export default {
   padding: 1rem 1rem 0rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
   &__avatar {
+    flex-shrink: 0;
     margin-top: 0.3rem;
     margin-right: 1rem;
     width: 5rem;
@@ -194,8 +195,6 @@ export default {
     border-radius: 50%;
     overflow: hidden;
     img {
-      width: 5rem;
-      height: 5rem;
       object-fit: cover;
     }
   }
