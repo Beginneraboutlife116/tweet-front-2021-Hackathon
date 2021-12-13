@@ -92,6 +92,9 @@ export default new Vuex.Store({
       try {
         const currentUserId = localStorage.getItem('userId')
         const { data } = await usersAPI.getUserProfile(currentUserId)
+        if (data.status === 'error') {
+          throw new Error('使用者資訊錯誤')
+        }
         const { id, account, name, email, avatar, cover, introduction, role } = data
         commit('setCurrentUser', {
           id,
@@ -112,6 +115,7 @@ export default new Vuex.Store({
     },
     async fetchRootUser ({ state, commit }) {
       try {
+        console.log('working')
         const currentUserId = localStorage.getItem('userId')
         if (currentUserId !== '60') {
           throw new Error('非管理者')

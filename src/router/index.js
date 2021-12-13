@@ -158,9 +158,6 @@ router.beforeEach(async (to, from, next) => {
   const userIdInLocalStorage = localStorage.getItem('userId')
   let isAuthenticated = store.state.isAuthenticated
 
-  // const tokenCompareResult = tokenInLocalStorage !== tokenInStore
-  // const idCompareResult = userIdInLocalStorage !== userIdInStore
-
   if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
     if (!isAuthenticated && userIdInLocalStorage === '60') {
       isAuthenticated = await store.dispatch('fetchRootUser')
@@ -178,6 +175,7 @@ router.beforeEach(async (to, from, next) => {
   const pathWithoutAuthentication = ['sign-in', 'sign-up', 'admin-sign-in']
 
   if (!isAuthenticated && !pathWithoutAuthentication.includes(to.name)) {
+    store.commit('revokeAuthentication')
     next('/signin')
     return
   }
