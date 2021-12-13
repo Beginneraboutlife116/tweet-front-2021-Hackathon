@@ -1,7 +1,7 @@
 <template>
   <div class="twitter-container">
-    <router-view />
-    <Top />
+    <router-view @after-toggle-follow="afterToggleFollow"/>
+    <Top :to-change-follow-status="toChangeFollowStatus"/>
   </div>
 </template>
 
@@ -10,6 +10,16 @@ import Top from '../components/Top.vue'
 export default {
   components: {
     Top
+  },
+  data () {
+    return {
+      toChangeFollowStatus: []
+    }
+  },
+  methods: {
+    afterToggleFollow (payload) {
+      this.toChangeFollowStatus = payload
+    }
   }
 }
 </script>

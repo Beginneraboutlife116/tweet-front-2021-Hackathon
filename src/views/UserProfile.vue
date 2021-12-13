@@ -109,8 +109,9 @@
           <button
             v-if="currentUser.id !== profile.id"
             class="main__profile__info__btn--follow"
-            :class="{ active: profile.isFollowing }"
+            :class="{ active: profile.isFollowing, disabled: postFollow }"
             @click.stop.prevent="toggleFollow(profile.id, profile.isFollowing)"
+            :disabled="postFollow"
           >
             {{ profile.isFollowing ? "正在跟隨" : "跟隨" }}
           </button>
@@ -192,7 +193,8 @@ export default {
       },
       isProcessing: false,
       isLoading: true,
-      isOpen: false
+      isOpen: false,
+      postFollow: false
     }
   },
   created () {
@@ -240,6 +242,7 @@ export default {
     },
     async toggleFollow (userId, userIsFollowing) {
       try {
+        this.postFollow = true
         if (userIsFollowing) {
           const { data } = await followAPI.cancelFollow(userId)
           if (data.status === 'error') {
@@ -247,6 +250,7 @@ export default {
           }
           this.profile.followship.followerCounts--
           this.profile.isFollowing = false
+          this.$emit('after-toggle-follow', [this.profile.id, this.profile.isFollowing])
           Toast.fire({
             icon: 'success',
             title: '成功取消追隨'
@@ -258,12 +262,15 @@ export default {
           }
           this.profile.followship.followerCounts++
           this.profile.isFollowing = true
+          this.$emit('after-toggle-follow', [this.profile.id, this.profile.isFollowing])
           Toast.fire({
             icon: 'success',
             title: '成功加入追隨'
           })
         }
+        this.postFollow = false
       } catch (error) {
+        this.postFollow = false
         Toast.fire({
           icon: 'error',
           title: '無法修改追隨狀態'

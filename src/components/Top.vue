@@ -33,6 +33,12 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'Top',
+  props: {
+    toChangeFollowStatus: {
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
       tops: []
@@ -40,6 +46,24 @@ export default {
   },
   computed: {
     ...mapState(['currentUser'])
+  },
+  watch: {
+    toChangeFollowStatus: {
+      handler () {
+        this.tops = this.tops.map(top => {
+          if (top.id === this.toChangeFollowStatus[0]) {
+            return {
+              ...top,
+              isFollowing: this.toChangeFollowStatus[1]
+            }
+          }
+          return {
+            ...top
+          }
+        })
+      },
+      deep: true
+    }
   },
   methods: {
     async fetchTops () {
