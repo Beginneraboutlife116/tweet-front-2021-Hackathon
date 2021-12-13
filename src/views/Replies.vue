@@ -1,5 +1,6 @@
 <template>
-  <div class="replies-container">
+  <Spinner v-if="isLoading"/>
+  <div class="replies-container" v-else>
     <header class="replies__header">
       <div class="replies__header__title">
         <svg @click.stop.prevent="$router.back()"
@@ -45,7 +46,6 @@
           </div>
         </div>
         <div class="main__post__action">
-          <!-- 點擊回覆打開回覆modal -->
           <span
             @click.prevent.stop="$store.commit('toggleModal', {
               reply: 'reply',
@@ -71,7 +71,6 @@
               />
             </svg>
           </span>
-          <!-- 點擊喜歡愛心亮起 -->
           <span
             @click.prevent.stop="toggleLikeModal(tweet.id, tweet.isLike)"
             class="reply__info-count--like"
@@ -106,10 +105,7 @@
         </div>
       </div>
     </header>
-    <template>
-      <Spinner v-if="isLoading"/>
-      <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" :initial-tweet="tweet" v-else/>
-    </template>
+    <Reply v-for="reply in replies" :key="reply.id" :initial-reply="reply" :initial-tweet="tweet"/>
   </div>
 </template>
 

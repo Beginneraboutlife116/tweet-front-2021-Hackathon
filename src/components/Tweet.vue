@@ -2,7 +2,6 @@
   <div>
     <div class="tweet-container">
       <div class="tweet">
-        <!-- 點擊貼文中使用者頭像/name/account時，能到profile頁 -->
         <router-link :to="`/home/${tweet.User.id}`" class="tweet__avatar">
           <img
             class="tweet__avatar--img"
@@ -16,24 +15,21 @@
         </router-link>
         <div class="tweet__info">
           <div class="tweet__info-postBy">
-            <!-- 點擊貼文中使用者頭像/name/account時，能到profile頁 -->
             <router-link :to="`/home/${tweet.User.id}`">
               <span class="name">{{ tweet.User.name || "NoName" }} </span>
               <span class="account">@{{ tweet.User.account }}・</span>
             </router-link>
-            <!-- 點擊時間連到當則推文 -->
             <router-link :to="`/home/tweets/${tweet.id}`">
               <span class="timeStamp">{{ tweet.createdAt | fromNow }}</span>
             </router-link>
           </div>
-          <!-- 點擊推文內容到當則推文 -->
           <router-link :to="`/home/tweets/${tweet.id}`">
             <p class="tweet__info-description">{{ tweet.description }}</p>
           </router-link>
           <div class="tweet__info-count">
             <!-- 點擊回覆打開回覆modal @click.prevent.stop="toggleReplyModal(tweet.id)"-->
-            <router-link :to="`/home/tweets/${tweet.id}`">
-              <span class="tweet__info-count--reply">
+            <!-- <router-link :to="`/home/tweets/${tweet.id}`"> -->
+              <span class="tweet__info-count--reply" @click.stop.prevent="toggleReplyModal">
                 <svg
                   width="15"
                   height="15"
@@ -50,7 +46,7 @@
                   tweet.replyCounts
                 }}</span>
               </span>
-            </router-link>
+            <!-- </router-link> -->
             <!-- 點擊喜歡愛心亮起 -->
             <span
               @click.prevent.stop="toggleLikeModal(tweet.id, tweet.isLike)"
@@ -109,16 +105,16 @@ export default {
       tweet: {
         id: 0,
         description: '',
-        createdAt: '2001-12-02T16:44:25.000Z',
+        createdAt: '',
         User: {
           id: -1,
           account: '',
           name: '',
           avatar: ''
         },
-        isLike: true,
-        likeCounts: 100,
-        replyCounts: 20
+        isLike: false,
+        likeCounts: 0,
+        replyCounts: 0
       }
     }
   },
@@ -126,8 +122,17 @@ export default {
     this.fetchTweet()
   },
   methods: {
-    toggleReplyModal (tweetId) {
-      // 開啟modal
+    toggleReplyModal () {
+      this.$store.commit('toggleModal', {
+        reply: 'reply',
+        id: this.tweet.id,
+        description: this.tweet.description,
+        createdAt: this.tweet.createdAt,
+        User: {
+          ...this.tweet.User
+        }
+      })
+      this.tweet.replyCounts++
     },
     async toggleLikeModal (tweetId, tweetIsLike) {
       try {

@@ -15,7 +15,7 @@
             <p class="modal__postBy-detail-info">
               <span class="modal__postBy-detail-info--name"><router-link to=""> {{fromReplies.User.name}} </router-link></span>
               <span class="modal__postBy-detail-info--account"><router-link to="">@{{fromReplies.User.account}}</router-link></span>
-              ・<span class="modal__postBy-detail-info--createdAt">asd</span>
+              ・<span class="modal__postBy-detail-info--createdAt"> {{fromReplies.createdAt | fromNow}} </span>
             </p>
             <article class="modal__postBy-detail--content">
               {{ fromReplies.description }}
@@ -48,12 +48,13 @@
 </template>
 
 <script>
-import { Toast } from './../mixins/helpers'
+import { Toast, fromNowFilter } from './../mixins/helpers'
 import tweetsAPI from './../apis/tweets'
 import repliesAPI from './../apis/replies'
 
 export default {
   name: 'NewTweet',
+  mixins: [fromNowFilter],
   data () {
     return {
       text: '',
@@ -190,12 +191,12 @@ export default {
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
+    position: relative;
     &-avatar {
       flex-shrink: 0;
       width: 5rem;
       height: 5rem;
       border-radius: 50%;
-      position: relative;
       overflow: hidden;
       &--img {
         object-fit: cover;
@@ -204,12 +205,13 @@ export default {
         content: '';
         display: block;
         width: 0.2rem;
-        height: calc(100% - 5.5rem);
         background-color: var(--line-color);
         position: absolute;
+        top: 5.5rem;
         bottom: 0;
-        left: 50%;
+        left: 2.5rem;
         transform: translateX(-50%);
+        border-radius: 99em;
       }
     }
     &-detail {
