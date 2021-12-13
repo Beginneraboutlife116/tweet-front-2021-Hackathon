@@ -93,6 +93,7 @@ export default new Vuex.Store({
         const currentUserId = localStorage.getItem('userId')
         const { data } = await usersAPI.getUserProfile(currentUserId)
         const { id, account, name, email, avatar, cover, introduction, role } = data
+        console.log(data)
         commit('setCurrentUser', {
           id,
           account,
@@ -112,9 +113,17 @@ export default new Vuex.Store({
     },
     async fetchRootUser ({ state, commit }) {
       try {
+        const currentUserId = localStorage.getItem('userId')
+        if (currentUserId !== '60') {
+          throw new Error('非管理者')
+        }
         const { data } = await adminAPI.getUsers()
-        const root = data.find(data => data.id === state.currentUser.id)
-        commit('setCurrentUser', root)
+        console.log(data)
+        const root = data.find(data => data.id === Number(currentUserId))
+        commit('setCurrentUser', {
+          ...root,
+          role: 'admin'
+        })
         return true
       } catch (err) {
         console.error('無法取得現在使用者資訊')

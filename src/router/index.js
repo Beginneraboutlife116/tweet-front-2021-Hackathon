@@ -9,6 +9,7 @@ Vue.use(VueRouter)
 const authorizeIsAdmin = (to, from, next) => {
   const currentUser = store.state.currentUser
   if (currentUser && currentUser.role !== 'admin') {
+    console.log('admin驗證')
     next({ path: '/404', replace: true })
     return
   }
@@ -18,6 +19,7 @@ const authorizeIsAdmin = (to, from, next) => {
 const authorizeIsUser = (to, from, next) => {
   const currentUser = store.state.currentUser
   if (currentUser && currentUser.role !== 'user') {
+    console.log('admin驗證')
     next({ path: '/404', replace: true })
     return
   }
@@ -156,19 +158,30 @@ router.beforeEach(async (to, from, next) => {
   const tokenInLocalStorage = localStorage.getItem('token')
   const tokenInStore = store.state.token
   const userIdInLocalStorage = localStorage.getItem('userId')
-  const userIdInStore = store.state.currentUser.id ? store.state.currentUser.id.toString() : ''
   let isAuthenticated = store.state.isAuthenticated
 
-  const tokenCompareResult = tokenInLocalStorage !== tokenInStore
-  const idCompareResult = userIdInLocalStorage !== userIdInStore
+  // const tokenCompareResult = tokenInLocalStorage !== tokenInStore
+  // const idCompareResult = userIdInLocalStorage !== userIdInStore
 
-  if (tokenInLocalStorage && tokenCompareResult) {
-    isAuthenticated = store.state.currentUser.role === 'admin' ? await store.dispatch('fetchRootUser') : await store.dispatch('fetchCurrentUser')
+  if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
+    console.log(userIdInLocalStorage === '60')
+    if (!isAuthenticated && userIdInLocalStorage === '60') {
+      isAuthenticated = await store.dispatch('fetchRootUser')
+    } else {
+      isAuthenticated = await store.dispatch('fetchCurrentUser')
+      if (isAuthenticated) {
+        const userIdInStore = store.state.currentUser.id.toString()
+        if (userIdInLocalStorage !== userIdInStore) {
+          isAuthenticated = false
+        }
+      }
+    }
   }
+  console.log(isAuthenticated)
 
-  if (tokenInLocalStorage && idCompareResult) {
-    isAuthenticated = store.state.currentUser.role === 'admin' ? await store.dispatch('fetchRootUser') : await store.dispatch('fetchCurrentUser')
-  }
+  // if (tokenInLocalStorage && idCompareResult) {
+  //   isAuthenticated = store.state.currentUser.role === 'admin' ? await store.dispatch('fetchRootUser') : await store.dispatch('fetchCurrentUser')
+  // }
 
   const pathWithoutAuthentication = ['sign-in', 'sign-up', 'admin-sign-in']
 
@@ -178,7 +191,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (isAuthenticated && pathWithoutAuthentication.includes(to.name)) {
-    store.state.currentUser.role === 'admin' ? next('/admin/tweets') : next('/home')
+    store.state.currentUser.role === 'user' ? next('/home') : next('/admin/tweets')
     return
   }
 
