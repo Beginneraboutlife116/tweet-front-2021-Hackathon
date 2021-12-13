@@ -1,7 +1,7 @@
 <template>
   <div class="twitter-container">
-    <router-view @after-toggle-follow="afterToggleFollow"/>
-    <Top :to-change-follow-status="toChangeFollowStatus"/>
+    <router-view @after-toggle-follow="afterToggleFollow" :to-change-follow-status="toChangeFollowStatus"/>
+    <Top :to-change-follow-status="toChangeFollowStatus" @after-toggle-follow="afterToggleFollow"/>
   </div>
 </template>
 

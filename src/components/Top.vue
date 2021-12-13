@@ -118,6 +118,7 @@ export default {
             }
           }
         })
+        this.$emit('after-toggle-follow', [id, true])
         Toast.fire({
           icon: 'success',
           title: '跟隨成功！'
@@ -151,6 +152,7 @@ export default {
           icon: 'success',
           title: `${data.message}!`
         })
+        this.$emit('after-toggle-follow', [id, false])
       } catch (err) {
         this.toggleProcessing(id)
         Toast.fire({

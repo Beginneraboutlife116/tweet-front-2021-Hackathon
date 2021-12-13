@@ -173,6 +173,12 @@ export default {
     Spinner,
     UserEdit
   },
+  props: {
+    toChangeFollowStatus: {
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
       profile: {
@@ -205,6 +211,16 @@ export default {
     const { userId } = to.params
     this.fetchProfile(userId)
     next()
+  },
+  watch: {
+    toChangeFollowStatus: {
+      handler () {
+        if (this.profile.id === this.toChangeFollowStatus[0]) {
+          this.profile.isFollowing = this.toChangeFollowStatus[1]
+        }
+      },
+      deep: true
+    }
   },
   computed: {
     ...mapState(['currentUser'])
