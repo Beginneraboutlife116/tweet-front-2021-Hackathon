@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import SignIn from './../views/SignIn'
 import NotFound from './../views/NotFound'
 import store from './../store'
+import { Toast } from './../mixins/helpers'
 
 Vue.use(VueRouter)
 
@@ -157,6 +158,7 @@ router.beforeEach(async (to, from, next) => {
   const tokenInStore = store.state.token
   const userIdInLocalStorage = localStorage.getItem('userId')
   let isAuthenticated = store.state.isAuthenticated
+  let userIdInStore = store.state.currentUser.id.toString() || ''
 
   if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
     if (!isAuthenticated && userIdInLocalStorage === '60') {
@@ -164,12 +166,18 @@ router.beforeEach(async (to, from, next) => {
     } else {
       isAuthenticated = await store.dispatch('fetchCurrentUser')
       if (isAuthenticated) {
-        const userIdInStore = store.state.currentUser.id.toString()
+        userIdInStore = store.state.currentUser.id.toString()
         if (userIdInLocalStorage !== userIdInStore) {
           isAuthenticated = false
         }
       }
     }
+  } else if (tokenInLocalStorage && userIdInLocalStorage !== userIdInStore) {
+    Toast.fire({
+      icon: 'error',
+      title: '發現到使用者id不同，請再次登入驗證'
+    })
+    isAuthenticated = false
   }
 
   const pathWithoutAuthentication = ['sign-in', 'sign-up', 'admin-sign-in']
