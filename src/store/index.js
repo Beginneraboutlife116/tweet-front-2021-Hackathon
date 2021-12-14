@@ -115,7 +115,6 @@ export default new Vuex.Store({
     },
     async fetchRootUser ({ state, commit }) {
       try {
-        console.log('working')
         const currentUserId = localStorage.getItem('userId')
         if (currentUserId !== '60') {
           throw new Error('非管理者')
