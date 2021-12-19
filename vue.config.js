@@ -7,6 +7,6 @@ module.exports = {
     }
   },
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/tweet-front-2021/'
+    ? '/tweet-front-2021-Hackathon/'
     : '/'
 }

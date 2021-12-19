@@ -115,7 +115,8 @@ const routes = [
       {
         path: ':userId/public',
         name: 'public',
-        component: () => import('./../views/ChatRoom.vue')
+        component: () => import('./../views/ChatRoom.vue'),
+        beforeEnter: authorizeIsUser
       },
       {
         path: ':userId/private',
