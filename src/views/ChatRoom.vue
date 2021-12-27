@@ -16,7 +16,7 @@
       <footer class="chatroom__send">
         <input type="text" class="chatroom__send-input" placeholder="輸入訊息..." v-model.trim="text" @keyup.enter="sendMessage">
         <button class="chatroom__send-btn" @click.stop.prevent="sendMessage">
-          <ChatBoxButtonSvg />
+          <IconSend />
         </button>
       </footer>
     </div>
@@ -26,7 +26,7 @@
 <script>
 import User from './../components/User'
 import ChatMsg from '../components/ChatMsg.vue'
-import ChatBoxButtonSvg from '../components/ChatboxButtonSvg.vue'
+import IconSend from '../components/icons/IconSend.vue'
 import usersAPI from './../apis/users'
 import { Toast } from './../mixins/helpers'
 
@@ -34,7 +34,7 @@ export default {
   components: {
     User,
     ChatMsg,
-    ChatBoxButtonSvg
+    IconSend
   },
   data () {
     return {

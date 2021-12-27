@@ -24,6 +24,7 @@ export default {
         user2: this.profileId
       })
       console.log('click start room')
+      this.$router.push({ name: 'private', params: { userId: this.currentUser.id } })
     }
   }
 }

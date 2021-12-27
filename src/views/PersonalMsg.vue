@@ -3,7 +3,7 @@
     <div class="message-container">
       <header class="message__header">
         <p class="message__title">訊息</p>
-        <EmailNotiSvg />
+        <IconNoti />
       </header>
       <Bar />
     </div>
@@ -17,7 +17,7 @@
       <footer class="chatroom__send">
         <input type="text" class="chatroom__send-input" placeholder="輸入訊息..." v-model.trim="text" @keyup.enter="sendMessage">
         <button class="chatroom__send-btn" @click.stop.prevent="sendMessage">
-          <ChatboxButtonSvg />
+          <IconSend />
         </button>
       </footer>
     </div>
@@ -25,15 +25,15 @@
 </template>
 
 <script>
-import EmailNotiSvg from '../components/EmailNotiSvg.vue'
-import ChatboxButtonSvg from '../components/ChatboxButtonSvg.vue'
+import IconNoti from '../components/icons/IconNoti.vue'
+import IconSend from '../components/icons/IconSend.vue'
 import Bar from './../components/PersonalMsgBar.vue'
 
 export default {
   name: 'PersonalMsg',
   components: {
-    EmailNotiSvg,
-    ChatboxButtonSvg,
+    IconNoti,
+    IconSend,
     Bar
   },
   data () {
