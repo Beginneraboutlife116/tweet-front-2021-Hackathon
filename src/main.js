@@ -11,7 +11,8 @@ Vue.config.productionTip = false;
 
 Vue.use(
   new VueSocketIO({
-    connection: SocketIO("https://twitter-paul-heidi-chatroom.herokuapp.com"),
+    // connection: SocketIO("https://twitter-paul-heidi-chatroom.herokuapp.com"),
+    connection: SocketIO("http://1517-81-109-70-177.ngrok.io"),
     vuex: {
       store,
       actionPrefix: "SOCKET_",

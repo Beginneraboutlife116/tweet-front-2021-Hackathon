@@ -46,19 +46,7 @@
       <div class="main__profile__info">
         <div class="main__profile__info__btn">
           <template v-if="currentUser.id !== profile.id">
-            <svg
-              width="35"
-              height="35"
-              viewBox="0 0 35 35"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="17.5" cy="17.5" r="17" stroke="#FF6600" />
-              <path
-                d="M23.8438 9.64062H11.1562C9.82888 9.64062 8.75 10.7204 8.75 12.0486V22.9817C8.75 24.31 9.82888 25.3906 11.1562 25.3906H23.8438C25.1711 25.3906 26.25 24.31 26.25 22.9817V12.0486C26.25 10.7204 25.1711 9.64062 23.8438 9.64062ZM11.1562 10.9531H23.8438C24.4475 10.9531 24.9375 11.4431 24.9375 12.0469V12.6716L17.8938 17.3678C17.6549 17.5253 17.346 17.527 17.1062 17.366L10.0625 12.6716V12.0469C10.0625 11.4431 10.5525 10.9531 11.1562 10.9531ZM23.8438 24.0764H11.1562C10.5525 24.0764 10.0625 23.5864 10.0625 22.9826V14.2099L16.3975 18.4361C16.7326 18.6601 17.1167 18.7721 17.5 18.7721C17.885 18.7721 18.2674 18.6601 18.6025 18.437L24.9375 14.2108V22.98C24.9375 23.5838 24.4475 24.0738 23.8438 24.0738V24.0764Z"
-                fill="#FF6600"
-              />
-            </svg>
+            <IconMessage :profile-id="profile.id"/>
             <svg
               v-if="profile.isSubscribing"
               @click.stop.prevent="toggleSubscribe(profile.id, profile.isSubscribing)"
@@ -167,11 +155,13 @@ import usersAPI from './../apis/users'
 import followAPI from '../apis/followships'
 import Spinner from './../components/Spinner'
 import UserEdit from './../components/UserEdit.vue'
+import IconMessage from './../components/icons/IconMessage.vue'
 export default {
   name: 'UserProfile',
   components: {
     Spinner,
-    UserEdit
+    UserEdit,
+    IconMessage
   },
   props: {
     toChangeFollowStatus: {
@@ -340,9 +330,9 @@ export default {
 }
 
 .main__profile {
-  svg {
-    cursor: pointer;
-  }
+  // svg {
+  //   cursor: pointer;
+  // }
   &__img {
     position: relative;
     &--cover {
@@ -370,9 +360,7 @@ export default {
     &__btn {
       display: flex;
       align-self: flex-end;
-      svg {
-        margin-right: 1rem;
-      }
+      gap: 1rem;
     }
     &__btn--edit {
       @extend %buttonStyle;
