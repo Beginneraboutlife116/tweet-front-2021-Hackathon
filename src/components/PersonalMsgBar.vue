@@ -1,32 +1,46 @@
 <template>
   <div class="message-wrapper">
     <div class="message__avatar">
-      <router-link to="">
-        <img src="https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg" alt="" class="message__avatar-img">
+      <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
+        <img :src="initialRoom.userAvatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="message__avatar-img">
       </router-link>
     </div>
     <section class="message__info">
       <div class="message__info-title">
         <p class="message__info-person">
           <span class="message__info-person--name">
-            <router-link to="">
-              Apple
+            <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
+              {{ initialRoom.userName }}
             </router-link>
           </span>
           <span class="message__info-person--account">
-            <router-link to="">
-              @apple
+            <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
+              {{ initialRoom.userAccount }}
             </router-link>
           </span>
         </p>
-        <p class="message__info-timeStamp">5秒</p>
+        <p class="message__info-timeStamp"> {{ initialRoom.userTimeStamp | fromNow }} </p>
       </div>
       <p class="message__info-text">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit, eos. Eaque perferendis provident velit soluta illum suscipit numquam quaerat laboriosam.
+        {{ initialRoom.newMsg }}
       </p>
     </section>
   </div>
 </template>
+
+<script>
+import { fromNowFilter } from './../mixins/helpers'
+export default {
+  name: 'Personal-message-bar',
+  mixins: [fromNowFilter],
+  props: {
+    initialRoom: {
+      type: Object,
+      required: true
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 .message {

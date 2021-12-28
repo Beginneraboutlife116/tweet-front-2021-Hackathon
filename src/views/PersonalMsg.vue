@@ -5,7 +5,7 @@
         <p class="message__title">訊息</p>
         <IconNoti />
       </header>
-      <Bar />
+      <Bar v-for="room in roomArray" :key="room.roomId" :initial-room="room"/>
     </div>
     <div class="chatroom-container">
       <header class="chatroom__header">
@@ -29,6 +29,29 @@ import IconNoti from '../components/icons/IconNoti.vue'
 import IconSend from '../components/icons/IconSend.vue'
 import Bar from './../components/PersonalMsgBar.vue'
 
+const dummyData = [
+  {
+    roomId: 1,
+    userId: 1000,
+    userName: 'test1',
+    userAccount: 'test1',
+    userAvatar: '',
+    msgTimeStamp: '2021-01-01',
+    newMsg: '早安你好，今天天氣真好！',
+    msgDialogue: []
+  },
+  {
+    roomId: 2,
+    userId: 2000,
+    userName: 'test2',
+    userAccount: 'test2',
+    userAvatar: '',
+    msgTimeStamp: '2021-10-10',
+    newMsg: '來打遊戲吧！！不要打code了？',
+    msgDialogue: []
+  }
+]
+
 export default {
   name: 'PersonalMsg',
   components: {
@@ -38,7 +61,27 @@ export default {
   },
   data () {
     return {
-      text: ''
+      text: '',
+      roomArray: [
+        {
+          roomId: 0,
+          userId: 0,
+          userName: '',
+          userAccount: '',
+          userAvatar: '',
+          msgTimeStamp: '',
+          newMsg: '',
+          msgDialogue: ''
+        }
+      ]
+    }
+  },
+  created () {
+    this.fetchMessageData()
+  },
+  methods: {
+    fetchMessageData () {
+      this.roomArray = [...dummyData]
     }
   }
 }
