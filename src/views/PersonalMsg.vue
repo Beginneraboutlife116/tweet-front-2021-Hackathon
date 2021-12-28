@@ -24,7 +24,7 @@
       </template>
       <template v-else>
         <div class="chatroom__uncheck">
-          <h1 class="uncheck-title">請點選"新訊息"來查看聊天室</h1>
+          <h1 class="uncheck-title">請點選"訊息"來查看聊天室</h1>
           <img src="./../assets/pngs/dog.png" alt="dog picture" class="uncheck-img">
           <article class="uncheck-img-source">Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></article>
         </div>
