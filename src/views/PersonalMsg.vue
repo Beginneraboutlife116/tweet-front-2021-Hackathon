@@ -5,21 +5,30 @@
         <p class="message__title">訊息</p>
         <IconNoti />
       </header>
-      <Bar v-for="room in roomArray" :key="room.roomId" :initial-room="room"/>
+      <Bar v-for="room in roomArray" :key="room.roomId" :initial-room="room" @check-this-message="checkMessages"/>
     </div>
     <div class="chatroom-container">
-      <header class="chatroom__header">
-        <p class="chatroom__title">Apple</p>
-      </header>
-      <main class="chatroom__box">
-        <!-- <ChatMsg v-for="(msg, index) in chat" :key="index" :msg="msg"/> -->
-      </main>
-      <footer class="chatroom__send">
-        <input type="text" class="chatroom__send-input" placeholder="輸入訊息..." v-model.trim="text" @keyup.enter="sendMessage">
-        <button class="chatroom__send-btn" @click.stop.prevent="sendMessage">
-          <IconSend />
-        </button>
-      </footer>
+      <template v-if="selectedDialogue">
+        <header class="chatroom__header">
+          <p class="chatroom__title"> {{ userName }} </p>
+        </header>
+        <main class="chatroom__box">
+          <ChatMsg v-for="(msg, index) in dialogue" :key="index" :msg="msg"/>
+        </main>
+        <footer class="chatroom__send">
+          <input type="text" class="chatroom__send-input" placeholder="輸入訊息..." v-model.trim="text" @keyup.enter="sendMessage">
+          <button class="chatroom__send-btn" @click.stop.prevent="sendMessage">
+            <IconSend />
+          </button>
+        </footer>
+      </template>
+      <template v-else>
+        <div class="chatroom__uncheck">
+          <h1 class="uncheck-title">請點選"新訊息"來查看聊天室</h1>
+          <img src="./../assets/pngs/dog.png" alt="dog picture" class="uncheck-img">
+          <article class="uncheck-img-source">Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></article>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -28,6 +37,7 @@
 import IconNoti from '../components/icons/IconNoti.vue'
 import IconSend from '../components/icons/IconSend.vue'
 import Bar from './../components/PersonalMsgBar.vue'
+import ChatMsg from './../components/ChatMsg.vue'
 
 const dummyData = [
   {
@@ -37,8 +47,7 @@ const dummyData = [
     userAccount: 'test1',
     userAvatar: '',
     msgTimeStamp: '2021-01-01',
-    newMsg: '早安你好，今天天氣真好！',
-    msgDialogue: []
+    newMsg: '早安你好，今天天氣真好！'
   },
   {
     roomId: 2,
@@ -47,8 +56,28 @@ const dummyData = [
     userAccount: 'test2',
     userAvatar: '',
     msgTimeStamp: '2021-10-10',
-    newMsg: '來打遊戲吧！！不要打code了？',
-    msgDialogue: []
+    newMsg: '來打遊戲吧！！不要打code了？'
+  }
+]
+
+const dummyDialogue = [
+  {
+    message: '哈囉～～',
+    timeStamp: '2021-09-10',
+    user: {
+      avatar: '',
+      id: 64,
+      name: 'kevin'
+    }
+  },
+  {
+    message: '早安你好，今天天氣真好！',
+    timeStamp: '2021-10-10',
+    user: {
+      avatar: '',
+      id: 1000,
+      name: 'test1'
+    }
   }
 ]
 
@@ -57,7 +86,8 @@ export default {
   components: {
     IconNoti,
     IconSend,
-    Bar
+    Bar,
+    ChatMsg
   },
   data () {
     return {
@@ -70,10 +100,12 @@ export default {
           userAccount: '',
           userAvatar: '',
           msgTimeStamp: '',
-          newMsg: '',
-          msgDialogue: ''
+          newMsg: ''
         }
-      ]
+      ],
+      userName: '',
+      dialogue: [],
+      selectedDialogue: false
     }
   },
   created () {
@@ -81,7 +113,31 @@ export default {
   },
   methods: {
     fetchMessageData () {
-      this.roomArray = [...dummyData]
+      this.roomArray = dummyData.map(data => {
+        return {
+          ...data,
+          isSelected: false
+        }
+      })
+    },
+    checkMessages (id) {
+      // TODO: fetch history API for dialogue
+      this.dialogue = [...dummyDialogue]
+
+      this.selectedDialogue = true
+      this.roomArray = this.roomArray.map(room => {
+        if (room.roomId === id) {
+          this.userName = room.userName
+          return {
+            ...room,
+            isSelected: true
+          }
+        }
+        return {
+          ...room,
+          isSelected: false
+        }
+      })
     }
   }
 }
@@ -152,7 +208,45 @@ export default {
       font-size: $font-md;
     }
   }
+  &__uncheck {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    & > * {
+      margin-bottom: 2rem;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--basic-color);
+      opacity: 0.5;
+    }
+  }
 }
+
+.uncheck {
+  &-img {
+    width: 40%;
+    &-source {
+      font-size: $font-xs;
+      & > a {
+        text-decoration: underline;
+        color: var(--font-color);
+      }
+    }
+  }
+}
+
 .noti {
   margin: 0 auto 1.5rem;
 }

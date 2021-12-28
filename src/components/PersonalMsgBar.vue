@@ -1,5 +1,5 @@
 <template>
-  <div class="message-wrapper">
+  <div class="message-wrapper" @click.stop.prevent="$emit('check-this-message', initialRoom.roomId)" :class="{selected: initialRoom.isSelected}">
     <div class="message__avatar">
       <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
         <img :src="initialRoom.userAvatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="message__avatar-img">
@@ -15,7 +15,7 @@
           </span>
           <span class="message__info-person--account">
             <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
-              {{ initialRoom.userAccount }}
+              @{{ initialRoom.userAccount }}
             </router-link>
           </span>
         </p>
@@ -49,6 +49,10 @@ export default {
     gap: 1rem;
     padding: 1.5rem;
     border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    &:hover {
+      box-shadow: inset 0px 0px 3px 2px hsla(24, 100%, 50%, 0.25);
+    }
   }
   &__avatar {
     width: 5rem;
@@ -96,6 +100,20 @@ export default {
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
+  }
+}
+
+.selected {
+  position: relative;
+  &::after {
+    content: '';
+    display: block;
+    width: 2px;
+    height: 100%;
+    position: absolute;
+    background: var(--main-color);
+    top: 0;
+    right: 0;
   }
 }
 </style>
