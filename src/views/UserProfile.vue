@@ -46,7 +46,7 @@
       <div class="main__profile__info">
         <div class="main__profile__info__btn">
           <template v-if="currentUser.id !== profile.id">
-            <IconMessage :profile-id="profile.id"/>
+            <IconMessage :initial-profile="profile"/>
             <svg
               v-if="profile.isSubscribing"
               @click.stop.prevent="toggleSubscribe(profile.id, profile.isSubscribing)"
