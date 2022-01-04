@@ -44,7 +44,6 @@
       </router-link>
       <template v-if="currentUser.role === 'user'">
         <ul>
-          <!-- home -->
           <li class="sidebar__link">
             <router-link :to="{ name: 'home' }">
               <svg
@@ -62,7 +61,6 @@
               <span>首頁</span>
             </router-link>
           </li>
-          <!-- notification 待後續有通知再加-->
           <li class="sidebar__link">
             <router-link :to="{ name: 'notifications', params: { userId: currentUser.id } }">
               <svg
@@ -81,7 +79,6 @@
               <span>通知</span>
             </router-link>
           </li>
-          <!-- public chatroom -->
           <li class="sidebar__link">
             <router-link
               :to="{
@@ -105,7 +102,6 @@
               <span>公開聊天室</span>
             </router-link>
           </li>
-          <!-- private msg -->
           <li class="sidebar__link">
             <router-link
               :to="{
@@ -125,11 +121,10 @@
                   fill="black"
                 />
               </svg>
-              <RedDotSvg v-if="false"/>
-              <span>私人訊息</span>
+              <RedDotSvg v-if="privateNoti"/>
+              <span>私人訊息<strong class="private-noti" v-if="privateNoti"> {{ privateNoti }} </strong></span>
             </router-link>
           </li>
-          <!-- personal data -->
           <li class="sidebar__link">
             <router-link
               :to="{
@@ -254,7 +249,8 @@ export default {
   },
   data () {
     return {
-      publicNoti: false
+      publicNoti: false,
+      privateNoti: 0
     }
   },
   methods: {
@@ -278,6 +274,11 @@ export default {
   sockets: {
     MESSAGE_UPDATE (data) {
       this.$store.commit('SOCKET_storeMessage', data)
+    },
+    BROADCAST_TO_SUBSCRIBE (data) {
+      if (data.ReceiverId === this.currentUser.id) {
+        this.privateNoti++
+      }
     }
   },
   watch: {
@@ -331,6 +332,12 @@ export default {
           margin-left: 2rem;
           font-size: $font-lg;
           font-weight: bold;
+          .private-noti {
+            font-size: $font-xs;
+            color: red;
+            vertical-align: text-top;
+            line-height: 1;
+          }
         }
       }
       .red-dot {

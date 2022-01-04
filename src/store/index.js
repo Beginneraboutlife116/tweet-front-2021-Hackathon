@@ -13,7 +13,6 @@ const modulePrivate = {
   }),
   mutations: {
     getUser2 (state, payload) {
-      console.log(payload)
       const { account, avatar, id, name } = payload.user
       state.user2 = {
         account,
