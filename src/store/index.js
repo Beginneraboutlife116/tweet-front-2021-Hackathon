@@ -5,6 +5,27 @@ import adminAPI from './../apis/admin'
 
 Vue.use(Vuex)
 
+const modulePrivate = {
+  namespaced: true,
+  state: () => ({
+    user2: {},
+    startChatting: false
+  }),
+  mutations: {
+    getUser2 (state, payload) {
+      console.log(payload)
+      const { account, avatar, id, name } = payload.user
+      state.user2 = {
+        account,
+        avatar,
+        id,
+        name
+      }
+      state.startChatting = payload.startChatting
+    }
+  }
+}
+
 export default new Vuex.Store({
   state: {
     currentUser: {
@@ -134,5 +155,6 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    private: modulePrivate
   }
 })

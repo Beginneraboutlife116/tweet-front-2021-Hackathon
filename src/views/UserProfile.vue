@@ -172,7 +172,7 @@ export default {
   data () {
     return {
       profile: {
-        account: 'null',
+        account: null,
         avatar: null,
         cover: null,
         email: '',

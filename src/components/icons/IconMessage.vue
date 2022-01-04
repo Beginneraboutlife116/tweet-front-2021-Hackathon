@@ -23,6 +23,10 @@ export default {
         user1: this.currentUser.id,
         user2: this.initialProfile.id
       })
+      this.$store.commit('private/getUser2', {
+        user: this.initialProfile,
+        startChatting: true
+      })
       console.log('click start room')
       console.log(`user1: ${this.currentUser.id}, user2: ${this.initialProfile.id}`)
       this.$router.push({ name: 'private', params: { userId: this.currentUser.id } })

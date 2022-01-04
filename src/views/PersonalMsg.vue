@@ -8,7 +8,7 @@
       <Bar v-for="room in roomArray" :key="room.roomId" :initial-room="room" @check-this-message="checkMessages"/>
     </div>
     <div class="chatroom-container">
-      <template v-if="selectedDialogue">
+      <template v-if="selectedDialogue || $store.state.private.startChatting">
         <header class="chatroom__header">
           <p class="chatroom__title"> {{ userName }} </p>
         </header>
@@ -119,6 +119,9 @@ export default {
           isSelected: false
         }
       })
+      if (this.$store.state.private.startChatting) {
+        this.userName = this.$store.state.private.user2.name
+      }
     },
     checkMessages (id) {
       // TODO: fetch history API for dialogue
