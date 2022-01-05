@@ -38,6 +38,7 @@ import IconNoti from '../components/icons/IconNoti.vue'
 import IconSend from '../components/icons/IconSend.vue'
 import Bar from './../components/PersonalMsgBar.vue'
 import ChatMsg from './../components/ChatMsg.vue'
+import { mapState } from 'vuex'
 
 const dummyData = [
   {
@@ -111,6 +112,13 @@ export default {
   created () {
     this.fetchMessageData()
   },
+  computed: {
+    ...mapState({
+      receiver: state => state.private.receiver,
+      roomId: state => state.private.roomId,
+      currentUser: state => state.currentUser
+    })
+  },
   methods: {
     fetchMessageData () {
       this.roomArray = dummyData.map(data => {
@@ -141,6 +149,21 @@ export default {
           isSelected: false
         }
       })
+    },
+    sendMessage () {
+      const messageData = {
+        message: this.text,
+        SenderId: this.currentUser.id,
+        ReceiverId: this.receiver.id,
+        room: this.roomId
+      }
+      console.log(messageData)
+      this.$socket.emit('SEND_ROOM_MESSAGE', messageData)
+    }
+  },
+  socket: {
+    NEW_ROOM_MESSAGE (saveMessage) {
+      this.dialogue.push(saveMessage)
     }
   }
 }

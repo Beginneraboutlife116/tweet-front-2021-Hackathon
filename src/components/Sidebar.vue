@@ -264,14 +264,8 @@ export default {
     }
   },
   computed: {
-    // currentUser () {
-    //   return this.$store.state.currentUser
-    // },
-    // userMsg () {
-    //   return this.$store.state.userMsg
-    // }
     ...mapState({
-      user2: state => state.private.user2,
+      receiver: state => state.private.receiver,
       privateNotiCount: state => state.private.privateNotiCount,
       currentUser: state => state.currentUser,
       userMsg: state => state.userMsg
@@ -282,6 +276,7 @@ export default {
       this.$store.commit('SOCKET_storeMessage', data)
     },
     BROADCAST_TO_SUBSCRIBE (data) {
+      console.log('>>>>>>>>>>>>get data>>>>>>>>>>>>>>')
       if (data.ReceiverId === this.currentUser.id) {
         this.$store.commit('private/increaseNoti')
       }

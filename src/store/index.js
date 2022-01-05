@@ -10,7 +10,8 @@ const modulePrivate = {
   state: () => ({
     receiver: {},
     startChatting: false,
-    privateNotiCount: 0
+    privateNotiCount: 0,
+    roomId: 0
   }),
   mutations: {
     getReceiver (state, payload) {
