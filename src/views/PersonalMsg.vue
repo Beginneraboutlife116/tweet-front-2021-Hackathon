@@ -120,7 +120,7 @@ export default {
         }
       })
       if (this.$store.state.private.startChatting) {
-        this.userName = this.$store.state.private.user2.name
+        this.userName = this.$store.state.private.receiver.name
       }
     },
     checkMessages (id) {

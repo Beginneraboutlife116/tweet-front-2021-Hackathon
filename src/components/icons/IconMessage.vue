@@ -23,8 +23,8 @@ export default {
         SenderId: this.currentUser.id,
         ReceiverId: this.initialProfile.id
       })
-      this.$store.commit('private/getUser2', {
-        user: this.initialProfile,
+      this.$store.commit('private/getReceiver', {
+        receiver: this.initialProfile,
         startChatting: true
       })
       this.$router.push({ name: 'private', params: { userId: this.currentUser.id } })

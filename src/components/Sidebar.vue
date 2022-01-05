@@ -121,8 +121,8 @@
                   fill="black"
                 />
               </svg>
-              <RedDotSvg v-if="privateNoti"/>
-              <span>私人訊息<strong class="private-noti" v-if="privateNoti"> {{ privateNoti }} </strong></span>
+              <RedDotSvg v-if="privateNotiCount"/>
+              <span>私人訊息<strong class="private-noti" v-if="privateNotiCount"> {{ privateNotiCount }} </strong></span>
             </router-link>
           </li>
           <li class="sidebar__link">
@@ -240,6 +240,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import RedDotSvg from './../components/RedDotSvg.vue'
 
 export default {
@@ -249,8 +250,7 @@ export default {
   },
   data () {
     return {
-      publicNoti: false,
-      privateNoti: 0
+      publicNoti: false
     }
   },
   methods: {
@@ -264,12 +264,18 @@ export default {
     }
   },
   computed: {
-    currentUser () {
-      return this.$store.state.currentUser
-    },
-    userMsg () {
-      return this.$store.state.userMsg
-    }
+    // currentUser () {
+    //   return this.$store.state.currentUser
+    // },
+    // userMsg () {
+    //   return this.$store.state.userMsg
+    // }
+    ...mapState({
+      user2: state => state.private.user2,
+      privateNotiCount: state => state.private.privateNotiCount,
+      currentUser: state => state.currentUser,
+      userMsg: state => state.userMsg
+    })
   },
   sockets: {
     MESSAGE_UPDATE (data) {
@@ -277,7 +283,7 @@ export default {
     },
     BROADCAST_TO_SUBSCRIBE (data) {
       if (data.ReceiverId === this.currentUser.id) {
-        this.privateNoti++
+        this.$store.commit('private/increaseNoti')
       }
     }
   },

@@ -8,19 +8,26 @@ Vue.use(Vuex)
 const modulePrivate = {
   namespaced: true,
   state: () => ({
-    user2: {},
-    startChatting: false
+    receiver: {},
+    startChatting: false,
+    privateNotiCount: 0
   }),
   mutations: {
-    getUser2 (state, payload) {
-      const { account, avatar, id, name } = payload.user
-      state.user2 = {
+    getReceiver (state, payload) {
+      const { account, avatar, id, name } = payload.receiver
+      state.receiver = {
         account,
         avatar,
         id,
         name
       }
       state.startChatting = payload.startChatting
+    },
+    increaseNoti (state) {
+      state.privateNotiCount++
+    },
+    decreaseNoti (state) {
+      state.privateNotiCount--
     }
   }
 }
