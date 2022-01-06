@@ -9,7 +9,7 @@ const modulePrivate = {
   namespaced: true,
   state: () => ({
     receiver: {},
-    startChatting: false,
+    isChatting: false,
     privateNotiCount: 0,
     roomId: 0
   }),
@@ -22,13 +22,27 @@ const modulePrivate = {
         id,
         name
       }
-      state.startChatting = payload.startChatting
+    },
+    fetchRoomId (state, roomId) {
+      state.roomId = roomId
     },
     increaseNoti (state) {
       state.privateNotiCount++
     },
     decreaseNoti (state) {
       state.privateNotiCount--
+    },
+    startPrivateChatRoom (state) {
+      state.isChatting = true
+    },
+    endPrivateChatRoom (state) {
+      state.isChatting = false
+    }
+  },
+  action: {
+    getRoomHistory ({ state }) {
+      // TODO: 用roomId, userId去取得歷史資料
+      // TODO: fetch history into dialogue
     }
   }
 }

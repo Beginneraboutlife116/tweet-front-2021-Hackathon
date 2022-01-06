@@ -8,7 +8,7 @@
       <Bar v-for="room in roomArray" :key="room.roomId" :initial-room="room" @check-this-message="checkMessages"/>
     </div>
     <div class="chatroom-container">
-      <template v-if="selectedDialogue || $store.state.private.startChatting">
+      <template v-if="isChatting">
         <header class="chatroom__header">
           <p class="chatroom__title"> {{ userName }} </p>
         </header>
@@ -105,8 +105,7 @@ export default {
         }
       ],
       userName: '',
-      dialogue: [],
-      selectedDialogue: false
+      dialogue: []
     }
   },
   created () {
@@ -116,7 +115,8 @@ export default {
     ...mapState({
       receiver: state => state.private.receiver,
       roomId: state => state.private.roomId,
-      currentUser: state => state.currentUser
+      currentUser: state => state.currentUser,
+      isChatting: state => state.private.isChatting
     })
   },
   methods: {
@@ -127,15 +127,17 @@ export default {
           isSelected: false
         }
       })
-      if (this.$store.state.private.startChatting) {
-        this.userName = this.$store.state.private.receiver.name
+      if (this.isChatting) {
+        this.userName = this.receiver.name
       }
     },
     checkMessages (id) {
       // TODO: fetch history API for dialogue
       this.dialogue = [...dummyDialogue]
 
-      this.selectedDialogue = true
+      if (!this.isChatting) {
+        this.$store.commit('private/startPrivateChatRoom')
+      }
       this.roomArray = this.roomArray.map(room => {
         if (room.roomId === id) {
           this.userName = room.userName
@@ -164,6 +166,11 @@ export default {
   socket: {
     NEW_ROOM_MESSAGE (saveMessage) {
       this.dialogue.push(saveMessage)
+    }
+  },
+  destroyed () {
+    if (this.isChatting) {
+      this.$store.commit('private/endPrivateChatRoom')
     }
   }
 }

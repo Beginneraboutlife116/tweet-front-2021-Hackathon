@@ -250,6 +250,7 @@ export default {
   },
   data () {
     return {
+      // TODO: 之後要修改這個publicNoti，因為如果更改route，會直接消失不見，但使用者並未點擊公開聊天室
       publicNoti: false
     }
   },
@@ -276,9 +277,9 @@ export default {
       this.$store.commit('SOCKET_storeMessage', data)
     },
     BROADCAST_TO_SUBSCRIBE (data) {
-      console.log('>>>>>>>>>>>>get data>>>>>>>>>>>>>>')
+      console.log('get broadcast', data)
       if (data.ReceiverId === this.currentUser.id) {
-        this.$store.commit('private/increaseNoti')
+        this.$store.commit('private/fetchRoomId', data.room)
       }
     }
   },

@@ -19,15 +19,14 @@ export default {
   },
   methods: {
     subscribeRoom () {
-      // this.$socket.emit('SUBSCRIBE_ROOM', {
-      //   SenderId: this.currentUser.id,
-      //   ReceiverId: this.initialProfile.id
-      // })
-      this.$socket.emit('SUBSCRIBE_ROOM')
-      this.$store.commit('private/getReceiver', {
-        receiver: this.initialProfile,
-        startChatting: true
+      this.$socket.emit('SUBSCRIBE_ROOM', {
+        SenderId: this.currentUser.id,
+        ReceiverId: this.initialProfile.id
       })
+      this.$store.commit('private/getReceiver', {
+        receiver: this.initialProfile
+      })
+      this.$store.commit('private/startPrivateChatRoom')
       this.$router.push({ name: 'private', params: { userId: this.currentUser.id } })
     }
   }
