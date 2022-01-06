@@ -278,9 +278,12 @@ export default {
     },
     BROADCAST_TO_SUBSCRIBE (data) {
       console.log('get broadcast', data)
-      if (data.ReceiverId === this.currentUser.id) {
+      if (data.ReceiverId === this.currentUser.id || data.SenderId === this.currentUser.id) {
         this.$store.commit('private/fetchRoomId', data.room)
       }
+    },
+    NEW_ROOM_MESSAGE (saveMessage) {
+      console.log('saveMessage: ', saveMessage)
     }
   },
   watch: {

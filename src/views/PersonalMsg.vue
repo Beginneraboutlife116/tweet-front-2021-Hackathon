@@ -5,7 +5,7 @@
         <p class="message__title">訊息</p>
         <IconNoti />
       </header>
-      <Bar v-for="room in roomArray" :key="room.roomId" :initial-room="room" @check-this-message="checkMessages"/>
+      <Bar v-for="room in roomArray" :key="room.roomId" :initial-room="room" @check-this-message="checkHistory"/>
     </div>
     <div class="chatroom-container">
       <template v-if="isChatting">
@@ -104,8 +104,8 @@ export default {
           newMsg: ''
         }
       ],
-      userName: '',
-      dialogue: []
+      userName: ''
+      // dialogue: []
     }
   },
   created () {
@@ -116,7 +116,8 @@ export default {
       receiver: state => state.private.receiver,
       roomId: state => state.private.roomId,
       currentUser: state => state.currentUser,
-      isChatting: state => state.private.isChatting
+      isChatting: state => state.private.isChatting,
+      dialogue: state => state.private.dialogue
     })
   },
   methods: {
@@ -131,7 +132,7 @@ export default {
         this.userName = this.receiver.name
       }
     },
-    checkMessages (id) {
+    checkHistory (id) {
       // TODO: fetch history API for dialogue
       this.dialogue = [...dummyDialogue]
 
@@ -159,15 +160,24 @@ export default {
         ReceiverId: this.receiver.id,
         room: this.roomId
       }
-      console.log(messageData)
       this.$socket.emit('SEND_ROOM_MESSAGE', messageData)
+      const user = {
+        id: messageData.SenderId,
+        avatar: this.currentUser.avatar
+      }
+      const message = {
+        user,
+        message: messageData.message,
+        timeStamp: new Date()
+      }
+      this.$store.commit('private/recordMessage', message)
     }
   },
-  socket: {
-    NEW_ROOM_MESSAGE (saveMessage) {
-      this.dialogue.push(saveMessage)
-    }
-  },
+  // sockets: {
+  //   NEW_ROOM_MESSAGE (saveMessage) {
+  //     console.log('new room message: ', saveMessage)
+  //   }
+  // },
   destroyed () {
     if (this.isChatting) {
       this.$store.commit('private/endPrivateChatRoom')

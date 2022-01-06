@@ -11,7 +11,8 @@ const modulePrivate = {
     receiver: {},
     isChatting: false,
     privateNotiCount: 0,
-    roomId: 0
+    roomId: 0,
+    dialogue: []
   }),
   mutations: {
     getReceiver (state, payload) {
@@ -37,6 +38,9 @@ const modulePrivate = {
     },
     endPrivateChatRoom (state) {
       state.isChatting = false
+    },
+    recordMessage (state, message) {
+      state.dialogue.unshift(message)
     }
   },
   action: {
