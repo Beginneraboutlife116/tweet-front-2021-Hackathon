@@ -5,7 +5,7 @@
         <p class="message__title">訊息</p>
         <IconNoti />
       </header>
-      <Bar v-for="room in roomArray" :key="room.roomId" :initial-room="room" @check-this-message="checkHistory"/>
+      <Bar v-for="room in roomsArray" :key="room.roomId" :initial-room="room" @check-this-message="checkHistory"/>
     </div>
     <div class="chatroom-container">
       <template v-if="isChatting">
@@ -40,27 +40,6 @@ import Bar from './../components/PersonalMsgBar.vue'
 import ChatMsg from './../components/ChatMsg.vue'
 import { mapState } from 'vuex'
 
-const dummyData = [
-  {
-    roomId: 1,
-    userId: 1000,
-    userName: 'test1',
-    userAccount: 'test1',
-    userAvatar: '',
-    msgTimeStamp: '2021-01-01',
-    newMsg: '早安你好，今天天氣真好！'
-  },
-  {
-    roomId: 2,
-    userId: 2000,
-    userName: 'test2',
-    userAccount: 'test2',
-    userAvatar: '',
-    msgTimeStamp: '2021-10-10',
-    newMsg: '來打遊戲吧！！不要打code了？'
-  }
-]
-
 const dummyDialogue = [
   {
     message: '哈囉～～',
@@ -93,19 +72,7 @@ export default {
   data () {
     return {
       text: '',
-      roomArray: [
-        {
-          roomId: 0,
-          userId: 0,
-          userName: '',
-          userAccount: '',
-          userAvatar: '',
-          msgTimeStamp: '',
-          newMsg: ''
-        }
-      ],
       userName: ''
-      // dialogue: []
     }
   },
   created () {
@@ -113,33 +80,30 @@ export default {
   },
   computed: {
     ...mapState({
-      receiver: state => state.private.receiver,
-      roomId: state => state.private.roomId,
       currentUser: state => state.currentUser,
+      receiver: state => state.private.receiver,
       isChatting: state => state.private.isChatting,
-      dialogue: state => state.private.dialogue
+      dialogue: state => state.private.dialogue,
+      roomsArray: state => state.private.roomsArray,
+      roomId: state => state.private.roomId
     })
   },
   methods: {
     fetchMessageData () {
-      this.roomArray = dummyData.map(data => {
-        return {
-          ...data,
-          isSelected: false
-        }
-      })
+      // FIXME: 這個fetch會刪掉，會用在index.js in store中的private/action中的getRoomHistory
       if (this.isChatting) {
         this.userName = this.receiver.name
       }
     },
     checkHistory (id) {
       // TODO: fetch history API for dialogue
+      // TODO: 將roomId傳到store/private存起來，這樣就可以在send的時候使用
       this.dialogue = [...dummyDialogue]
 
       if (!this.isChatting) {
         this.$store.commit('private/startPrivateChatRoom')
       }
-      this.roomArray = this.roomArray.map(room => {
+      this.roomsArray = this.roomsArray.map(room => {
         if (room.roomId === id) {
           this.userName = room.userName
           return {
@@ -158,19 +122,20 @@ export default {
         message: this.text,
         SenderId: this.currentUser.id,
         ReceiverId: this.receiver.id,
-        room: this.roomId
+        room: this.roomId,
+        createdAt: new Date()
       }
       this.$socket.emit('SEND_ROOM_MESSAGE', messageData)
-      const user = {
-        id: messageData.SenderId,
-        avatar: this.currentUser.avatar
-      }
       const message = {
-        user,
+        user: {
+          id: messageData.SenderId,
+          avatar: this.currentUser.avatar
+        },
         message: messageData.message,
-        timeStamp: new Date()
+        timeStamp: messageData.createdAt
       }
       this.$store.commit('private/recordMessage', message)
+      this.text = ''
     }
   },
   // sockets: {

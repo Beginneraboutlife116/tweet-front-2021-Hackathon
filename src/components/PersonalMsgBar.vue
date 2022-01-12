@@ -2,7 +2,7 @@
   <div class="message-wrapper" @click.stop.prevent="$emit('check-this-message', initialRoom.roomId)" :class="{selected: initialRoom.isSelected}">
     <div class="message__avatar">
       <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
-        <img :src="initialRoom.userAvatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="message__avatar-img">
+        <img :src="initialRoom.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="message__avatar-img">
       </router-link>
     </div>
     <section class="message__info">
@@ -10,16 +10,16 @@
         <p class="message__info-person">
           <span class="message__info-person--name">
             <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
-              {{ initialRoom.userName }}
+              {{ initialRoom.name }}
             </router-link>
           </span>
           <span class="message__info-person--account">
             <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
-              @{{ initialRoom.userAccount }}
+              @{{ initialRoom.account }}
             </router-link>
           </span>
         </p>
-        <p class="message__info-timeStamp"> {{ initialRoom.userTimeStamp | fromNow }} </p>
+        <p class="message__info-timeStamp"> {{ initialRoom.createdAt | fromNow }} </p>
       </div>
       <p class="message__info-text">
         {{ initialRoom.newMsg }}

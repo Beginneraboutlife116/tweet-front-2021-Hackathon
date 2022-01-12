@@ -197,6 +197,8 @@ export default {
         })
         this.$refs.account.focus()
         this.$refs.account.style.borderColor = '#fc5a5a'
+        // TODO: 登入後，擷取到所有的room latest資料及所有註冊過的rooms
+        // TODO: 全部紀錄完後，再一次發出請求讀取最新的資料 => action
       }
     },
     checkLoginRoute (path) {

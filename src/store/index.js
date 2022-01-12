@@ -11,8 +11,10 @@ const modulePrivate = {
     receiver: {},
     isChatting: false,
     privateNotiCount: 0,
-    roomId: 0,
-    dialogue: []
+    subscribedRooms: {},
+    roomsArray: [],
+    dialogue: [],
+    roomId: ''
   }),
   mutations: {
     getReceiver (state, payload) {
@@ -23,9 +25,6 @@ const modulePrivate = {
         id,
         name
       }
-    },
-    fetchRoomId (state, roomId) {
-      state.roomId = roomId
     },
     increaseNoti (state) {
       state.privateNotiCount++
@@ -38,15 +37,51 @@ const modulePrivate = {
     },
     endPrivateChatRoom (state) {
       state.isChatting = false
+      state.receiver = {}
+      state.dialogue = []
     },
     recordMessage (state, message) {
       state.dialogue.unshift(message)
+    },
+    updateMessagesToRoomArray (state, message) {
+      const { room, ReceiverId: receiverId, createdAt, message: newMsg } = message
+      const msgBarInfo = {
+        roomId: room,
+        isSelected: false,
+        userId: receiverId,
+        avatar: state.receiver.avatar,
+        name: state.receiver.name,
+        account: state.receiver.account,
+        createdAt,
+        newMsg
+      }
+      const messageIndex = state.roomsArray.findIndex(data => data.roomId === room)
+      if (messageIndex === -1) {
+        state.roomsArray.push(msgBarInfo)
+      } else {
+        state.roomsArray.splice(messageIndex, 1)
+        state.roomsArray.unshift(msgBarInfo)
+      }
+    },
+    subscribeRoom (state, data) {
+      console.log('subscribeRoom: ', data)
+      const { room, users } = data
+      state.subscribedRooms = {
+        ...state.subscribedRooms,
+        [room]: users
+      }
+    },
+    setRoomId (state, roomId) {
+      state.roomId = roomId
     }
   },
   action: {
     getRoomHistory ({ state }) {
-      // TODO: 用roomId, userId去取得歷史資料
-      // TODO: fetch history into dialogue
+      setTimeout(() => {
+        console.log('get room history')
+      }, 1000)
+      // TODO: 用roomId, userId去取得歷史資料，將回傳資料放入roomArray
+      // TODO: 每一個都要記錄一個isSelected值，用做連動CSS用的
     }
   }
 }

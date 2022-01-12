@@ -269,21 +269,28 @@ export default {
       receiver: state => state.private.receiver,
       privateNotiCount: state => state.private.privateNotiCount,
       currentUser: state => state.currentUser,
-      userMsg: state => state.userMsg
+      userMsg: state => state.userMsg,
+      subscribedRooms: state => state.private.subscribedRooms
     })
   },
   sockets: {
     MESSAGE_UPDATE (data) {
       this.$store.commit('SOCKET_storeMessage', data)
     },
-    BROADCAST_TO_SUBSCRIBE (data) {
-      console.log('get broadcast', data)
-      if (data.ReceiverId === this.currentUser.id || data.SenderId === this.currentUser.id) {
-        this.$store.commit('private/fetchRoomId', data.room)
-      }
-    },
     NEW_ROOM_MESSAGE (saveMessage) {
       console.log('saveMessage: ', saveMessage)
+      if (saveMessage.ReceiverId === this.currentUser.id) {
+        this.$store.commit('private/increaseNoti')
+      }
+      this.$store.commit('private/updateMessagesToRoomArray', saveMessage)
+    },
+    ROOM_CREATED (data) {
+      console.log('ROOM_CREATE: ', data)
+      if (!this.subscribedRooms[data.room] && data.users.includes(this.currentUser.id)) {
+        this.$socket.emit('SUBSCRIBE_ROOM', data.room)
+        this.$store.commit('private/subscribeRoom', data)
+        this.$store.commit('private/setRoomId', data.room)
+      }
     }
   },
   watch: {
