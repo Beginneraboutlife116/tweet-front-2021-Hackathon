@@ -278,11 +278,11 @@ export default {
       this.$store.commit('SOCKET_storeMessage', data)
     },
     NEW_ROOM_MESSAGE (saveMessage) {
-      console.log('saveMessage: ', saveMessage)
+      console.log('NEW_ROOM_MESSAGE: ', saveMessage)
       if (saveMessage.ReceiverId === this.currentUser.id) {
         this.$store.commit('private/increaseNoti')
+        this.$store.commit('private/updateMessagesToRoomArray', saveMessage)
       }
-      this.$store.commit('private/updateMessagesToRoomArray', saveMessage)
     },
     ROOM_CREATED (data) {
       console.log('ROOM_CREATE: ', data)
