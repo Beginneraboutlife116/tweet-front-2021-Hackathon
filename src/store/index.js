@@ -43,7 +43,7 @@ const modulePrivate = {
     recordMessage (state, message) {
       state.dialogue.unshift(message)
     },
-    updateMessagesToRoomArray (state, message) {
+    updateMessagesToRoomsArray (state, message) {
       const { room, ReceiverId: receiverId, createdAt, message: newMsg } = message
       const msgBarInfo = {
         roomId: room,
@@ -53,7 +53,8 @@ const modulePrivate = {
         name: state.receiver.name,
         account: state.receiver.account,
         createdAt,
-        newMsg
+        newMsg,
+        isRead: !!message.isRead
       }
       const messageIndex = state.roomsArray.findIndex(data => data.roomId === room)
       if (messageIndex === -1) {

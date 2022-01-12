@@ -126,6 +126,7 @@ export default {
         createdAt: new Date()
       }
       this.$socket.emit('SEND_ROOM_MESSAGE', messageData)
+      this.$store.commit('private/updateMessagesToRoomsArray', messageData)
       const message = {
         user: {
           id: messageData.SenderId,

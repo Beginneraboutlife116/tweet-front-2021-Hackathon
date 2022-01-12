@@ -279,10 +279,8 @@ export default {
     },
     NEW_ROOM_MESSAGE (saveMessage) {
       console.log('NEW_ROOM_MESSAGE: ', saveMessage)
-      if (saveMessage.ReceiverId === this.currentUser.id) {
-        this.$store.commit('private/increaseNoti')
-        this.$store.commit('private/updateMessagesToRoomArray', saveMessage)
-      }
+      this.$store.commit('private/increaseNoti')
+      this.$store.commit('private/updateMessagesToRoomsArray', saveMessage)
     },
     ROOM_CREATED (data) {
       console.log('ROOM_CREATE: ', data)

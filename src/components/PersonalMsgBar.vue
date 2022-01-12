@@ -1,5 +1,6 @@
 <template>
   <div class="message-wrapper" @click.stop.prevent="$emit('check-this-message', initialRoom.roomId)" :class="{selected: initialRoom.isSelected}">
+    <IconErrorNoti class="new-message" v-if="isShowNoti"/>
     <div class="message__avatar">
       <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
         <img :src="initialRoom.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="message__avatar-img">
@@ -30,13 +31,25 @@
 
 <script>
 import { fromNowFilter } from './../mixins/helpers'
+import IconErrorNoti from './../components/icons/IconErrorNoti.vue'
 export default {
   name: 'Personal-message-bar',
+  components: {
+    IconErrorNoti
+  },
   mixins: [fromNowFilter],
   props: {
     initialRoom: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    currentUser () {
+      return this.$store.state.currentUser
+    },
+    isShowNoti () {
+      return !this.initialRoom.isRead && this.initialRoom.userId === this.currentUser.id
     }
   }
 }
@@ -50,8 +63,18 @@ export default {
     padding: 1.5rem;
     border-bottom: 1px solid var(--border-color);
     cursor: pointer;
-    &:hover {
-      box-shadow: inset 0px 0px 3px 2px hsla(24, 100%, 50%, 0.25);
+    position: relative;
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      box-shadow: 0 0 10px 2px hsla(24, 100%, 50%, 0.25);
+      transition: opacity 0.3s ease-in-out;
+    }
+    &:hover::after {
+      opacity: 1;
+      z-index: 1;
     }
   }
   &__avatar {
@@ -94,6 +117,7 @@ export default {
       color: var(--label-color);
     }
     &-text {
+      width: 100%;
       height: $font-xxl;
       display: -webkit-box;
       -webkit-line-clamp: 1;
@@ -114,6 +138,15 @@ export default {
     background: var(--main-color);
     top: 0;
     right: 0;
+  }
+}
+
+.new-message {
+  position: absolute;
+  inset: 0 auto auto 0;
+  transform: translate(-10px, -10px);
+  & > circle {
+    fill: none;
   }
 }
 </style>
