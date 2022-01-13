@@ -139,11 +139,6 @@ export default {
       this.text = ''
     }
   },
-  // sockets: {
-  //   NEW_ROOM_MESSAGE (saveMessage) {
-  //     console.log('new room message: ', saveMessage)
-  //   }
-  // },
   destroyed () {
     if (this.isChatting) {
       this.$store.commit('private/endPrivateChatRoom')

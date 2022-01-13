@@ -64,17 +64,21 @@ export default {
     border-bottom: 1px solid var(--border-color);
     cursor: pointer;
     position: relative;
+    transition: transform 300ms ease-in-out;
     &::after {
       content: '';
       position: absolute;
       inset: 0;
       opacity: 0;
-      box-shadow: 0 0 10px 2px hsla(24, 100%, 50%, 0.25);
-      transition: opacity 0.3s ease-in-out;
+      box-shadow: 0 0 15px 0px hsla(24, 100%, 50%, 0.25);
+      transition: opacity 300ms ease-in-out;
     }
     &:hover::after {
       opacity: 1;
       z-index: 1;
+    }
+    &:hover {
+      transform: scale(1.01);
     }
   }
   &__avatar {
