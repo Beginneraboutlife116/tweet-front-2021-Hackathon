@@ -62,7 +62,12 @@
             </router-link>
           </li>
           <li class="sidebar__link">
-            <router-link :to="{ name: 'notifications', params: { userId: currentUser.id } }">
+            <router-link
+              :to="{
+                name: 'notifications',
+                params: { userId: currentUser.id }
+              }"
+            >
               <svg
                 width="24"
                 height="24"
@@ -75,7 +80,7 @@
                   fill="#1C1C1C"
                 />
               </svg>
-              <RedDotSvg v-if="false"/>
+              <RedDotSvg v-if="false" />
               <span>通知</span>
             </router-link>
           </li>
@@ -83,7 +88,7 @@
             <router-link
               :to="{
                 name: 'public',
-                params: { userId: currentUser.id },
+                params: { userId: currentUser.id }
               }"
             >
               <svg
@@ -98,15 +103,15 @@
                   fill="black"
                 />
               </svg>
-              <RedDotSvg v-if="publicNoti"/>
+              <RedDotSvg v-if="publicNoti" />
               <span>公開聊天室</span>
             </router-link>
           </li>
-          <li class="sidebar__link">
+          <li class="sidebar__link" @click.prevent.stop="requestSnapShot">
             <router-link
               :to="{
                 name: 'private',
-                params: { userId: currentUser.id },
+                params: { userId: currentUser.id }
               }"
             >
               <svg
@@ -121,15 +126,19 @@
                   fill="black"
                 />
               </svg>
-              <RedDotSvg v-if="privateNotiCount"/>
-              <span>私人訊息<strong class="private-noti" v-if="privateNotiCount"> {{ privateNotiCount }} </strong></span>
+              <RedDotSvg v-if="privateNotiCount" />
+              <span
+                >私人訊息<strong class="private-noti" v-if="privateNotiCount">
+                  {{ privateNotiCount }}
+                </strong></span
+              >
             </router-link>
           </li>
           <li class="sidebar__link">
             <router-link
               :to="{
                 name: 'profile-tweets',
-                params: { userId: currentUser.id },
+                params: { userId: currentUser.id }
               }"
             >
               <svg
@@ -256,21 +265,33 @@ export default {
   },
   methods: {
     logout () {
-      this.$socket.emit('USER_OFFLINE', { id: this.currentUser.id, name: this.currentUser.name })
+      this.$socket.emit('USER_OFFLINE', {
+        id: this.currentUser.id,
+        name: this.currentUser.name
+      })
       this.$store.commit('revokeAuthentication')
       this.$router.push('/signin')
       setTimeout(() => {
         this.$socket.disconnect()
       }, 1000)
+    },
+    requestSnapShot () {
+      const data = { ...this.subscribedRooms }
+      for (const key in data) {
+        const currentUserIdIndex = data[key].indexOf(this.currentUser.id)
+        data[key] = this.subscribedRooms[key][1 - currentUserIdIndex]
+      }
+      this.$socket.emit('GET_ROOM_SNAPSHOT', data)
+      // { // User: { // avatar, // account, // name, // Id // }, // message: (latest), // createdAt: // isRead: // SenderId: // ReceiverId: // room: // }
     }
   },
   computed: {
     ...mapState({
-      receiver: state => state.private.receiver,
-      privateNotiCount: state => state.private.privateNotiCount,
-      currentUser: state => state.currentUser,
-      userMsg: state => state.userMsg,
-      subscribedRooms: state => state.private.subscribedRooms
+      receiver: (state) => state.private.receiver,
+      privateNotiCount: (state) => state.private.privateNotiCount,
+      currentUser: (state) => state.currentUser,
+      userMsg: (state) => state.userMsg,
+      subscribedRooms: (state) => state.private.subscribedRooms
     })
   },
   sockets: {
@@ -284,11 +305,18 @@ export default {
     },
     ROOM_CREATED (data) {
       console.log('ROOM_CREATE: ', data)
-      if (!this.subscribedRooms[data.room] && data.users.includes(this.currentUser.id)) {
+      if (
+        !this.subscribedRooms[data.room] &&
+        data.users.includes(this.currentUser.id)
+      ) {
         this.$socket.emit('SUBSCRIBE_ROOM', data.room)
         this.$store.commit('private/subscribeRoom', data)
         this.$store.commit('private/setRoomId', data.room)
       }
+    },
+    SUBSCRIBED_ROOM (data) {
+      console.log('subscribe room: ', data)
+      this.$store.commit('private/subscribeRoom', data)
     }
   },
   watch: {

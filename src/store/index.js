@@ -11,6 +11,7 @@ const modulePrivate = {
     receiver: {},
     isChatting: false,
     privateNotiCount: 0,
+    // FIXME: 這個才是要用在bar上面的資料
     subscribedRooms: {},
     roomsArray: [],
     dialogue: [],
@@ -65,11 +66,17 @@ const modulePrivate = {
       }
     },
     subscribeRoom (state, data) {
-      console.log('subscribeRoom: ', data)
-      const { room, users } = data
-      state.subscribedRooms = {
-        ...state.subscribedRooms,
-        [room]: users
+      if (Object.keys(data).indexOf('room') !== -1) {
+        const { room, users } = data
+        const newSubscribeRooms = {
+          [room]: users,
+          ...state.subscribedRooms
+        }
+        state.subscribedRooms = newSubscribeRooms
+      } else {
+        state.subscribedRooms = {
+          ...data
+        }
       }
     },
     setRoomId (state, roomId) {
