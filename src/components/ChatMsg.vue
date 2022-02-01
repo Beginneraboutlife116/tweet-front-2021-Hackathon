@@ -1,14 +1,14 @@
 <template>
   <div v-if="!msg.status" class="chat-container">
-    <div class="out" v-if="msg.user.id === currentUser.id">
+    <div class="out" v-if="msg.User.id === currentUser.id">
       <div class="out__info">
         <p class="out__text"> {{msg.message}} </p>
-        <p class="out__timeStamp"> {{msg.timeStamp | absoluteTimeShort}} </p>
+        <p class="out__timeStamp"> {{msg.createdAt | absoluteTimeShort}} </p>
       </div>
       <div class="out__avatar">
-        <router-link :to="{ name: 'profile-tweets', params: { userId: msg.user.id } }">
+        <router-link :to="{ name: 'profile-tweets', params: { userId: msg.User.id } }">
           <img
-            :src="msg.user.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
+            :src="msg.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'"
             alt=""
             class="out__avatar-img"
           />
@@ -17,13 +17,13 @@
     </div>
     <div class="in" v-else>
       <div class="in__avatar">
-        <router-link :to="{ name: 'profile-tweets', params: { userId: msg.user.id } }">
-          <img :src="msg.user.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="in__avatar-img">
+        <router-link :to="{ name: 'profile-tweets', params: { userId: msg.User.id } }">
+          <img :src="msg.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="in__avatar-img">
         </router-link>
       </div>
       <div class="in__info">
         <p class="in__text"> {{msg.message}} </p>
-        <p class="in__timeStamp"> {{msg.timeStamp | absoluteTimeShort}} </p>
+        <p class="in__timeStamp"> {{msg.createdAt | absoluteTimeShort}} </p>
       </div>
     </div>
   </div>

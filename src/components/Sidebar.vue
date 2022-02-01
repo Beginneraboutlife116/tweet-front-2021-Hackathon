@@ -282,7 +282,6 @@ export default {
         data[key] = this.subscribedRooms[key][1 - currentUserIdIndex]
       }
       this.$socket.emit('GET_ROOM_SNAPSHOT', data)
-      // { // User: { // avatar, // account, // name, // Id // }, // message: (latest), // createdAt: // isRead: // SenderId: // ReceiverId: // room: // }
     }
   },
   computed: {
@@ -317,6 +316,14 @@ export default {
     SUBSCRIBED_ROOM (data) {
       console.log('subscribe room: ', data)
       this.$store.commit('private/subscribeRoom', data)
+    },
+    ROOM_SNAPSHOT (snapShots) {
+      // FIXME: snapShots需要幫忙排序
+      // FIXME: 幫我清空一下空房間資料><
+      console.log('ROOM_SNAPSHOT: ', snapShots)
+      snapShots.forEach((snapShot) =>
+        this.$store.commit('private/updateMessagesToRoomsArray', snapShot)
+      )
     }
   },
   watch: {

@@ -44,20 +44,13 @@ const modulePrivate = {
     recordMessage (state, message) {
       state.dialogue.unshift(message)
     },
-    updateMessagesToRoomsArray (state, message) {
-      const { room, ReceiverId: receiverId, createdAt, message: newMsg } = message
+    updateMessagesToRoomsArray (state, newMessage) {
       const msgBarInfo = {
-        roomId: room,
+        ...newMessage,
         isSelected: false,
-        userId: receiverId,
-        avatar: state.receiver.avatar,
-        name: state.receiver.name,
-        account: state.receiver.account,
-        createdAt,
-        newMsg,
-        isRead: !!message.isRead
+        isRead: !!newMessage.isRead
       }
-      const messageIndex = state.roomsArray.findIndex(data => data.roomId === room)
+      const messageIndex = state.roomsArray.findIndex(data => data.room === newMessage.room)
       if (messageIndex === -1) {
         state.roomsArray.push(msgBarInfo)
       } else {
@@ -123,9 +116,9 @@ export default new Vuex.Store({
     },
     SOCKET_storeMessage (state, data) {
       state.userMsg = {
-        user: data.user,
+        User: data.user,
         message: data.message || '',
-        timeStamp: data.timeStamp || ''
+        createdAt: data.timeStamp || ''
       }
     },
     setCurrentUser (state, currentUser) {

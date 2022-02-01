@@ -5,18 +5,29 @@
         <p class="message__title">訊息</p>
         <IconNoti />
       </header>
-      <Bar v-for="room in roomsArray" :key="room.roomId" :initial-room="room" @check-this-message="checkHistory"/>
+      <Bar
+        v-for="room in roomsArray"
+        :key="room.room"
+        :initial-room="room"
+        @check-this-message="checkHistory"
+      />
     </div>
     <div class="chatroom-container">
       <template v-if="isChatting">
         <header class="chatroom__header">
-          <p class="chatroom__title"> {{ userName }} </p>
+          <p class="chatroom__title">{{ userName }}</p>
         </header>
         <main class="chatroom__box">
-          <ChatMsg v-for="(msg, index) in dialogue" :key="index" :msg="msg"/>
+          <ChatMsg v-for="(msg, index) in dialogue" :key="index" :msg="msg" />
         </main>
         <footer class="chatroom__send">
-          <input type="text" class="chatroom__send-input" placeholder="輸入訊息..." v-model.trim="text" @keyup.enter="sendMessage">
+          <input
+            type="text"
+            class="chatroom__send-input"
+            placeholder="輸入訊息..."
+            v-model.trim="text"
+            @keyup.enter="sendMessage"
+          />
           <button class="chatroom__send-btn" @click.stop.prevent="sendMessage">
             <IconSend />
           </button>
@@ -25,8 +36,18 @@
       <template v-else>
         <div class="chatroom__uncheck">
           <h1 class="uncheck-title">請點選"訊息"來查看聊天室</h1>
-          <img src="./../assets/pngs/dog.png" alt="dog picture" class="uncheck-img">
-          <article class="uncheck-img-source">Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></article>
+          <img
+            src="./../assets/pngs/dog.png"
+            alt="dog picture"
+            class="uncheck-img"
+          />
+          <article class="uncheck-img-source">
+            Icons made by
+            <a href="https://www.freepik.com" title="Freepik">Freepik</a> from
+            <a href="https://www.flaticon.com/" title="Flaticon"
+              >www.flaticon.com</a
+            >
+          </article>
         </div>
       </template>
     </div>
@@ -77,15 +98,17 @@ export default {
   },
   created () {
     this.fetchMessageData()
+    this.requestSnapShot()
   },
   computed: {
     ...mapState({
-      currentUser: state => state.currentUser,
-      receiver: state => state.private.receiver,
-      isChatting: state => state.private.isChatting,
-      dialogue: state => state.private.dialogue,
-      roomsArray: state => state.private.roomsArray,
-      roomId: state => state.private.roomId
+      currentUser: (state) => state.currentUser,
+      receiver: (state) => state.private.receiver,
+      isChatting: (state) => state.private.isChatting,
+      dialogue: (state) => state.private.dialogue,
+      roomsArray: (state) => state.private.roomsArray,
+      roomId: (state) => state.private.roomId,
+      subscribedRooms: (state) => state.private.subscribedRooms
     })
   },
   methods: {
@@ -98,12 +121,14 @@ export default {
     checkHistory (id) {
       // TODO: fetch history API for dialogue
       // TODO: 將roomId傳到store/private存起來，這樣就可以在send的時候使用
+      // TODO: 給予room id給後端，去提示要把isRead: true回傳
+      // GET_CHAT_HISTORY/MARK_MESSAGE_READ
       this.dialogue = [...dummyDialogue]
 
       if (!this.isChatting) {
         this.$store.commit('private/startPrivateChatRoom')
       }
-      this.roomsArray = this.roomsArray.map(room => {
+      this.roomsArray = this.roomsArray.map((room) => {
         if (room.roomId === id) {
           this.userName = room.userName
           return {
@@ -118,25 +143,42 @@ export default {
       })
     },
     sendMessage () {
-      const messageData = {
+      if (!this.text) return
+      const message = {
         message: this.text,
         SenderId: this.currentUser.id,
         ReceiverId: this.receiver.id,
         room: this.roomId,
         createdAt: new Date()
       }
-      this.$socket.emit('SEND_ROOM_MESSAGE', messageData)
-      this.$store.commit('private/updateMessagesToRoomsArray', messageData)
-      const message = {
-        user: {
-          id: messageData.SenderId,
-          avatar: this.currentUser.avatar
-        },
-        message: messageData.message,
-        timeStamp: messageData.createdAt
+      this.$socket.emit('SEND_ROOM_MESSAGE', message)
+      const messageBar = {
+        ...message,
+        User: {
+          id: this.receiver.id,
+          account: this.receiver.account,
+          name: this.receiver.name,
+          avatar: this.receiver.avatar
+        }
       }
-      this.$store.commit('private/recordMessage', message)
+      this.$store.commit('private/updateMessagesToRoomsArray', messageBar)
+      const messageData = {
+        ...message,
+        User: {
+          id: message.SenderId,
+          avatar: this.currentUser.avatar
+        }
+      }
+      this.$store.commit('private/recordMessage', messageData)
       this.text = ''
+    },
+    requestSnapShot () {
+      const data = { ...this.subscribedRooms }
+      for (const key in data) {
+        const currentUserIdIndex = data[key].indexOf(this.currentUser.id)
+        data[key] = this.subscribedRooms[key][1 - currentUserIdIndex]
+      }
+      this.$socket.emit('GET_ROOM_SNAPSHOT', data)
     }
   },
   destroyed () {

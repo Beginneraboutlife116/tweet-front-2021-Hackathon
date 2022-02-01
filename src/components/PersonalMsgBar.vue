@@ -1,29 +1,29 @@
 <template>
-  <div class="message-wrapper" @click.stop.prevent="$emit('check-this-message', initialRoom.roomId)" :class="{selected: initialRoom.isSelected}">
+  <div class="message-wrapper" @click.stop.prevent="$emit('check-this-message', initialRoom.room)" :class="{selected: initialRoom.isSelected}">
     <IconErrorNoti class="new-message" v-if="isShowNoti"/>
     <div class="message__avatar">
-      <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
-        <img :src="initialRoom.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="message__avatar-img">
+      <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.User.id} }">
+        <img :src="initialRoom.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="message__avatar-img">
       </router-link>
     </div>
     <section class="message__info">
       <div class="message__info-title">
         <p class="message__info-person">
           <span class="message__info-person--name">
-            <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
-              {{ initialRoom.name }}
+            <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.User.id} }">
+              {{ initialRoom.User.name }}
             </router-link>
           </span>
           <span class="message__info-person--account">
-            <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.userId} }">
-              @{{ initialRoom.account }}
+            <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.User.id} }">
+              @{{ initialRoom.User.account }}
             </router-link>
           </span>
         </p>
         <p class="message__info-timeStamp"> {{ initialRoom.createdAt | fromNow }} </p>
       </div>
       <p class="message__info-text">
-        {{ initialRoom.newMsg }}
+        {{ initialRoom.message }}
       </p>
     </section>
   </div>
