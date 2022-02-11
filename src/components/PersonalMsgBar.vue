@@ -49,7 +49,7 @@ export default {
       return this.$store.state.currentUser
     },
     isShowNoti () {
-      return !this.initialRoom.isRead && this.initialRoom.userId === this.currentUser.id
+      return !this.initialRoom.isRead && this.initialRoom.ReceiverId === this.currentUser.id
     }
   }
 }
@@ -65,6 +65,7 @@ export default {
     cursor: pointer;
     position: relative;
     transition: transform 300ms ease-in-out;
+    background-color: #fff;
     &::after {
       content: '';
       position: absolute;

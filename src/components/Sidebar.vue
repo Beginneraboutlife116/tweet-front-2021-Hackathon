@@ -107,7 +107,7 @@
               <span>公開聊天室</span>
             </router-link>
           </li>
-          <li class="sidebar__link" @click.prevent.stop="requestSnapShot">
+          <li class="sidebar__link">
             <router-link
               :to="{
                 name: 'private',
@@ -316,14 +316,20 @@ export default {
     SUBSCRIBED_ROOM (data) {
       console.log('subscribe room: ', data)
       this.$store.commit('private/subscribeRoom', data)
+      this.requestSnapShot()
     },
     ROOM_SNAPSHOT (snapShots) {
       // FIXME: snapShots需要幫忙排序
       // FIXME: 幫我清空一下空房間資料><
-      console.log('ROOM_SNAPSHOT: ', snapShots)
-      snapShots.forEach((snapShot) =>
+      console.log('ROOM_SNAPSHOT from sidebar: ', snapShots)
+      let unreadMessageNum = 0
+      snapShots.forEach((snapShot) => {
+        if (!snapShot.isRead && snapShot.ReceiverId === this.currentUser.id) {
+          unreadMessageNum++
+        }
         this.$store.commit('private/updateMessagesToRoomsArray', snapShot)
-      )
+      })
+      this.$store.commit('private/recordUnreadMessageNumber', unreadMessageNum)
     }
   },
   watch: {
@@ -337,6 +343,10 @@ export default {
       },
       deep: true
     }
+  },
+  created () {
+    console.log('subscribe to all room from sidebar')
+    this.$socket.emit('SUBSCRIBE_TO_ALL_ROOM', this.currentUser.id)
   }
 }
 </script>

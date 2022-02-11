@@ -27,8 +27,8 @@ const modulePrivate = {
         name
       }
     },
-    increaseNoti (state) {
-      state.privateNotiCount++
+    recordUnreadMessageNumber (state, number) {
+      state.privateNotiCount = number
     },
     decreaseNoti (state) {
       state.privateNotiCount--
@@ -47,10 +47,12 @@ const modulePrivate = {
     updateMessagesToRoomsArray (state, newMessage) {
       const msgBarInfo = {
         ...newMessage,
-        isSelected: false,
+        isSelected: !newMessage.isSelected,
         isRead: !!newMessage.isRead
       }
-      const messageIndex = state.roomsArray.findIndex(data => data.room === newMessage.room)
+      const messageIndex = state.roomsArray.findIndex(
+        (data) => data.room === newMessage.room
+      )
       if (messageIndex === -1) {
         state.roomsArray.push(msgBarInfo)
       } else {
@@ -177,7 +179,8 @@ export default new Vuex.Store({
         if (data.status === 'error') {
           throw new Error('使用者資訊錯誤')
         }
-        const { id, account, name, email, avatar, cover, introduction, role } = data
+        const { id, account, name, email, avatar, cover, introduction, role } =
+          data
         commit('setCurrentUser', {
           id,
           account,
@@ -202,7 +205,7 @@ export default new Vuex.Store({
           throw new Error('非管理者')
         }
         const { data } = await adminAPI.getUsers()
-        const root = data.find(data => data.id === Number(currentUserId))
+        const root = data.find((data) => data.id === Number(currentUserId))
         commit('setCurrentUser', {
           ...root,
           role: 'admin'

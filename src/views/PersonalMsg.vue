@@ -61,27 +61,6 @@ import Bar from './../components/PersonalMsgBar.vue'
 import ChatMsg from './../components/ChatMsg.vue'
 import { mapState } from 'vuex'
 
-const dummyDialogue = [
-  {
-    message: '哈囉～～',
-    timeStamp: '2021-09-10',
-    user: {
-      avatar: '',
-      id: 64,
-      name: 'kevin'
-    }
-  },
-  {
-    message: '早安你好，今天天氣真好！',
-    timeStamp: '2021-10-10',
-    user: {
-      avatar: '',
-      id: 1000,
-      name: 'test1'
-    }
-  }
-]
-
 export default {
   name: 'PersonalMsg',
   components: {
@@ -98,7 +77,6 @@ export default {
   },
   created () {
     this.fetchMessageData()
-    this.requestSnapShot()
   },
   computed: {
     ...mapState({
@@ -121,25 +99,29 @@ export default {
     checkHistory (id) {
       // TODO: fetch history API for dialogue
       // TODO: 將roomId傳到store/private存起來，這樣就可以在send的時候使用
-      // TODO: 給予room id給後端，去提示要把isRead: true回傳
       // GET_CHAT_HISTORY/MARK_MESSAGE_READ
-      this.dialogue = [...dummyDialogue]
+      // this.dialogue = [...dummyDialogue]
 
       if (!this.isChatting) {
         this.$store.commit('private/startPrivateChatRoom')
       }
-      this.roomsArray = this.roomsArray.map((room) => {
-        if (room.roomId === id) {
-          this.userName = room.userName
-          return {
+      console.log(id)
+      this.roomsArray.map((room) => {
+        if (room.room === id) {
+          this.userName = room.User.name
+          // TODO: 給予room id給後端，去提示要把isRead: true回傳
+          // ! 要去把值改掉而已就好，使用updateMessagesToRoomsArray會導致unshift，而會有點擊後就往上移動的情形。
+          this.$store.commit('private/updateMessagesToRoomsArray', {
             ...room,
-            isSelected: true
-          }
+            isSelected: true,
+            // TODO: 發送已讀
+            isRead: true
+          })
         }
-        return {
+        this.$store.commit('private/updateMessagesToRoomsArray', {
           ...room,
           isSelected: false
-        }
+        })
       })
     },
     sendMessage () {
