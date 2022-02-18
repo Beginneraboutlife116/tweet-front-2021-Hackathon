@@ -276,12 +276,14 @@ export default {
       }, 1000)
     },
     requestSnapShot () {
+      // TODO: 改成api型態
       const data = { ...this.subscribedRooms }
       for (const key in data) {
         const currentUserIdIndex = data[key].indexOf(this.currentUser.id)
         data[key] = this.subscribedRooms[key][1 - currentUserIdIndex]
       }
       this.$socket.emit('GET_ROOM_SNAPSHOT', data)
+      // TODO: 將回傳檔案Vuex存取，如同ROOM_SNAP_SHOT
     }
   },
   computed: {
@@ -301,6 +303,7 @@ export default {
       console.log('NEW_ROOM_MESSAGE: ', saveMessage)
       this.$store.commit('private/increaseNoti')
       this.$store.commit('private/updateMessagesToRoomsArray', saveMessage)
+      // ? 是不是在這邊做到重新找一次snapshot就好？
     },
     ROOM_CREATED (data) {
       console.log('ROOM_CREATE: ', data)
@@ -319,8 +322,7 @@ export default {
       this.requestSnapShot()
     },
     ROOM_SNAPSHOT (snapShots) {
-      // FIXME: snapShots需要幫忙排序
-      // FIXME: 幫我清空一下空房間資料><
+      if (!snapShots) return
       console.log('ROOM_SNAPSHOT from sidebar: ', snapShots)
       let unreadMessageNum = 0
       snapShots.forEach((snapShot) => {
@@ -343,11 +345,12 @@ export default {
       },
       deep: true
     }
-  },
-  created () {
-    console.log('subscribe to all room from sidebar')
-    this.$socket.emit('SUBSCRIBE_TO_ALL_ROOM', this.currentUser.id)
   }
+  // ! 應該不需要了，因為登入的時候就會全部註冊一次，而這時候叫一次就可以了，等到new message回傳，才需要再處理一次snapShot
+  // created () {
+  //   console.log('subscribe to all room from sidebar')
+  //   this.$socket.emit('SUBSCRIBE_TO_ALL_ROOM', this.currentUser.id)
+  // }
 }
 </script>
 <style lang="scss">

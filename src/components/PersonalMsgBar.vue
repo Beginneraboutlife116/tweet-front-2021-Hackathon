@@ -2,6 +2,7 @@
   <div class="message-wrapper" @click.stop.prevent="$emit('check-this-message', initialRoom.room)" :class="{selected: initialRoom.isSelected}">
     <IconErrorNoti class="new-message" v-if="isShowNoti"/>
     <div class="message__avatar">
+      <!-- 要維修點擊link也會啟動check-this-message -->
       <router-link :to="{name: 'profile-tweets', params: {userId: initialRoom.User.id} }">
         <img :src="initialRoom.User.avatar || 'https://i.pinimg.com/originals/1f/7c/70/1f7c70f9b5b5f0e1972a4888468ed84c.jpg'" alt="" class="message__avatar-img">
       </router-link>
@@ -134,7 +135,7 @@ export default {
 
 .selected {
   position: relative;
-  &::after {
+  &::before {
     content: '';
     display: block;
     width: 2px;
@@ -143,6 +144,11 @@ export default {
     background: var(--main-color);
     top: 0;
     right: 0;
+    transition: opacity 300ms ease-in-out;
+    pointer-events: none;
+  }
+  &:hover::before {
+    opacity: 0;
   }
 }
 

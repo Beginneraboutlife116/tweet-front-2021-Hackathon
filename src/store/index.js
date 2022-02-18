@@ -11,7 +11,6 @@ const modulePrivate = {
     receiver: {},
     isChatting: false,
     privateNotiCount: 0,
-    // FIXME: 這個才是要用在bar上面的資料
     subscribedRooms: {},
     roomsArray: [],
     dialogue: [],
@@ -44,10 +43,36 @@ const modulePrivate = {
     recordMessage (state, message) {
       state.dialogue.unshift(message)
     },
+    readMessage (state, selectedMessageId) {
+      state.roomsArray = state.roomsArray.map((room) => {
+        if (room.room === selectedMessageId && !room.isRead) {
+          // TODO: 給予room id給後端，去提示要把isRead: true回傳
+          if (room.ReceiverId === this.state.currentUser.id) {
+            state.privateNotiCount -= 1
+          }
+          return {
+            ...room,
+            isRead: true,
+            isSelected: true
+          }
+        }
+        if (room.room === selectedMessageId && room.isRead) {
+          console.log('isRead: ', room.isRead)
+          return {
+            ...room,
+            isSelected: true
+          }
+        }
+        return {
+          ...room,
+          isSelected: false
+        }
+      })
+    },
     updateMessagesToRoomsArray (state, newMessage) {
       const msgBarInfo = {
         ...newMessage,
-        isSelected: !newMessage.isSelected,
+        isSelected: !!newMessage.isSelected,
         isRead: !!newMessage.isRead
       }
       const messageIndex = state.roomsArray.findIndex(
@@ -141,6 +166,15 @@ export default new Vuex.Store({
         cover: '',
         introduction: '',
         role: ''
+      }
+      state.private = {
+        receiver: {},
+        isChatting: false,
+        privateNotiCount: 0,
+        subscribedRooms: {},
+        roomsArray: [],
+        dialogue: [],
+        roomId: ''
       }
       state.isAuthenticated = false
       localStorage.removeItem('token')

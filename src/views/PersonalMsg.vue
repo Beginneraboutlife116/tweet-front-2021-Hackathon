@@ -91,38 +91,24 @@ export default {
   },
   methods: {
     fetchMessageData () {
-      // FIXME: 這個fetch會刪掉，會用在index.js in store中的private/action中的getRoomHistory
+      // * 主要是用在當新增room的時候，讓上方header可以顯示名稱
       if (this.isChatting) {
         this.userName = this.receiver.name
       }
     },
     checkHistory (id) {
-      // TODO: fetch history API for dialogue
-      // TODO: 將roomId傳到store/private存起來，這樣就可以在send的時候使用
-      // GET_CHAT_HISTORY/MARK_MESSAGE_READ
-      // this.dialogue = [...dummyDialogue]
-
       if (!this.isChatting) {
         this.$store.commit('private/startPrivateChatRoom')
       }
-      console.log(id)
-      this.roomsArray.map((room) => {
+      this.$store.commit('private/readMessage', id)
+      this.roomsArray.forEach((room) => {
         if (room.room === id) {
           this.userName = room.User.name
-          // TODO: 給予room id給後端，去提示要把isRead: true回傳
-          // ! 要去把值改掉而已就好，使用updateMessagesToRoomsArray會導致unshift，而會有點擊後就往上移動的情形。
-          this.$store.commit('private/updateMessagesToRoomsArray', {
-            ...room,
-            isSelected: true,
-            // TODO: 發送已讀
-            isRead: true
-          })
         }
-        this.$store.commit('private/updateMessagesToRoomsArray', {
-          ...room,
-          isSelected: false
-        })
       })
+      // TODO: fetch history API for dialogue
+      // TODO: GET_CHAT_HISTORY
+      // TODO: this.dialogue = [...dummyDialogue]
     },
     sendMessage () {
       if (!this.text) return
@@ -133,7 +119,9 @@ export default {
         room: this.roomId,
         createdAt: new Date()
       }
-      this.$socket.emit('SEND_ROOM_MESSAGE', message)
+      if (message.room) {
+        this.$socket.emit('SEND_ROOM_MESSAGE', message)
+      }
       const messageBar = {
         ...message,
         User: {

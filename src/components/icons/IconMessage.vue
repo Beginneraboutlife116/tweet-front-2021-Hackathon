@@ -22,6 +22,7 @@ export default {
   },
   methods: {
     createRoom () {
+      console.log(Object.values(this.subscribedRooms).flat().includes(this.initialProfile.id))
       if (!Object.values(this.subscribedRooms).flat().includes(this.initialProfile.id)) {
         this.$socket.emit('CREATE_ROOM', [this.currentUser.id, this.initialProfile.id])
       }
