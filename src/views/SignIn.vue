@@ -189,8 +189,8 @@ export default {
         // send over user detail
         const path = this.isBackLogin ? '/admin/tweets' : '/home'
         this.$router.push(path)
-        // console.log('>>>>subscribe to all room')
-        // this.$socket.emit('SUBSCRIBE_TO_ALL_ROOM', data.user.id)
+        console.log('>>>>subscribe to all room')
+        this.$socket.emit('SUBSCRIBE_TO_ALL_ROOM', data.user.id)
         // TODO: 全部紀錄完後，再一次發出請求讀取最新的資料 => action
       } catch (err) {
         this.isProcessing = false

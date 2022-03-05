@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import usersAPI from './../apis/users'
 import adminAPI from './../apis/admin'
+// import chatAPI from './../apis/chat'
 
 Vue.use(Vuex)
 
@@ -111,6 +112,17 @@ const modulePrivate = {
       // TODO: 用roomId, userId去取得歷史資料，將回傳資料放入roomArray
       // TODO: 每一個都要記錄一個isSelected值，用做連動CSS用的
     }
+    // async getRoomSnapShot ({ commit, rootState }, payload) {
+    //   try {
+    //     const data = await chatAPI.getRoomSnapshot(
+    //       rootState.currentUser.id,
+    //       payload
+    //     )
+    //     console.log(data)
+    //   } catch (err) {
+    //     console.log(err)
+    //   }
+    // }
   }
 }
 

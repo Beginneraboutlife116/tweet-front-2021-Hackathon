@@ -250,6 +250,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import chatAPI from '../apis/chat'
 import RedDotSvg from './../components/RedDotSvg.vue'
 
 export default {
@@ -275,15 +276,40 @@ export default {
         this.$socket.disconnect()
       }, 1000)
     },
-    requestSnapShot () {
-      // TODO: 改成api型態
+    saveSubscribedRoomToLocalStorage () {
       const data = { ...this.subscribedRooms }
       for (const key in data) {
-        const currentUserIdIndex = data[key].indexOf(this.currentUser.id)
-        data[key] = this.subscribedRooms[key][1 - currentUserIdIndex]
+        data[key] = data[key].splice(
+          1 - data[key].indexOf(this.currentUser.id),
+          1
+        )[0]
       }
-      this.$socket.emit('GET_ROOM_SNAPSHOT', data)
-      // TODO: 將回傳檔案Vuex存取，如同ROOM_SNAP_SHOT
+      this.getRoomSnapShot(data)
+      localStorage.setItem('subscribedRoomsList', JSON.stringify(data))
+      // this.$socket.emit('GET_ROOM_SNAPSHOT', data)
+      // TODO: 將回傳檔案Vuex存取
+    },
+    async getRoomSnapShot (subscribedRoomsList) {
+      try {
+        const { data } = await chatAPI.getRoomSnapshot(
+          this.currentUser.id,
+          subscribedRoomsList
+        )
+        if (!data.length) return
+        let unreadMessageNum = 0
+        data.forEach((snapShot) => {
+          if (!snapShot.isRead && snapShot.ReceiverId === this.currentUser.id) {
+            unreadMessageNum++
+          }
+          this.$store.commit('private/updateMessagesToRoomsArray', snapShot)
+        })
+        this.$store.commit(
+          'private/recordUnreadMessageNumber',
+          unreadMessageNum
+        )
+      } catch (err) {
+        console.error(err)
+      }
     }
   },
   computed: {
@@ -303,7 +329,8 @@ export default {
       console.log('NEW_ROOM_MESSAGE: ', saveMessage)
       this.$store.commit('private/increaseNoti')
       this.$store.commit('private/updateMessagesToRoomsArray', saveMessage)
-      // ? 是不是在這邊做到重新找一次snapshot就好？
+      // ? 是不是在這邊做到重新找一次snapshot就好？一旦這邊有值就啟動！
+      this.saveSubscribedRoomToLocalStorage()
     },
     ROOM_CREATED (data) {
       console.log('ROOM_CREATE: ', data)
@@ -319,20 +346,23 @@ export default {
     SUBSCRIBED_ROOM (data) {
       console.log('subscribe room: ', data)
       this.$store.commit('private/subscribeRoom', data)
-      this.requestSnapShot()
-    },
-    ROOM_SNAPSHOT (snapShots) {
-      if (!snapShots) return
-      console.log('ROOM_SNAPSHOT from sidebar: ', snapShots)
-      let unreadMessageNum = 0
-      snapShots.forEach((snapShot) => {
-        if (!snapShot.isRead && snapShot.ReceiverId === this.currentUser.id) {
-          unreadMessageNum++
-        }
-        this.$store.commit('private/updateMessagesToRoomsArray', snapShot)
-      })
-      this.$store.commit('private/recordUnreadMessageNumber', unreadMessageNum)
+      // ? 我還是很希望可在route處去發出room的資料，去觀看是否回傳值與local相符，相符就不需要get snapshot，不相符則要
+      // ? 什麼情況會導致變動？就是有新room，或者是新訊息（看上方New message的地方）
+      this.saveSubscribedRoomToLocalStorage()
+      // ? 所以每一次route變動就去叫一次api？一旦與local不符就做一次
     }
+    // ROOM_SNAPSHOT (snapShots) {
+    //   if (!snapShots) return
+    //   console.log('ROOM_SNAPSHOT from sidebar: ', snapShots)
+    //   let unreadMessageNum = 0
+    //   snapShots.forEach((snapShot) => {
+    //     if (!snapShot.isRead && snapShot.ReceiverId === this.currentUser.id) {
+    //       unreadMessageNum++
+    //     }
+    //     this.$store.commit('private/updateMessagesToRoomsArray', snapShot)
+    //   })
+    //   this.$store.commit('private/recordUnreadMessageNumber', unreadMessageNum)
+    // }
   },
   watch: {
     userMsg: {
