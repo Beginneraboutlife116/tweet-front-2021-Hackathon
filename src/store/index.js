@@ -108,26 +108,7 @@ const modulePrivate = {
       state.dialogue = []
     }
   },
-  action: {
-    getRoomHistory ({ state }) {
-      setTimeout(() => {
-        console.log('get room history')
-      }, 1000)
-      // TODO: 用roomId, userId去取得歷史資料，將回傳資料放入roomArray
-      // TODO: 每一個都要記錄一個isSelected值，用做連動CSS用的
-    }
-    // async getRoomSnapShot ({ commit, rootState }, payload) {
-    //   try {
-    //     const data = await chatAPI.getRoomSnapshot(
-    //       rootState.currentUser.id,
-    //       payload
-    //     )
-    //     console.log(data)
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    // }
-  }
+  action: {}
 }
 
 export default new Vuex.Store({

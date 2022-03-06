@@ -17,7 +17,10 @@
         <header class="chatroom__header">
           <p class="chatroom__title">{{ userName }}</p>
         </header>
-        <main class="chatroom__box">
+        <main class="chatroom_box" v-if="isLoading">
+          <Spinner />
+        </main>
+        <main class="chatroom__box" v-else>
           <ChatMsg v-for="(msg, index) in dialogue" :key="index" :msg="msg" />
         </main>
         <footer class="chatroom__send">
@@ -59,6 +62,7 @@ import IconNoti from '../components/icons/IconNoti.vue'
 import IconSend from '../components/icons/IconSend.vue'
 import Bar from './../components/PersonalMsgBar.vue'
 import ChatMsg from './../components/ChatMsg.vue'
+import Spinner from '../components/Spinner.vue'
 import { mapState } from 'vuex'
 import chatAPI from '../apis/chat'
 import { Toast } from '../mixins/helpers'
@@ -69,12 +73,14 @@ export default {
     IconNoti,
     IconSend,
     Bar,
-    ChatMsg
+    ChatMsg,
+    Spinner
   },
   data () {
     return {
       text: '',
-      userName: ''
+      userName: '',
+      isLoading: false
     }
   },
   created () {
@@ -118,10 +124,12 @@ export default {
     },
     async getChatHistory (roomId) {
       try {
+        this.isLoading = true
         const { data } = await chatAPI.getRoomHistory(roomId)
-        console.log('this is from getChatHistory')
+        if (data.status === 'success') {
+          this.isLoading = false
+        }
         const { message } = data
-        console.log(message)
         const anotherAvatar = this.roomsArray.find(
           (room) => room.room === roomId
         ).User.avatar
@@ -139,6 +147,7 @@ export default {
           this.$store.commit('private/recordMessage', msgToDialogue)
         })
       } catch (err) {
+        this.isLoading = false
         Toast.fire({
           icon: 'error',
           title: '系統發生錯誤，請稍後再試'
@@ -177,14 +186,6 @@ export default {
       this.$store.commit('private/recordMessage', messageData)
       this.text = ''
     }
-    // requestSnapShot () {
-    //   const data = { ...this.subscribedRooms }
-    //   for (const key in data) {
-    //     const currentUserIdIndex = data[key].indexOf(this.currentUser.id)
-    //     data[key] = this.subscribedRooms[key][1 - currentUserIdIndex]
-    //   }
-    //   this.$socket.emit('GET_ROOM_SNAPSHOT', data)
-    // }
   },
   destroyed () {
     if (this.isChatting) {
