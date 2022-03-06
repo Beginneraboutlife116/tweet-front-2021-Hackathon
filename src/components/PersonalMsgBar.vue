@@ -77,7 +77,7 @@ export default {
     }
     &:hover::after {
       opacity: 1;
-      z-index: 1;
+      z-index: -1;
     }
     &:hover {
       transform: scale(1.01);

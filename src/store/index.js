@@ -44,9 +44,10 @@ const modulePrivate = {
     recordMessage (state, message) {
       state.dialogue.unshift(message)
     },
-    readMessage (state, selectedMessageId) {
+    makeMessageToBeRead (state, selectedMessageRoomId) {
+      // ! 需要一到component內，使用API將Read傳回去?
       state.roomsArray = state.roomsArray.map((room) => {
-        if (room.room === selectedMessageId && !room.isRead) {
+        if (room.room === selectedMessageRoomId && !room.isRead) {
           // TODO: 給予room id給後端，去提示要把isRead: true回傳
           if (room.ReceiverId === this.state.currentUser.id) {
             state.privateNotiCount -= 1
@@ -57,7 +58,7 @@ const modulePrivate = {
             isSelected: true
           }
         }
-        if (room.room === selectedMessageId && room.isRead) {
+        if (room.room === selectedMessageRoomId && room.isRead) {
           console.log('isRead: ', room.isRead)
           return {
             ...room,
@@ -102,6 +103,9 @@ const modulePrivate = {
     },
     setRoomId (state, roomId) {
       state.roomId = roomId
+    },
+    cleanDialogue (state) {
+      state.dialogue = []
     }
   },
   action: {

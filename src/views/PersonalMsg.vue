@@ -60,6 +60,8 @@ import IconSend from '../components/icons/IconSend.vue'
 import Bar from './../components/PersonalMsgBar.vue'
 import ChatMsg from './../components/ChatMsg.vue'
 import { mapState } from 'vuex'
+import chatAPI from '../apis/chat'
+import { Toast } from '../mixins/helpers'
 
 export default {
   name: 'PersonalMsg',
@@ -96,19 +98,52 @@ export default {
         this.userName = this.receiver.name
       }
     },
-    checkHistory (id) {
+    checkHistory (selectedRoomId) {
+      if (selectedRoomId === this.roomId) return
       if (!this.isChatting) {
         this.$store.commit('private/startPrivateChatRoom')
       }
-      this.$store.commit('private/readMessage', id)
-      this.roomsArray.forEach((room) => {
-        if (room.room === id) {
-          this.userName = room.User.name
-        }
-      })
-      // TODO: fetch history API for dialogue
-      // TODO: GET_CHAT_HISTORY
-      // TODO: this.dialogue = [...dummyDialogue]
+      // * make header title be the receiver
+      this.userName = this.roomsArray.find(
+        (room) => room.room === selectedRoomId
+      ).User.name
+      // * clean old history
+      this.$store.commit('private/cleanDialogue')
+      // * record the roomId
+      this.$store.commit('private/setRoomId', selectedRoomId)
+      // * make message to be read
+      this.$store.commit('private/makeMessageToBeRead', selectedRoomId)
+      // ? 是否直接將makeMessageToBeRead移到這邊會比較好？因為可以直接發動API
+      this.getChatHistory(selectedRoomId)
+    },
+    async getChatHistory (roomId) {
+      try {
+        const { data } = await chatAPI.getRoomHistory(roomId)
+        console.log('this is from getChatHistory')
+        const { message } = data
+        console.log(message)
+        const anotherAvatar = this.roomsArray.find(
+          (room) => room.room === roomId
+        ).User.avatar
+        message.forEach((msg) => {
+          const msgToDialogue = {
+            ...msg,
+            User: {
+              id: msg.SenderId,
+              avatar:
+                msg.SenderId === this.currentUser.id
+                  ? this.currentUser.avatar
+                  : anotherAvatar
+            }
+          }
+          this.$store.commit('private/recordMessage', msgToDialogue)
+        })
+      } catch (err) {
+        Toast.fire({
+          icon: 'error',
+          title: '系統發生錯誤，請稍後再試'
+        })
+      }
     },
     sendMessage () {
       if (!this.text) return
@@ -141,15 +176,15 @@ export default {
       }
       this.$store.commit('private/recordMessage', messageData)
       this.text = ''
-    },
-    requestSnapShot () {
-      const data = { ...this.subscribedRooms }
-      for (const key in data) {
-        const currentUserIdIndex = data[key].indexOf(this.currentUser.id)
-        data[key] = this.subscribedRooms[key][1 - currentUserIdIndex]
-      }
-      this.$socket.emit('GET_ROOM_SNAPSHOT', data)
     }
+    // requestSnapShot () {
+    //   const data = { ...this.subscribedRooms }
+    //   for (const key in data) {
+    //     const currentUserIdIndex = data[key].indexOf(this.currentUser.id)
+    //     data[key] = this.subscribedRooms[key][1 - currentUserIdIndex]
+    //   }
+    //   this.$socket.emit('GET_ROOM_SNAPSHOT', data)
+    // }
   },
   destroyed () {
     if (this.isChatting) {

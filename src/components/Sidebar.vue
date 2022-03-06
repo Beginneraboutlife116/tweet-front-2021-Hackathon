@@ -286,8 +286,6 @@ export default {
       }
       this.getRoomSnapShot(data)
       localStorage.setItem('subscribedRoomsList', JSON.stringify(data))
-      // this.$socket.emit('GET_ROOM_SNAPSHOT', data)
-      // TODO: 將回傳檔案Vuex存取
     },
     async getRoomSnapShot (subscribedRoomsList) {
       try {

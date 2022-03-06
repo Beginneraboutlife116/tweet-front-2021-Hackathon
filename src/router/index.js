@@ -23,6 +23,7 @@ const authorizeIsUser = (to, from, next) => {
     return
   }
   // ? 可以在這邊去做到傳送'SUBSCRIBE_TO_ALL_ROOM'嗎？我要怎麼使用socket.emit？
+  // const subscribedRoomsListFromLocal = localStorage.getItem('subscribedRoomsList')
   next()
 }
 
