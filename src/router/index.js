@@ -4,8 +4,33 @@ import SignIn from './../views/SignIn'
 import NotFound from './../views/NotFound'
 import store from './../store'
 import { Toast } from './../mixins/helpers'
+// import chatAPI from '../apis/chat'
 
 Vue.use(VueRouter)
+
+// async function getRoomSnapShot (subscribedRoomsList) {
+//   try {
+//     console.log('in the get room snapshot')
+//     const { data } = await chatAPI.getRoomSnapshot(
+//       store.state.currentUser.id,
+//       subscribedRoomsList
+//     )
+//     if (!data.length) return
+//     let unreadMessageNum = 0
+//     data.forEach((snapShot) => {
+//       if (
+//         !snapShot.isRead &&
+//         snapShot.ReceiverId === store.state.currentUser.id
+//       ) {
+//         unreadMessageNum++
+//       }
+//       store.commit('private/updateMessagesToRoomsArray', snapShot)
+//     })
+//     store.commit('private/recordUnreadMessageNumber', unreadMessageNum)
+//   } catch (err) {
+//     console.error(err)
+//   }
+// }
 
 const authorizeIsAdmin = (to, from, next) => {
   const currentUser = store.state.currentUser
@@ -23,7 +48,17 @@ const authorizeIsUser = (to, from, next) => {
     return
   }
   // ? 可以在這邊去做到傳送'SUBSCRIBE_TO_ALL_ROOM'嗎？我要怎麼使用socket.emit？
-  // const subscribedRoomsListFromLocal = localStorage.getItem('subscribedRoomsList')
+  // const subscribedRoomsListFromLocal = Object.keys(
+  //   JSON.parse(localStorage.getItem('subscribedRoomsList'))
+  // )
+  // if (
+  //   Object.keys(store.state.private.subscribedRooms).length >
+  //   subscribedRoomsListFromLocal.length
+  // ) {
+  //   getRoomSnapShot(store.state.private.subscribedRooms)
+  // } else {
+  //   getRoomSnapShot(subscribedRoomsListFromLocal)
+  // }
   next()
 }
 
@@ -192,7 +227,9 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (isAuthenticated && pathWithoutAuthentication.includes(to.name)) {
-    store.state.currentUser.role === 'user' ? next('/home') : next('/admin/tweets')
+    store.state.currentUser.role === 'user'
+      ? next('/home')
+      : next('/admin/tweets')
     return
   }
 

@@ -106,13 +106,16 @@ export default {
     },
     checkHistory (selectedRoomId) {
       if (selectedRoomId === this.roomId) return
+      const certainSnapShot = this.roomsArray.find(
+        (room) => room.room === selectedRoomId
+      )
+      this.userName = certainSnapShot.User.name
+      this.$store.commit('private/getReceiver', {
+        receiver: certainSnapShot.User
+      })
       if (!this.isChatting) {
         this.$store.commit('private/startPrivateChatRoom')
       }
-      // * make header title be the receiver
-      this.userName = this.roomsArray.find(
-        (room) => room.room === selectedRoomId
-      ).User.name
       // * clean old history
       this.$store.commit('private/cleanDialogue')
       // * record the roomId
@@ -163,7 +166,7 @@ export default {
         room: this.roomId,
         createdAt: new Date()
       }
-      if (message.room) {
+      if (message.room && message.ReceiverId) {
         this.$socket.emit('SEND_ROOM_MESSAGE', message)
       }
       const messageBar = {

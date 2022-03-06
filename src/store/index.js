@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import usersAPI from './../apis/users'
 import adminAPI from './../apis/admin'
-// import chatAPI from './../apis/chat'
 
 Vue.use(Vuex)
 

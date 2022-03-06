@@ -324,14 +324,12 @@ export default {
       this.$store.commit('SOCKET_storeMessage', data)
     },
     NEW_ROOM_MESSAGE (saveMessage) {
-      console.log('NEW_ROOM_MESSAGE: ', saveMessage)
       this.$store.commit('private/increaseNoti')
       this.$store.commit('private/updateMessagesToRoomsArray', saveMessage)
       // ? 是不是在這邊做到重新找一次snapshot就好？一旦這邊有值就啟動！
       this.saveSubscribedRoomToLocalStorage()
     },
     ROOM_CREATED (data) {
-      console.log('ROOM_CREATE: ', data)
       if (
         !this.subscribedRooms[data.room] &&
         data.users.includes(this.currentUser.id)
@@ -349,18 +347,6 @@ export default {
       this.saveSubscribedRoomToLocalStorage()
       // ? 所以每一次route變動就去叫一次api？一旦與local不符就做一次
     }
-    // ROOM_SNAPSHOT (snapShots) {
-    //   if (!snapShots) return
-    //   console.log('ROOM_SNAPSHOT from sidebar: ', snapShots)
-    //   let unreadMessageNum = 0
-    //   snapShots.forEach((snapShot) => {
-    //     if (!snapShot.isRead && snapShot.ReceiverId === this.currentUser.id) {
-    //       unreadMessageNum++
-    //     }
-    //     this.$store.commit('private/updateMessagesToRoomsArray', snapShot)
-    //   })
-    //   this.$store.commit('private/recordUnreadMessageNumber', unreadMessageNum)
-    // }
   },
   watch: {
     userMsg: {
